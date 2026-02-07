@@ -77,13 +77,8 @@ RSS_SOURCES = {
                 "icon": "🍺",
                 "priority": 1,
             },
-            {
-                "name": "Steam 上海爱丽丝幻乐团",
-                "url": f"{RSSHUB_BASE}/steam/search/东方Project",
-                "icon": "🎮",
-                "priority": 2,
-                "needs_filter": True,  # 只保留与东方相关的条目，避免全站折扣噪音
-            },
+            # Steam 源已移除：Steam 返回大量非东方相关的折扣/排行噪音，
+            # 更可靠的做法是使用特定 app 的 news 路由或仅依赖社区源（B站/Pixiv/Reddit）。
         ],
     },
     # === 社会/民生 (Community / Bilibili) ===

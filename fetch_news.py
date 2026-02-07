@@ -217,8 +217,22 @@ def is_touhou_related(text: str) -> bool:
                 continue
             return False
 
-    # 2. 再检查正向关键词
-    return any(kw.lower() in text_lower for kw in TOUHOU_KEYWORDS)
+    # 2. 强匹配：任一核心/角色/作品/音乐关键词出现即判定为东方相关
+    positive_lists = CORE_KEYWORDS + CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEYWORDS
+    for kw in positive_lists:
+        if kw.lower() in text_lower:
+            return True
+
+    # 3. 弱匹配处理：单独的“东方/東方”是高度歧义的词，
+    #    仅在同时出现角色/作品/音乐等具体关键词时才判定为东方相关。
+    if "东方" in text or "東方" in text_lower:
+        for kw in CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEYWORDS:
+            if kw.lower() in text_lower:
+                return True
+        return False
+
+    # 未命中任何判定条件 -> 非东方相关
+    return False
 
 
 def clean_html(raw_html: str) -> str:

@@ -4,7 +4,7 @@
     "title_jp": "幻想郷日報",
     "subtitle": "Gensokyo Daily",
     "edition": "第20260207期",
-    "updated_at": "2026-02-07T22:28:06.449010+00:00",
+    "updated_at": "2026-02-07T23:31:14.597515+00:00",
     "generated_by": "射命丸文 & GitHub Actions",
     "version": "1.0.0"
   },
@@ -173,63 +173,63 @@
     }
   },
   "weather": {
-    "updated": "2026-02-07T22:28:06.448983+00:00",
+    "updated": "2026-02-07T23:31:14.597491+00:00",
     "forecasts": [
       {
         "location": "博丽神社",
         "location_jp": "博麗神社",
-        "condition": "雷阵雨",
-        "icon": "⛈️",
-        "temperature": 34
+        "condition": "异变中",
+        "icon": "⚡",
+        "temperature": 27
       },
       {
         "location": "人间之里",
         "location_jp": "人間の里",
-        "condition": "雪",
-        "icon": "❄️",
-        "temperature": 7
+        "condition": "阴",
+        "icon": "☁️",
+        "temperature": 18
       },
       {
         "location": "红魔馆",
         "location_jp": "紅魔館",
-        "condition": "多云",
-        "icon": "⛅",
-        "temperature": 4
+        "condition": "弹幕暴风",
+        "icon": "🌀",
+        "temperature": 29
       },
       {
         "location": "白玉楼",
         "location_jp": "白玉楼",
-        "condition": "阴",
-        "icon": "☁️",
-        "temperature": 15
+        "condition": "弹幕暴风",
+        "icon": "🌀",
+        "temperature": 35
       },
       {
         "location": "永远亭",
         "location_jp": "永遠亭",
-        "condition": "雪",
-        "icon": "❄️",
-        "temperature": 3
+        "condition": "花粉",
+        "icon": "🌸",
+        "temperature": 30
       },
       {
         "location": "守矢神社",
         "location_jp": "守矢神社",
-        "condition": "雷阵雨",
-        "icon": "⛈️",
-        "temperature": 0
+        "condition": "雪",
+        "icon": "❄️",
+        "temperature": 34
       },
       {
         "location": "地灵殿",
         "location_jp": "地霊殿",
-        "condition": "阴",
-        "icon": "☁️",
-        "temperature": 19
+        "condition": "多云",
+        "icon": "⛅",
+        "temperature": 21
       },
       {
         "location": "命�的神殿",
         "location_jp": "命蓮寺",
-        "condition": "妖雾",
-        "icon": "🌫️",
-        "temperature": -3
+        "condition": "雪",
+        "icon": "❄️",
+        "temperature": 19
       }
     ]
   },

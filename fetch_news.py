@@ -82,6 +82,7 @@ RSS_SOURCES = {
                 "url": f"{RSSHUB_BASE}/steam/search/东方Project",
                 "icon": "🎮",
                 "priority": 2,
+                "needs_filter": True,  # 只保留与东方相关的条目，避免全站折扣噪音
             },
         ],
     },
@@ -343,9 +344,16 @@ def fetch_all_news() -> dict:
                 seen_ids.add(item["id"])
                 unique_items.append(item)
 
-        # 按优先级和发布时间排序
-        unique_items.sort(key=lambda x: (x["priority"], x["published"]), reverse=False)
-        unique_items.sort(key=lambda x: x["published"], reverse=True)
+        # 按优先级（数值越小优先级越高）和发布时间降序排序
+        # 首先把发布时间解析为时间戳，确保排序行为正确
+        def _ts(item):
+            try:
+                return datetime.fromisoformat(item.get("published", "")).timestamp()
+            except Exception:
+                return 0
+
+        # key: (priority asc, published_ts desc)
+        unique_items.sort(key=lambda x: (x.get("priority", 99), -_ts(x)))
 
         # 截断到最大条目数
         unique_items = unique_items[:MAX_ITEMS_PER_CATEGORY]

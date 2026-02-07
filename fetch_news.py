@@ -33,29 +33,92 @@ MAX_AGE_DAYS = 30
 # 请求超时（秒）
 REQUEST_TIMEOUT = 30
 
-# 东方相关关键词（用于过滤无关内容）
-TOUHOU_KEYWORDS = [
-    "东方", "東方", "touhou", "Touhou",
-    "灵梦", "霊夢", "魔理沙", "marisa",
+# 东方相关关键词 2.0 Pro版（分类管理 + 黑名单机制）
+# --- 核心关键词：出现任意一个即可判定为东方相关 ---
+CORE_KEYWORDS = [
+    "东方project", "東方project", "touhou project", "touhou",
     "幻想乡", "幻想郷", "gensokyo",
-    "博丽", "博麗", "红魔馆", "紅魔館",
-    "ZUN", "上海爱丽丝", "上海アリス",
-    "例大祭", "红楼梦", "紅楼夢",
-    "咲夜", "琪露诺", "チルノ", "cirno",
-    "妖梦", "妖夢", "幽幽子",
-    "永琳", "辉夜", "輝夜", "蕾米莉亚",
-    "芙兰朵露", "帕秋莉", "射命丸文",
-    "河城荷取", "八云紫", "八雲紫",
-    "藤原妹红", "鬼人正邪", "古明地觉",
-    "风见幽香", "四季映姬", "小野塚小町",
-    "因幡帝", "铃仙", "鈴仙",
+    "博丽神社", "博麗神社", "hakurei",
+    "ZUN", "上海爱丽丝", "上海アリス幻樂団",
+    "例大祭", "reitaisai",
+    "thwiki", "THBWiki", "东方吧",
+]
+
+# --- 角色关键词 ---
+CHARACTER_KEYWORDS = [
+    "灵梦", "霊夢", "reimu",
+    "魔理沙", "marisa",
+    "咲夜", "sakuya",
+    "琪露诺", "チルノ", "cirno",
+    "妖梦", "妖夢", "youmu",
+    "幽幽子", "yuyuko",
+    "蕾米莉亚", "remilia",
+    "芙兰朵露", "flandre",
+    "帕秋莉", "patchouli",
+    "射命丸文", "aya shameimaru",
+    "河城荷取", "nitori",
+    "八云紫", "八雲紫", "yukari",
+    "藤原妹红", "mokou",
+    "鬼人正邪", "seija",
+    "古明地觉", "古明地恋", "satori", "koishi",
+    "风见幽香", "yuuka",
+    "四季映姬", "eiki",
+    "小野塚小町", "komachi",
+    "因幡帝", "tewi",
+    "铃仙", "鈴仙", "reisen",
+    "永琳", "eirin",
+    "辉夜", "輝夜", "kaguya",
+    "红美铃", "meiling",
+    "爱丽丝", "alice margatroid",
+    "西行寺", "saigyouji",
+    "博丽", "博麗",
+]
+
+# --- 作品关键词 ---
+GAME_KEYWORDS = [
+    "红魔乡", "紅魔郷", "红魔馆", "紅魔館",
+    "妖妖梦", "妖々夢",
+    "永夜抄",
+    "花映塚",
+    "风神录", "風神録",
+    "地灵殿", "地霊殿",
+    "星莲船", "星蓮船",
+    "神灵庙", "神霊廟",
+    "辉针城", "輝針城",
+    "绀珠传", "紺珠伝",
+    "天空璋",
+    "鬼形兽", "鬼形獣",
+    "虹龙洞", "虹龍洞",
+    "兽王园", "獣王園",
+    "献华抄",
+    "刚欲异闻",
     "东方红魔乡", "东方妖妖梦", "东方永夜抄",
     "东方风神录", "东方地灵殿", "东方星莲船",
     "东方神灵庙", "东方辉针城", "东方绀珠传",
     "东方天空璋", "东方鬼形兽", "东方虹龙洞",
     "东方兽王园", "东方献华抄", "东方刚欲异闻",
-    "thwiki", "THBWiki",
 ]
+
+# --- 音乐/二创关键词 ---
+MUSIC_KEYWORDS = [
+    "东方arrange", "东方编曲", "东方同人音乐",
+    "U.N.オーエンは彼女なのか", "ネクロファンタジア",
+    "bad apple", "色は匂へど散りぬるを",
+    "东方vocal", "东方remix",
+    "秘封俱乐部", "秘封倶楽部",
+]
+
+# --- 黑名单关键词：如果标题中出现这些词且不包含核心关键词，则排除 ---
+BLACKLIST_KEYWORDS = [
+    "东方卫视", "东方财富", "东方航空", "东方明珠",
+    "东方雨虹", "东方电气", "东方证券", "东方通信",
+    "东方园林", "东方日升", "东方盛虹", "东方铁塔",
+    "东方美食", "东方甄选", "东方不败",
+    "orient", "oriental securities",
+]
+
+# 合并为总关键词列表
+TOUHOU_KEYWORDS = CORE_KEYWORDS + CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEYWORDS
 
 # ============================================================
 # RSS 源配置
@@ -140,10 +203,21 @@ def generate_id(title: str, link: str) -> str:
 
 
 def is_touhou_related(text: str) -> bool:
-    """判断文本是否与东方相关"""
+    """更智能的东方相关判断逻辑（2.0 Pro版）"""
     if not text:
         return False
     text_lower = text.lower()
+
+    # 1. 先检查黑名单（一票否决）
+    for bad_word in BLACKLIST_KEYWORDS:
+        if bad_word.lower() in text_lower:
+            # 特殊情况：如果同时出现了"东方Project"或"ZUN"，则无视黑名单
+            # （防止"东方卫视报道了东方Project展会"这种新闻被误杀）
+            if "project" in text_lower or "zun" in text_lower:
+                continue
+            return False
+
+    # 2. 再检查正向关键词
     return any(kw.lower() in text_lower for kw in TOUHOU_KEYWORDS)
 
 

@@ -1,0 +1,46 @@
+name: 幻想乡日报 - 自动更新
+
+on:
+  # 每小时运行一次
+  schedule:
+    - cron: '0 * * * *'
+  # 也可以手动触发
+  workflow_dispatch:
+  # 推送到 main 分支时也运行一次
+  push:
+    branches: [main]
+    paths:
+      - 'fetch_news.py'
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 🐍 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 🗞️ 抓取新闻
+        env:
+          RSSHUB_BASE: ${{ secrets.RSSHUB_BASE || 'https://rsshub.app' }}
+        run: python fetch_news.py
+
+      - name: 📝 提交更新
+        run: |
+          git config --local user.email "aya@gensokyo.daily"
+          git config --local user.name "射命丸文 (Aya Shameimaru)"
+          git add news_data.json
+          # 只在有变化时提交
+          git diff --staged --quiet || git commit -m "📰 $(date -u +'%Y-%m-%d %H:%M UTC') 日报更新"
+          git push

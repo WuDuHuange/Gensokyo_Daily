@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "幻想乡日报",
+    "title_jp": "幻想郷日報",
+    "subtitle": "Gensokyo Daily",
+    "edition": "第20260208期",
+    "updated_at": "2026-02-08T00:00:00+00:00",
+    "generated_by": "射命丸文 & GitHub Actions",
+    "version": "1.0.0"
+  },
+  "categories": {
+    "official": {
+      "label": "头版头条",
+      "items": [
+        {
+          "id": "demo_off_001",
+          "title": "【号外】ZUN 宣布东方 Project 第 20 作正式开发中",
+          "link": "https://touhou-project.news/",
+          "summary": "上海爱丽丝幻乐团主催 ZUN 于今日在推特上透露，东方 Project 系列第 20 部正作正在开发中。据悉新作将延续弹幕射击的传统玩法，加入全新的角色与故事线。博丽灵梦和雾雨魔理沙将继续作为可选自机登场。ZUN 表示新作预计将在今年夏季的例大祭上首次公开试玩版。",
+          "image": null,
+          "source": "东方官方资讯站",
+          "source_icon": "📰",
+          "priority": 1,
+          "published": "2026-02-08T06:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_off_002",
+          "title": "第二十三届博丽神社例大祭日程公布，参展社团数创历史新高",
+          "link": "https://reitaisai.com/",
+          "summary": "一年一度的博丽神社例大祭即将到来，今年举办地点依然在东京 Big Sight 东馆。本届参展社团数量突破 5000 大关，创下历史新高。主办方提醒各位参加者注意防暑降温。",
+          "image": null,
+          "source": "东方官方资讯站",
+          "source_icon": "📰",
+          "priority": 1,
+          "published": "2026-02-07T12:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_off_003",
+          "title": "ZUN：「今天的啤酒特别好喝，开发进度顺利」",
+          "link": "https://twitter.com/korindo",
+          "summary": "ZUN 于今日发布了一条附有啤酒照片的推文，并配文表示新作开发进度顺利。粉丝纷纷在评论区既期待新作又担心制作人的肝脏健康。",
+          "image": null,
+          "source": "ZUN 推特",
+          "source_icon": "🍺",
+          "priority": 1,
+          "published": "2026-02-07T09:30:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_off_004",
+          "title": "Steam 冬季特卖：东方正作系列全线 30% OFF",
+          "link": "https://store.steampowered.com/",
+          "summary": "数字平台 Steam 冬季特卖活动进行中，上海爱丽丝幻乐团旗下全部正作弹幕游戏均享七折优惠。从《东方红魔乡》到《东方兽王园》，机不可失。",
+          "image": null,
+          "source": "Steam 上海爱丽丝幻乐团",
+          "source_icon": "🎮",
+          "priority": 2,
+          "published": "2026-02-06T18:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        }
+      ],
+      "count": 4
+    },
+    "community": {
+      "label": "社会·民生",
+      "items": [
+        {
+          "id": "demo_com_001",
+          "title": "【东方手书】当灵梦决定认真工作时——三天播放破百万",
+          "link": "https://www.bilibili.com/",
+          "summary": "B站 UP 主「幻想乡特派记者」制作的东方手书动画引发热议。视频以独特的画风和搞笑的剧情赢得广泛好评，发布三天后播放量突破百万。弹幕中「灵梦打工」相关梗持续刷屏。",
+          "image": null,
+          "source": "B站东方热门视频",
+          "source_icon": "📺",
+          "priority": 1,
+          "published": "2026-02-07T15:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_com_002",
+          "title": "【东方 MMD】红魔馆众人的日常 EP.25「咲夜的休息日」",
+          "link": "https://www.bilibili.com/",
+          "summary": "人气 MMD 系列最新一集更新，讲述十六夜咲夜难得的休假日。画质与动作品质再次进化，被评论区称为「同人动画天花板」。",
+          "image": null,
+          "source": "B站东方Project频道",
+          "source_icon": "📺",
+          "priority": 1,
+          "published": "2026-02-07T10:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_com_003",
+          "title": "Reddit 热议：你最喜欢的东方角色是谁？年度投票结果出炉",
+          "link": "https://www.reddit.com/r/touhou/",
+          "summary": "r/touhou 发起的年度角色人气投票结果揭晓。琪露诺以微弱优势击败古明地恋位列第一，芙兰朵露·斯卡蕾特获得第三名。投票帖获得超过 2000 条评论。",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-02-06T20:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_com_004",
+          "title": "【鬼畜】用东方 Bad Apple 还原世界名画——全站排行第 7",
+          "link": "https://www.bilibili.com/",
+          "summary": "UP 主将经典的 Bad Apple 影绘与世界名画结合，创造出惊人的视觉效果。视频登上全站日排行榜第七名，评论区直呼「东方无所不能」。",
+          "image": null,
+          "source": "B站东方热门视频",
+          "source_icon": "📺",
+          "priority": 1,
+          "published": "2026-02-06T14:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_com_005",
+          "title": "国内东方同人展 THOnly 2026 春季站圆满结束，参展人数超两万",
+          "link": "https://www.bilibili.com/",
+          "summary": "为期两天的 THOnly 2026 春季站于本周末在上海圆满落幕。据主办方统计，本次展会共吸引超过两万名观众入场，参展社团近 300 个。现场气氛热烈，各类二创作品琳琅满目。",
+          "image": null,
+          "source": "B站东方Project频道",
+          "source_icon": "📺",
+          "priority": 1,
+          "published": "2026-02-05T16:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        }
+      ],
+      "count": 5
+    },
+    "art": {
+      "label": "艺术·副刊",
+      "items": [
+        {
+          "id": "demo_art_001",
+          "title": "Pixiv 日榜第一：「紅魔館の午後」—— 蕾米莉亚与咲夜的下午茶",
+          "link": "https://www.pixiv.net/",
+          "summary": "画师的红魔馆下午茶插画登顶 Pixiv 东方标签日榜。精致的光影处理和温馨的氛围赢得了海量收藏，24小时内获得超过一万次「いいね」。",
+          "image": null,
+          "source": "Pixiv 东方日榜",
+          "source_icon": "🎨",
+          "priority": 1,
+          "published": "2026-02-07T14:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_art_002",
+          "title": "NicoNico 新投稿：「東方電気笛」—— 全新东方电子编曲专辑",
+          "link": "https://www.nicovideo.jp/",
+          "summary": "知名同人音乐社团发布全新东方电子编曲专辑，将经典 BGM 以赛博朋克风格重新演绎。首日播放量突破五万，多首曲目登上音乐排行榜。",
+          "image": null,
+          "source": "NicoNico 东方标签",
+          "source_icon": "🎵",
+          "priority": 2,
+          "published": "2026-02-07T08:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        },
+        {
+          "id": "demo_art_003",
+          "title": "Pixiv 热图：「雪の幻想郷」系列连载第 12 话公开",
+          "link": "https://www.pixiv.net/",
+          "summary": "人气漫画连载「雪の幻想郷」最新一话更新，讲述冬季幻想乡的温馨故事。本话聚焦于人间之里的雪祭准备工作，风见幽香意外客串登场。",
+          "image": null,
+          "source": "Pixiv 东方日榜",
+          "source_icon": "🎨",
+          "priority": 1,
+          "published": "2026-02-06T11:00:00+00:00",
+          "fetched_at": "2026-02-08T07:00:00+00:00"
+        }
+      ],
+      "count": 3
+    }
+  },
+  "weather": {
+    "updated": "2026-02-08T07:00:00+00:00",
+    "forecasts": [
+      { "location": "博丽神社", "location_jp": "博麗神社", "condition": "晴", "icon": "☀️", "temperature": 8 },
+      { "location": "人间之里", "location_jp": "人間の里", "condition": "多云", "icon": "⛅", "temperature": 6 },
+      { "location": "红魔馆", "location_jp": "紅魔館", "condition": "红雾", "icon": "🌅", "temperature": 5 },
+      { "location": "白玉楼", "location_jp": "白玉楼", "condition": "雪", "icon": "❄️", "temperature": -2 },
+      { "location": "永远亭", "location_jp": "永遠亭", "condition": "妖雾", "icon": "🌫️", "temperature": 4 },
+      { "location": "守矢神社", "location_jp": "守矢神社", "condition": "阴", "icon": "☁️", "temperature": 1 },
+      { "location": "地灵殿", "location_jp": "地霊殿", "condition": "弹幕暴风", "icon": "🌀", "temperature": 28 },
+      { "location": "命莲寺", "location_jp": "命蓮寺", "condition": "小雨", "icon": "🌦️", "temperature": 5 }
+    ]
+  },
+  "ads": [
+    {
+      "id": "ad_kappa",
+      "title": "河童重工 最新科技",
+      "subtitle": "光学迷彩、等离子炮、自动钓鱼机",
+      "description": "河城荷取领衔研发！妖怪山河童工业联合体，为您提供最前沿的幻想科技。来料加工、定制弹幕系统，欢迎咨询。",
+      "contact": "妖怪山瀑布旁 河童工坊",
+      "icon": "🔧"
+    },
+    {
+      "id": "ad_eientei",
+      "title": "永远亭 特供药剂",
+      "subtitle": "八意永琳监制 · 蓬莱之药除外",
+      "description": "感冒灵、跌打丸、弹幕创伤速愈膏……月之头脑为您守护每一天的健康。本月特惠：蝴蝶梦丸（80文/粒）。",
+      "contact": "迷途竹林深处 永远亭药局",
+      "icon": "💊"
+    },
+    {
+      "id": "ad_kourindou",
+      "title": "香霖堂 古道具店",
+      "subtitle": "森近霖之助 · 外界道具专营",
+      "description": "本店经营各类外界流入品：Game Boy、打火机、不明用途的塑料板……识货的客官请进。不议价。",
+      "contact": "魔法森林入口处",
+      "icon": "🏪"
+    },
+    {
+      "id": "ad_moriya",
+      "title": "守矢神社 御守特卖",
+      "subtitle": "信仰充值 · 有求必应",
+      "description": "新年限定御守上架！学业成就、恋爱成就、弹幕回避……诹访子大人亲自加持，信仰值翻倍。参拜即送蛙形饼干。",
+      "contact": "妖怪山山顶 守矢神社",
+      "icon": "⛩️"
+    }
+  ]
+}

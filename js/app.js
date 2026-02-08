@@ -254,11 +254,25 @@
     const container = $(`#${containerId}`);
     if (!container) return;
 
-    const items = categoryData?.items || [];
+    // 复制一份数据以免修改原始对象
+    let items = categoryData?.items ? [...categoryData.items] : [];
 
     if (items.length === 0) {
       container.innerHTML = renderEmptyState();
       return;
+    }
+
+    // 🎨 UI 平衡策略：
+    // 左侧（社会·民生）文字多，单条高度小，但总量多 -> 限制显示数量，防止太长 (Limit: 15)
+    // 右侧（艺术·副刊）是图片，单条高度大 -> 允许显示更多，撑起页面 (Limit: 40)
+    const MAX_DISPLAY = {
+      'official': 10,
+      'community': 15, // 砍掉过长的列表，只保留最近的15条
+      'art': 40        // 图片区多多益善
+    };
+
+    if (MAX_DISPLAY[categoryKey] && items.length > MAX_DISPLAY[categoryKey]) {
+      items = items.slice(0, MAX_DISPLAY[categoryKey]);
     }
 
     let html = '';

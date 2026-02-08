@@ -440,7 +440,8 @@ def fetch_safebooru_api(tags: str = "touhou") -> list:
     [API直连] 获取 Safebooru 图片列表 (JSON)
     """
     # json=1 表示返回 JSON 格式
-    api_url = f"https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags={tags}&limit=10"
+    # ⬆️ 提高了单次抓取数量 (10 -> 40)，以平衡页面高度，让右侧不显得太空
+    api_url = f"https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags={tags}&limit=40"
     headers = {"User-Agent": "GensokyoDaily/1.0"}
     
     print(f"  ⚡ 正在请求 Safebooru API...")

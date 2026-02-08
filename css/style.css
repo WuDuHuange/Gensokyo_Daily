@@ -538,6 +538,73 @@ img {
   letter-spacing: 0.3rem;
 }
 
+/* ---------- 艺术网格 (Safebooru) Polaroid 风格 ---------- */
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.art-card {
+  background-color: #fff;
+  padding: 10px 10px 25px 10px; /* 拍立得底部留白多 */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.3s, box-shadow 0.3s, z-index 0.3s;
+  border: 1px solid #ddd;
+  position: relative;
+  break-inside: avoid;
+}
+
+.art-card:hover {
+  transform: scale(1.05) rotate(0deg);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+/* 随机轻微旋转 (nth-child 模拟) */
+.art-card:nth-child(3n+1) { --rot: -2deg; }
+.art-card:nth-child(3n+2) { --rot: 1.5deg; }
+.art-card:nth-child(4n)   { --rot: 3deg; }
+.art-card:nth-child(5n)   { --rot: -1deg; }
+
+.art-card__image {
+  width: 100%;
+  aspect-ratio: 1/1; /* 方形裁剪 */
+  object-fit: cover;
+  border: 1px solid #eee;
+  filter: grayscale(80%);
+  transition: filter 0.3s;
+  display: block;
+}
+
+.art-card:hover .art-card__image {
+  filter: grayscale(0%);
+}
+
+.art-card__caption {
+  font-family: var(--font-mono); /* 手写字体感用 mono 代替 */
+  text-align: center;
+  margin-top: 10px;
+  color: var(--ink-dark);
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.art-card__title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.art-card__meta ({
+  display: block;
+  font-size: 0.7rem;
+  color: #888;
+  font-style: italic;
+}
+
 /* ---------- 加载遮罩 ---------- */
 .loading-overlay {
   position: fixed;

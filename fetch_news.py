@@ -181,6 +181,7 @@ BLACKLIST_KEYWORDS = [
     "碧蓝档案", "BlueArchive", "Blue Archive", "蔚蓝档案",
     "王者荣耀", "LOL", "英雄联盟", "永劫无间", "Naraka",
     "第五人格", "阴阳师", "赛马娘",
+    "Fate", "FGO", "Fate/Grand Order",
     
     # 虚拟主播 (Vtubers 经常和 MMD 混在一起)
     "Hololive", "Nijisanji", "Asoul", "嘉然", "贝拉", 

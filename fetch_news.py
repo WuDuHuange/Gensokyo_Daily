@@ -12,11 +12,57 @@ import time
 import hashlib
 import uuid
 import random
+import functools
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from urllib.parse import urlencode
 
 import feedparser
 import requests
+
+# ============================================================
+# B站 WBI 签名魔法 (Copy & Paste)
+# ============================================================
+def get_mixin_key(orig: str):
+    '对 imgKey 和 subKey 进行字符顺序打乱编码'
+    mixin_key_enc_tab = [
+        46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35, 27, 43, 5, 49,
+        33, 9, 42, 19, 29, 28, 14, 39, 12, 38, 41, 13, 37, 48, 7, 16, 24, 55, 40,
+        61, 26, 17, 0, 1, 60, 51, 30, 4, 22, 25, 54, 21, 56, 59, 6, 63, 57, 62, 11,
+        36, 20, 34, 44, 52
+    ]
+    return functools.reduce(lambda s, i: s + orig[i], mixin_key_enc_tab, '')[:32]
+
+def enc_wbi(params: dict, img_key: str, sub_key: str):
+    '为请求参数进行 wbi 签名'
+    mixin_key = get_mixin_key(img_key + sub_key)
+    curr_time = round(time.time())
+    params['wts'] = curr_time # 添加时间戳
+    # 按照 key 重排参数
+    params = dict(sorted(params.items()))
+    # 过滤不用签名的字符
+    query = urlencode(params)
+    # 计算 w_rid
+    w_rid = hashlib.md5((query + mixin_key).encode(encoding='utf-8')).hexdigest()
+    params['w_rid'] = w_rid
+    return params
+
+def get_wbi_keys():
+    '获取最新的 img_key 和 sub_key'
+    try:
+        resp = requests.get('https://api.bilibili.com/x/web-interface/nav', headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        })
+        resp.raise_for_status()
+        json_content = resp.json()
+        img_url = json_content['data']['wbi_img']['img_url']
+        sub_url = json_content['data']['wbi_img']['sub_url']
+        img_key = img_url.rsplit('/', 1)[1].split('.')[0]
+        sub_key = sub_url.rsplit('/', 1)[1].split('.')[0]
+        return img_key, sub_key
+    except Exception as e:
+        print(f"⚠️ 无法获取 WBI 密钥: {e}")
+        return None, None
 
 # ============================================================
 # 配置区 — 修改这里来适配你自己的 RSSHub 实例
@@ -156,8 +202,8 @@ RSS_SOURCES = {
             },
             {
                 "name": "THWiki 最近更改",
-                # 使用 THWiki 原生 Atom feed
-                "url": "https://thwiki.cc/index.php?title=Special:%E6%9C%80%E8%BF%91%E6%9B%B4%E6%94%B9&feed=atom",
+                # ✅ 使用 corsproxy.io 作为跳板，绕过 IP 封锁
+                "url": "https://corsproxy.io/?url=" + "https://thwiki.cc/index.php?title=Special:%E6%9C%80%E8%BF%91%E6%9B%B4%E6%94%B9&feed=atom",
                 "icon": "📚",
                 "priority": 3,
             },
@@ -292,50 +338,59 @@ def extract_image(entry) -> Optional[str]:
 
 def fetch_bilibili_rank_api(rid: int, label: str) -> list:
     """
-    [API直连] 获取 B站指定分区的排行榜数据 (加强伪装版)
+    [API直连] 获取 B站指定分区的排行榜数据 (加强伪装版 + WBI签名)
     """
-    api_url = f"https://api.bilibili.com/x/web-interface/ranking/v2?rid={rid}"
+    # 1. 先拿到密钥
+    img_key, sub_key = get_wbi_keys()
+    if not img_key: 
+        print("  ⚠ WBI 签名密钥获取失败，跳过 B站请求")
+        return []
+
+    # 2. 准备原始参数
+    params = {
+        'rid': rid,
+        'type': 'all',
+        # 'web_location': '333.999', # 有时候需要这个
+    }
     
-    # 生成随机指纹
+    # 3. 签名！
+    signed_params = enc_wbi(params, img_key, sub_key)
+
+    api_url = f"https://api.bilibili.com/x/web-interface/ranking/v2"
+    
+    # 生成随机指纹 (保持旧有的 Headers 伪装作为辅助)
     buvid3 = str(uuid.uuid4()) + "infoc"
     _uuid = str(uuid.uuid4())
     
-    # ⚡ 关键修改：加强 Headers 伪装 + Sec Headers
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "Referer": "https://www.bilibili.com/v/popular/rank/all",
         "Origin": "https://www.bilibili.com",
         "Accept": "application/json, text/plain, */*",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-        # 模拟浏览器环境头 (Sec-*)
+        # 模拟浏览器环境头
         "Sec-Ch-Ua": '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": '"Windows"',
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
         "Cookie": f"buvid3={buvid3}; _uuid={_uuid};" 
     }
     
-    print(f"  ⚡ 正在请求 B站 API (分区 {rid})...")
+    print(f"  ⚡ 正在请求 B站 API (分区 {rid}) [WBI签名版]...")
     try:
-        # 增加 retry 逻辑，如果第一次失败等 1 秒再试
-        resp = requests.get(api_url, headers=headers, timeout=15)
+        # requests 会自动帮你把 signed_params 拼接到 url 后面
+        resp = requests.get(api_url, headers=headers, params=signed_params, timeout=15)
         
-        # 打印状态码帮助调试
         if resp.status_code != 200:
             print(f"  ❌ HTTP 状态码错误: {resp.status_code}")
             return []
 
         data = resp.json()
         
-        # B站返回非 0 code 代表业务拒绝
         if data["code"] != 0:
             print(f"  ❌ B站 API 拒绝: Code {data['code']} - {data.get('message', '未知错误')}")
             return []
             
         items = []
-        # 安全获取 list，防止 data['data'] 为空
         data_list = data.get("data", {}).get("list", [])
         
         for v in data_list[:15]:
@@ -352,7 +407,6 @@ def fetch_bilibili_rank_api(rid: int, label: str) -> list:
                 "title": v["title"],
                 "link": f"https://www.bilibili.com/video/{v['bvid']}",
                 "summary": desc[:80].replace("\n", " ") + "...",
-                # 强制把 http 图片换成 https
                 "image": v["pic"].replace("http://", "https://") if "pic" in v else None,
                 "source": f"B站 {label}榜",
                 "source_icon": "📺",

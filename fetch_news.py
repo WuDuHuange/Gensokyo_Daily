@@ -137,13 +137,7 @@ RSS_SOURCES = {
                 "icon": "📰",
                 "priority": 1,
             },
-            {
-                "name": "Steam 搜索 (示例)",
-                # Steam 抓取比较特殊，保留 RSSHub 的搜索作为备选
-                "url": f"{RSSHUB_BASE}/steam/search/东方Project",
-                "icon": "🎮",
-                "priority": 2,
-            },
+
         ],
     },
 

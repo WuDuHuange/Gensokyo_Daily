@@ -159,7 +159,7 @@
         <article class="${cardClass}">
           ${imageHtml}
           <div class="flex flex-col justify-center">
-            <h3 class="font-title text-3xl font-bold leading-tight mb-4 hover:text-accent-red transition-colors">
+            <h3 class="font-heading text-3xl font-bold leading-tight mb-4 hover:text-accent-red transition-colors">
               <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
                 ${escapeHtml(item.title)}
               </a>

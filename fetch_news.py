@@ -21,6 +21,28 @@ import feedparser
 import requests
 
 # ============================================================
+# 🌍 核心战术：RSSHub 镜像池 (绕过 B 站对云服务 IP 的封锁)
+# ============================================================
+RSSHUB_MIRRORS = [
+    "https://rsshub.feedlib.xyz",       # 社区稳定镜像
+    "https://rsshub.ktachibana.party",  # 长期存活镜像
+    "https://rsshub.mou.science",       # 备用镜像
+    "https://rsshub.shres.me",          # 备用镜像
+    "https://rsshub.app",               # 官方节点 (最后保底)
+]
+
+# ============================================================
+# ⚙️ B站分区配置：只保留最具“东方浓度”的四个核心分区
+# ============================================================
+# 25: MMD/3D, 24: MAD/AMV, 28: 同人音乐, 17: 单机游戏
+BILIBILI_PARTITIONS = [
+    {"name": "B站 MMD榜", "path": "/bilibili/ranking/25/3/1", "icon": "💃", "priority": 1},
+    {"name": "B站 手书榜", "path": "/bilibili/ranking/24/3/1", "icon": "🎬", "priority": 1},
+    {"name": "B站 音乐榜", "path": "/bilibili/ranking/28/3/1", "icon": "🎵", "priority": 2},
+    {"name": "B站 游戏榜", "path": "/bilibili/ranking/17/3/1", "icon": "🎮", "priority": 2},
+]
+
+# ============================================================
 # B站 WBI 签名魔法 (Copy & Paste)
 # ============================================================
 def get_mixin_key(orig: str):
@@ -516,6 +538,89 @@ def fetch_feed(url: str, timeout: int = REQUEST_TIMEOUT) -> Optional[feedparser.
         return None
 
 
+def clean_html(raw_html: str) -> str:
+    """去除 HTML 标签"""
+    if not raw_html:
+        return ""
+    cleanr = re.compile("<.*?>")
+    text = re.sub(cleanr, "", raw_html)
+    return text.strip()
+
+
+def extract_image(entry) -> Optional[str]:
+    """尝试从 feed entry 中提取封面图"""
+    # 1. 媒体附件 (Safebooru 等)
+    if "media_content" in entry:
+        for m in entry.media_content:
+            if m.get("medium") == "image":
+                return m["url"]
+    
+    # 2. 媒体缩略图 (YouTube 等)
+    if "media_thumbnail" in entry:
+        return entry.media_thumbnail[0]["url"]
+    
+    # 3.  enclosure (WordPress 等)
+    if "enclosures" in entry:
+        for enc in entry.enclosures:
+            if enc.get("type", "").startswith("image/"):
+                return enc.get("href")
+            
+    # 4. 从 description/summary 的 HTML 中提取 img 标签
+    content = entry.get("summary", "") or entry.get("description", "") or entry.get("content", [{"value": ""}])[0]["value"]
+    soup_match = re.search(r'<img [^>]*src="([^"]+)"', content)
+    if soup_match:
+        return soup_match.group(1)
+        
+    return None
+
+def fetch_rsshub_with_fallback(path: str) -> list:
+    """
+    镜像轮询抓取 B 站数据。
+    返回解析后的条目列表，如果全部失败则返回空列表。
+    """
+    mirrors = RSSHUB_MIRRORS.copy()
+    random.shuffle(mirrors) # 随机打乱顺序，分散请求压力
+
+    for base_url in mirrors:
+        target_url = base_url + path
+        print(f"    🔄 尝试镜像: {base_url} ...")
+        
+        try:
+            # 设置较短的超时时间，快速失败并切换下一个镜像
+            feed = feedparser.parse(target_url, agent="GensokyoDaily/1.0")
+            
+            # 验证状态码为 200 且确实拿到了数据条目
+            if feed.get("status") == 200 and len(feed.entries) > 0:
+                print(f"    ✅ 成功获取 {len(feed.entries)} 条数据")
+                
+                processed_items = []
+                for entry in feed.entries[:15]: # 每个分区取前 15 名
+                    # 使用关键词过滤函数
+                    if not is_touhou_related(entry.title + " " + entry.get("summary", "")):
+                        continue
+                        
+                    processed_items.append({
+                        "id": generate_id(entry.title, entry.link),
+                        "title": entry.title,
+                        "link": entry.link,
+                        "summary": clean_html(entry.get("summary", "")),
+                        "image": extract_image(entry), # 提取封面图
+                        "source": "B站热点",
+                        "source_icon": "📺",
+                        "priority": 1,
+                        "published": parse_date(entry),
+                        "fetched_at": datetime.now(timezone.utc).isoformat(),
+                    })
+                return processed_items
+                
+            print(f"    ❌ 镜像无效 (Status {feed.get('status', 'Unknown')})，尝试下一个...")
+                
+        except Exception as e:
+            print(f"    ⚠ 连接异常: {e}")
+            
+    print(f"    💀 该分区所有镜像均尝试失败: {path}")
+    return []
+
 # ============================================================
 # 天气模块（虚构 - 幻想乡天气）
 # ============================================================
@@ -590,6 +695,22 @@ def fetch_all_news() -> dict:
     for category_key, category_config in RSS_SOURCES.items():
         print(f"\n📂 分类: {category_config['label']}")
         items = []
+
+        # 特殊处理：如果是 community 分类，先插入 B 站分区数据
+        if category_key == "community":
+            print(f"  👉 启动 B站分区抓取子系统...")
+            for part in BILIBILI_PARTITIONS:
+                print(f"  🔗 正在抓取: {part['name']}")
+                bili_items = fetch_rsshub_with_fallback(part['path'])
+                if bili_items:
+                    # 为每个条目打上它专属的图标（如 💃 或 🎮）
+                    for item in bili_items:
+                        item["source_icon"] = part["icon"]
+                        # 确保属于 community 分类
+                        item["category"] = "community"
+                    items.extend(bili_items)
+            
+            print(f"  ✅ B站分区抓取结束，共 {len(items)} 条数据待合并")
 
         for feed_config in category_config["feeds"]:
             print(f"  🔗 正在获取: {feed_config['name']}")

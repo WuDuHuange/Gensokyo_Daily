@@ -301,7 +301,8 @@
               source: 'ZUN 推特',
               source_icon: '🍺',
               priority: 1,
-              published: new Date().toISOString(),
+              // 示例数据使用固定的过去时间，避免每次打开页面都显示“刚刚”
+              published: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
             },
             {
               id: 'demo2',

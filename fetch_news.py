@@ -37,6 +37,8 @@ REQUEST_TIMEOUT = 30
 # --- 核心关键词：出现任意一个即可判定为东方相关 ---
 CORE_KEYWORDS = [
     "东方project", "東方project", "touhou project", "touhou",
+    # 日文假名与片假名，提升日文/日区平台命中率
+    "トウホウ", "とうほう",
     "幻想乡", "幻想郷", "gensokyo",
     "博丽神社", "博麗神社", "hakurei",
     "ZUN", "上海爱丽丝", "上海アリス幻樂団",
@@ -260,10 +262,11 @@ def is_important_zun_tweet(text: str) -> bool:
     text_lower = text.lower()
 
     keywords = [
-        "新作", "体験版", "体験", "完成", "入稿", "發售", "公開", "发布",
+        "新作", "体験版", "体験", "完成", "入稿", "發售", "公開", "发布", "発売", "発表", "告知", "リリース",
         "例大祭", "コミケ", "夏コミ", "冬コミ", "reitaisai",
-        "release", "steam", "配信", "公開", "公開", "interview", "インタビュー",
-        "touhou", "東方", "touhou project", "東方project",
+        "release", "steam", "配信", "公開", "interview", "インタビュー",
+        # 日文假名/片假名与英文
+        "トウホウ", "とうほう", "touhou", "東方", "touhou project", "東方project",
     ]
 
     for kw in keywords:

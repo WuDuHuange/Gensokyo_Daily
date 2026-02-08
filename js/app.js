@@ -140,6 +140,7 @@
           src="${escapeHtml(item.image)}"
           alt="${escapeHtml(item.title)}"
           loading="lazy"
+          referrerpolicy="no-referrer"
           onerror="this.parentElement.style.display='none'"
         />
         <span class="news-card__source-badge">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>

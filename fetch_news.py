@@ -124,7 +124,7 @@ TOUHOU_KEYWORDS = CORE_KEYWORDS + CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEY
 # RSS 源配置
 # ============================================================
 RSS_SOURCES = {
-    # === 头版头条 (Official / ZUN) ===
+    # === 头版头条 (Official / Major Updates) ===
     "official": {
         "label": "头版头条",
         "feeds": [
@@ -135,56 +135,70 @@ RSS_SOURCES = {
                 "priority": 1,
             },
             {
-                "name": "ZUN 推特",
-                "url": f"{RSSHUB_BASE}/twitter/user/korindo",
+                "name": "THBWiki 最近更改",
+                "url": f"{RSSHUB_BASE}/huiji/thwiki/recentchanges",
+                "icon": "📚",
+                "priority": 2,
+            },
+            {
+                "name": "ZUN 推特 (精选)",
+                # exclude_replies=1: 排除回复；include_rts=1: 包含转推
+                "url": f"{RSSHUB_BASE}/twitter/user/korindo/exclude_replies=1/include_rts=1",
                 "icon": "🍺",
                 "priority": 1,
+                "is_zun": True,
             },
-            # Steam 源已移除：Steam 返回大量非东方相关的折扣/排行噪音，
-            # 更可靠的做法是使用特定 app 的 news 路由或仅依赖社区源（B站/Pixiv/Reddit）。
         ],
     },
-    # === 社会/民生 (Community / Bilibili) ===
+    # === 社会/民生 (Community & SNS) ===
     "community": {
         "label": "社会·民生",
         "feeds": [
+            # 改为搜索模式，获取 B 站内真正属于东方的热点
             {
-                "name": "B站东方热门视频",
-                "url": f"{RSSHUB_BASE}/bilibili/ranking/0/3/1",
+                "name": "B站东方热点(搜索)",
+                "url": f"{RSSHUB_BASE}/bilibili/vsearch/东方Project/pubdate",
                 "icon": "📺",
-                "priority": 1,
+                "priority": 2,
                 "needs_filter": True,
             },
             {
-                "name": "B站东方Project频道",
-                "url": f"{RSSHUB_BASE}/bilibili/search/hot/东方Project",
-                "icon": "📺",
-                "priority": 1,
-            },
-            {
-                "name": "Reddit r/touhou",
-                "url": f"{RSSHUB_BASE}/reddit/hot/touhou",
+                "name": "东方Project贴吧",
+                "url": f"{RSSHUB_BASE}/baidu/tieba/forum/东方project",
                 "icon": "💬",
                 "priority": 2,
             },
+            {
+                "name": "X #東方Project",
+                "url": f"{RSSHUB_BASE}/twitter/keyword/%23%E6%9D%B1%E6%96%B9Project",
+                "icon": "🐦",
+                "priority": 2,
+                "needs_filter": True,
+            },
+            {
+                "name": "Reddit r/touhou New",
+                "url": f"{RSSHUB_BASE}/reddit/r/touhou/new",
+                "icon": "💬",
+                "priority": 3,
+            },
         ],
     },
-    # === 艺术/副刊 (Art & Culture / Pixiv) ===
+    # === 艺术/副刊 (Art & Music) ===
     "art": {
         "label": "艺术·副刊",
         "feeds": [
             {
-                "name": "Pixiv 东方日榜",
-                "url": f"{RSSHUB_BASE}/pixiv/ranking/day",
+                "name": "Pixiv 东方部(周榜)",
+                "url": f"{RSSHUB_BASE}/pixiv/ranking/week",
                 "icon": "🎨",
-                "priority": 1,
+                "priority": 2,
                 "needs_filter": True,
             },
             {
-                "name": "NicoNico 东方标签",
-                "url": f"{RSSHUB_BASE}/nicovideo/tag/東方",
+                "name": "NicoNico 东方新着",
+                "url": f"{RSSHUB_BASE}/nicovideo/tag/%E6%9D%B1%E6%96%B9/new",
                 "icon": "🎵",
-                "priority": 2,
+                "priority": 3,
             },
         ],
     },
@@ -232,6 +246,34 @@ def is_touhou_related(text: str) -> bool:
         return False
 
     # 未命中任何判定条件 -> 非东方相关
+    return False
+
+
+def is_important_zun_tweet(text: str) -> bool:
+    """判断 ZUN 的推特是否包含重要信息（用于 is_zun 标记源）。
+
+    策略：基于关键词加权，包含发布/开发/例大祭/公开等词视为重要；
+    同时如果带图片也可视作较重要的动态。
+    """
+    if not text:
+        return False
+    text_lower = text.lower()
+
+    keywords = [
+        "新作", "体験版", "体験", "完成", "入稿", "發售", "公開", "发布",
+        "例大祭", "コミケ", "夏コミ", "冬コミ", "reitaisai",
+        "release", "steam", "配信", "公開", "公開", "interview", "インタビュー",
+        "touhou", "東方", "touhou project", "東方project",
+    ]
+
+    for kw in keywords:
+        if kw.lower() in text_lower:
+            return True
+
+    # 如果包含图片标签，通常也比较值得关注
+    if "<img" in text_lower:
+        return True
+
     return False
 
 
@@ -399,6 +441,12 @@ def fetch_all_news() -> dict:
                         entry.get("summary", "") + " " + title
                     )
                     if not is_touhou_related(summary_text):
+                        continue
+
+                # ZUN 专属过滤：对标记为 is_zun 的源做重要性判断
+                if feed_config.get("is_zun"):
+                    full_text = clean_html(entry.get("summary", "") + " " + title)
+                    if not is_important_zun_tweet(full_text):
                         continue
 
                 item = {

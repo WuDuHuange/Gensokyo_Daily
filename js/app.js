@@ -188,6 +188,47 @@
   }
 
   /**
+   * 创建艺术/图片卡片 HTML (Polaroid Style)
+   */
+  function createArtCard(item) {
+    // 标题优化: Safebooru: 12345 -> No.12345
+    let displayTitle = item.title;
+    if (displayTitle.includes('Safebooru:')) {
+      displayTitle = displayTitle.replace('Safebooru:', 'No.');
+    }
+    
+    // 标签优化: 仅取前3个
+    // 假设 summary 格式为 "Tags: tag1, tag2, ..."
+    let tags = item.summary;
+    if (tags.startsWith("Tags:")) {
+      const tagList = tags.replace("Tags:", "").split(",").map(t => t.trim()).filter(Boolean);
+      tags = tagList.slice(0, 3).join(", ");
+    } else {
+        tags = truncate(tags, 20);
+    }
+
+    return `
+      <div class="art-card">
+        <a href="${escapeHtml(item.link)}" class="art-card__link" target="_blank" rel="noopener noreferrer">
+          <div class="art-card__image-wrapper">
+            <img 
+              class="art-card__image" 
+              src="${escapeHtml(item.image)}" 
+              loading="lazy" 
+              referrerpolicy="no-referrer"
+              onerror="this.parentElement.innerHTML='<span class=\'art-error\'>Image Lost</span>'"
+            />
+          </div>
+        </a>
+        <div class="art-card__caption">
+          <span class="art-card__title">${escapeHtml(displayTitle)}</span>
+          <span class="art-card__meta">${escapeHtml(tags)}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
    * 渲染空状态
    */
   function renderEmptyState(message = '暂无新闻') {
@@ -231,6 +272,15 @@
         }
         html += '</div>';
       }
+    } else if (categoryKey === 'art') {
+      // 艺术/副刊：使用 Polaroid 风格网格
+      html += '<div class="art-grid">';
+      for (const item of items) {
+        // 过滤没有图片的条目
+        if (!item.image) continue;
+        html += createArtCard(item);
+      }
+      html += '</div>';
     } else {
       // 普通分类：直接多栏布局
       for (const item of items) {

@@ -101,7 +101,7 @@ CORE_KEYWORDS = [
     "博丽神社", "博麗神社", "hakurei",
     "ZUN", "上海爱丽丝", "上海アリス幻樂団",
     "例大祭", "reitaisai",
-    "thwiki", "THBWiki", "东方吧",
+    "thwiki", "THBWiki", "东方吧","东方MMD",
 ]
 
 # --- 角色关键词 ---
@@ -132,6 +132,8 @@ CHARACTER_KEYWORDS = [
     "爱丽丝", "alice margatroid",
     "西行寺", "saigyouji",
     "博丽", "博麗",
+    "八云蓝", "八雲藍", "ran",
+    "露娜切露德", "luna child",
 ]
 
 # --- 作品关键词 ---

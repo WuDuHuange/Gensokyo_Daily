@@ -168,13 +168,24 @@ MUSIC_KEYWORDS = [
     "秘封俱乐部", "秘封倶楽部",
 ]
 
-# --- 黑名单关键词：如果标题中出现这些词且不包含核心关键词，则排除 ---
+# ============================================================
+# ⛔ 黑名单 (Blacklist) - 看到这些词直接丢弃
+# ============================================================
 BLACKLIST_KEYWORDS = [
-    "东方卫视", "东方财富", "东方航空", "东方明珠",
-    "东方雨虹", "东方电气", "东方证券", "东方通信",
-    "东方园林", "东方日升", "东方盛虹", "东方铁塔",
-    "东方美食", "东方甄选", "东方不败",
-    "orient", "oriental securities",
+    # 竞品游戏 IP (MMD区的大头)
+    "原神", "Genshin", "米哈游", "miHoYo", "提瓦特",
+    "崩坏", "Honkai", "星穹铁道", "StarRail", "Star Rail", "绝区零", "ZZZ",
+    "明日方舟", "Arknights", "鹰角", "Hypergryph", "泰拉大陆",
+    "碧蓝档案", "BlueArchive", "Blue Archive", "蔚蓝档案",
+    "王者荣耀", "LOL", "英雄联盟", "永劫无间", "Naraka",
+    "第五人格", "阴阳师", "赛马娘",
+    
+    # 虚拟主播 (Vtubers 经常和 MMD 混在一起)
+    "Hololive", "Nijisanji", "Asoul", "嘉然", "贝拉", 
+    "初音", "Miku", "洛天依", "Vocaloid", # 除非和东方混搭，否则过滤
+
+    # 无关关键词
+    "互动视频", "抽奖", "测试", "作业", "课堂", "教程",
 ]
 
 # 合并为总关键词列表
@@ -210,13 +221,6 @@ RSS_SOURCES = {
                 "icon": "💬",
                 "priority": 2,
             },
-            {
-                "name": "THWiki 最近更改",
-                # ✅ 使用 corsproxy.io 作为跳板，绕过 IP 封锁
-                "url": "https://corsproxy.io/?url=" + "https://thwiki.cc/index.php?title=Special:%E6%9C%80%E8%BF%91%E6%9B%B4%E6%94%B9&feed=atom",
-                "icon": "📚",
-                "priority": 3,
-            },
         ],
     },
 
@@ -242,35 +246,32 @@ def generate_id(title: str, link: str) -> str:
 
 
 def is_touhou_related(text: str) -> bool:
-    """更智能的东方相关判断逻辑（2.0 Pro版）"""
+    """
+    判断文本是否与东方相关 (黑名单优先策略)
+    """
     if not text:
         return False
     text_lower = text.lower()
-
-    # 1. 先检查黑名单（一票否决）
+    
+    # 1. ⚔️ 黑名单检查 (一票否决)
+    # 只要出现了竞品词汇，直接判死刑，除非它明确标记了是“东方Project”的混合二创
     for bad_word in BLACKLIST_KEYWORDS:
         if bad_word.lower() in text_lower:
-            # 特殊情况：如果同时出现了"东方Project"或"ZUN"，则无视黑名单
-            # （防止"东方卫视报道了东方Project展会"这种新闻被误杀）
-            if "project" in text_lower or "zun" in text_lower:
-                continue
+            # 唯一的“豁免权”：如果标题里同时硬核地写了 "东方" 或 "Touhou"
+            # (防止误杀比如 "东方 x 原神" 的跨界整活)
+            if "东方" in text_lower or "東方" in text_lower or "touhou" in text_lower:
+                continue 
+            
+            # 调试日志：让你知道是谁被杀掉了
+            # print(f"       [黑名单拦截] 发现关键词: {bad_word}") 
             return False
 
-    # 2. 强匹配：任一核心/角色/作品/音乐关键词出现即判定为东方相关
-    positive_lists = CORE_KEYWORDS + CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEYWORDS
-    for kw in positive_lists:
+    # 2. ✅ 正向关键词检查
+    # 只要命中一个正向词，就认为是东方相关
+    for kw in TOUHOU_KEYWORDS:
         if kw.lower() in text_lower:
             return True
-
-    # 3. 弱匹配处理：单独的“东方/東方”是高度歧义的词，
-    #    仅在同时出现角色/作品/音乐等具体关键词时才判定为东方相关。
-    if "东方" in text or "東方" in text_lower:
-        for kw in CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEYWORDS:
-            if kw.lower() in text_lower:
-                return True
-        return False
-
-    # 未命中任何判定条件 -> 非东方相关
+            
     return False
 
 
@@ -642,6 +643,83 @@ def fetch_bilibili_partition_newlist(rid: int, partition_name: str) -> list:
         print(f"    ⚠ 连接异常: {e}")
         return []
 
+
+def fetch_thwiki_api() -> list:
+    """
+    [API直连] 获取 THWiki 最近更改 (通过 MediaWiki API + AllOrigins 代理)
+    """
+    # 1. THWiki 官方 API 参数
+    # action=query: 查询
+    # list=recentchanges: 最近更改
+    # rcnamespace=0: 只看“主条目” (过滤掉用户页、讨论页等杂音)
+    # rclimit=10: 只取最后 10 条
+    # format=json: 返回 JSON
+    target_url = "https://thwiki.cc/api.php?action=query&list=recentchanges&rcnamespace=0&rcprop=title|ids|timestamp|user|comment&format=json&rclimit=10"
+    
+    # 2. 使用 AllOrigins 代理包裹请求
+    # 这个代理会帮我们在美国/欧洲的服务器上请求 THWiki，然后把结果传回来
+    proxy_url = f"https://api.allorigins.win/get?url={requests.utils.quote(target_url)}"
+    
+    print(f"  ⚡ 正在请求 THWiki API (via AllOrigins)...")
+    
+    try:
+        # 这里的 timeout 给长一点，因为走了代理
+        resp = requests.get(proxy_url, timeout=20)
+        
+        if resp.status_code != 200:
+            print(f"    ❌ 代理请求失败: HTTP {resp.status_code}")
+            return []
+            
+        # 3. 解析双层 JSON
+        # 第一层：AllOrigins 返回的包装
+        wrapper_data = resp.json()
+        
+        # 检查代理是否真的拿到了数据
+        if not wrapper_data.get("contents"):
+            print("    ⚠ 代理返回内容为空 (可能是 THWiki 拒绝了代理 IP)")
+            return []
+            
+        # 第二层：THWiki 实际返回的 JSON (在 contents 字段里，是字符串形式)
+        real_data = json.loads(wrapper_data["contents"])
+        
+        items = []
+        # 提取最近更改列表
+        rc_list = real_data.get("query", {}).get("recentchanges", [])
+        
+        if not rc_list:
+            print("    ⚠ THWiki 返回列表为空")
+            return []
+            
+        print(f"    ✅ 成功获取 {len(rc_list)} 条维基动态")
+
+        for rc in rc_list:
+            title = rc["title"]
+            comment = rc.get("comment", "") or "无编辑摘要"
+            user = rc.get("user", "匿名用户")
+            
+            # 简单过滤：跳过机器人的自动编辑
+            if "bot" in user.lower() or "Bot" in user:
+                continue
+                
+            items.append({
+                "id": f"thwiki_{rc['rcid']}",
+                "title": f"【百科】{title}", # 加个前缀区分
+                "link": f"https://thwiki.cc/{requests.utils.quote(title)}",
+                "summary": f"编者: {user}\n备注: {comment}",
+                "image": None, # 维基文字更新通常无图
+                "source": "THWiki",
+                "source_icon": "📚",
+                "priority": 2,
+                "published": rc["timestamp"],
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            })
+            
+        return items
+
+    except Exception as e:
+        print(f"    ⚠ THWiki API 异常: {e}")
+        return []
+
 # ============================================================
 # 天气模块（虚构 - 幻想乡天气）
 # ============================================================
@@ -792,7 +870,19 @@ def fetch_all_news() -> dict:
             "count": len(items),
         }
 
-    # === 3. [新增] 专门调用 Safebooru API ===
+    # === 3. [新增] 专门调用 THWiki API ===
+    print(f"\n📂 分类: 百科动态 (THWiki API)")
+    wiki_items = fetch_thwiki_api()
+    
+    if wiki_items:
+        # 把维基数据也合并到 community (社会·民生) 版块
+        if "community" not in all_news:
+            all_news["community"] = {"label": "社会·民生", "items": [], "count": 0}
+        
+        all_news["community"]["items"].extend(wiki_items)
+        all_news["community"]["count"] += len(wiki_items)
+
+    # === 4. [新增] 专门调用 Safebooru API ===
     print(f"\n📂 分类: 艺术·副刊 (Safebooru API)")
     safe_items = fetch_safebooru_api("touhou")
     print(f"  ✅ Safebooru API 获取 {len(safe_items)} 条")

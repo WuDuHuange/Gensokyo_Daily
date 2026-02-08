@@ -449,7 +449,7 @@ def generate_gensokyo_weather() -> dict:
         {"name": "永远亭", "name_jp": "永遠亭"},
         {"name": "守矢神社", "name_jp": "守矢神社"},
         {"name": "地灵殿", "name_jp": "地霊殿"},
-        {"name": "命�的神殿", "name_jp": "命蓮寺"},
+        {"name": "命莲寺", "name_jp": "命蓮寺"},
     ]
 
     conditions = [

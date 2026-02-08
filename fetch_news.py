@@ -133,7 +133,7 @@ RSS_SOURCES = {
             {
                 "name": "东方官方资讯站",
                 # 优先使用原生 WordPress feed，绕过 RSSHub
-                "url": "https://touhou-project.news/feed/",
+                "url": "https://touhou-project.news/feed.rss",
                 "icon": "📰",
                 "priority": 1,
             },
@@ -146,11 +146,24 @@ RSS_SOURCES = {
         "label": "社会·民生",
         "feeds": [
             {
-                "name": "B站东方总榜",
-                # 日志显示 ranking 接口可用，保留 ranking 路由并开启关键词过滤
-                "url": f"{RSSHUB_BASE}/bilibili/ranking/0/3/1",
-                "icon": "📺",
+                "name": "B站 MMD榜", 
+                "url": f"{RSSHUB_BASE}/bilibili/ranking/25/3/1", # 25=MMD分区, 3=三日榜
+                "icon": "💃",
                 "priority": 1,
+                "needs_filter": True, # 依然需要关键词过滤，防止抓到原神/崩铁
+            },
+            {
+                "name": "B站 MAD榜", 
+                "url": f"{RSSHUB_BASE}/bilibili/ranking/24/3/1", # 24=MAD分区
+                "icon": "🎬",
+                "priority": 1,
+                "needs_filter": True,
+            },
+            {
+                "name": "B站 游戏榜", 
+                "url": f"{RSSHUB_BASE}/bilibili/ranking/17/3/1", # 17=单机分区
+                "icon": "🎮",
+                "priority": 2,
                 "needs_filter": True,
             },
             {

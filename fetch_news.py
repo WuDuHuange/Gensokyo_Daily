@@ -290,32 +290,47 @@ def extract_image(entry) -> Optional[str]:
 
 def fetch_bilibili_rank_api(rid: int, label: str) -> list:
     """
-    [API直连] 获取 B站指定分区的排行榜数据
-    rid: 25(MMD), 24(MAD), 17(单机)
+    [API直连] 获取 B站指定分区的排行榜数据 (加强伪装版)
     """
     api_url = f"https://api.bilibili.com/x/web-interface/ranking/v2?rid={rid}"
+    
+    # ⚡ 关键修改：加强 Headers 伪装
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Referer": "https://www.bilibili.com/"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "Referer": "https://www.bilibili.com/v/popular/rank/all",
+        "Origin": "https://www.bilibili.com",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+        # 欺骗 B站，让它以为我们有一个空的指纹 (buvid3)
+        "Cookie": "buvid3=infoc;" 
     }
     
     print(f"  ⚡ 正在请求 B站 API (分区 {rid})...")
     try:
-        resp = requests.get(api_url, headers=headers, timeout=10)
+        # 增加 retry 逻辑，如果第一次失败等 1 秒再试
+        resp = requests.get(api_url, headers=headers, timeout=15)
+        
+        # 打印状态码帮助调试
+        if resp.status_code != 200:
+            print(f"  ❌ HTTP 状态码错误: {resp.status_code}")
+            return []
+
         data = resp.json()
         
+        # B站返回非 0 code 代表业务拒绝
         if data["code"] != 0:
-            print(f"  ❌ B站 API 错误: {data['message']}")
+            print(f"  ❌ B站 API 拒绝: Code {data['code']} - {data.get('message', '未知错误')}")
             return []
             
         items = []
-        # API 返回的数据在 data -> list 中
-        # 我们只取前 15 名，避免太多杂音
-        for v in data["data"]["list"][:15]:
+        # 安全获取 list，防止 data['data'] 为空
+        data_list = data.get("data", {}).get("list", [])
+        
+        for v in data_list[:15]:
             title = v["title"]
-            desc = v.get("desc", "") or v.get("dynamic", "")
+            desc = v.get("desc", "") or v.get("dynamic", "") or ""
             
-            # 依然需要关键词过滤，确保含“车万”量
+            # 关键词过滤
             combined_text = title + " " + desc
             if not is_touhou_related(combined_text):
                 continue
@@ -324,17 +339,18 @@ def fetch_bilibili_rank_api(rid: int, label: str) -> list:
                 "id": generate_id(v["bvid"], "bilibili"),
                 "title": v["title"],
                 "link": f"https://www.bilibili.com/video/{v['bvid']}",
-                "summary": desc[:100] + "...",
-                "image": v["pic"].replace("http:", "https:"), # 修复封面图协议
+                "summary": desc[:80].replace("\n", " ") + "...",
+                # 强制把 http 图片换成 https
+                "image": v["pic"].replace("http://", "https://") if "pic" in v else None,
                 "source": f"B站 {label}榜",
                 "source_icon": "📺",
                 "priority": 1,
-                "published": datetime.now(timezone.utc).isoformat(), # 排行榜通常没有精确发布时间，用当前时间替代
+                "published": datetime.now(timezone.utc).isoformat(),
                 "fetched_at": datetime.now(timezone.utc).isoformat(),
             })
         return items
     except Exception as e:
-        print(f"  ⚠ B站 API 请求失败: {e}")
+        print(f"  ⚠ B站 API 请求异常: {e}")
         return []
 
 

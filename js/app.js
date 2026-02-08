@@ -493,9 +493,9 @@
 
     // 新闻分类
     const categories = data.categories || {};
-    renderCategory('official', categories.official, 'news-official');
-    renderCategory('community', categories.community, 'news-community');
-    renderCategory('art', categories.art, 'news-art');
+    renderCategory('official', categories.official, 'container-official');
+    renderCategory('community', categories.community, 'container-community');
+    renderCategory('art', categories.art, 'container-art');
 
     // 广告
     renderAds(data.ads);

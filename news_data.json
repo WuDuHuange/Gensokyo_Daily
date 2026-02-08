@@ -4,7 +4,7 @@
     "title_jp": "幻想郷日報",
     "subtitle": "Gensokyo Daily",
     "edition": "第20260208期",
-    "updated_at": "2026-02-08T06:52:10.783226+00:00",
+    "updated_at": "2026-02-08T07:39:50.001738+00:00",
     "generated_by": "射命丸文 & GitHub Actions",
     "version": "1.0.0"
   },
@@ -173,63 +173,63 @@
     }
   },
   "weather": {
-    "updated": "2026-02-08T06:52:10.783189+00:00",
+    "updated": "2026-02-08T07:39:50.001711+00:00",
     "forecasts": [
       {
         "location": "博丽神社",
         "location_jp": "博麗神社",
-        "condition": "雷阵雨",
-        "icon": "⛈️",
-        "temperature": 12
+        "condition": "阴",
+        "icon": "☁️",
+        "temperature": -2
       },
       {
         "location": "人间之里",
         "location_jp": "人間の里",
-        "condition": "樱吹雪",
-        "icon": "🌸",
-        "temperature": 25
+        "condition": "红雾",
+        "icon": "🌅",
+        "temperature": 20
       },
       {
         "location": "红魔馆",
         "location_jp": "紅魔館",
-        "condition": "阴",
-        "icon": "☁️",
-        "temperature": 26
-      },
-      {
-        "location": "白玉楼",
-        "location_jp": "白玉楼",
-        "condition": "异变中",
-        "icon": "⚡",
-        "temperature": 8
-      },
-      {
-        "location": "永远亭",
-        "location_jp": "永遠亭",
         "condition": "晴",
         "icon": "☀️",
         "temperature": 6
       },
       {
-        "location": "守矢神社",
-        "location_jp": "守矢神社",
+        "location": "白玉楼",
+        "location_jp": "白玉楼",
+        "condition": "弹幕暴风",
+        "icon": "🌀",
+        "temperature": 23
+      },
+      {
+        "location": "永远亭",
+        "location_jp": "永遠亭",
         "condition": "红雾",
         "icon": "🌅",
-        "temperature": -3
+        "temperature": 5
+      },
+      {
+        "location": "守矢神社",
+        "location_jp": "守矢神社",
+        "condition": "花粉",
+        "icon": "🌸",
+        "temperature": 34
       },
       {
         "location": "地灵殿",
         "location_jp": "地霊殿",
-        "condition": "弹幕暴风",
-        "icon": "🌀",
-        "temperature": 15
+        "condition": "雪",
+        "icon": "❄️",
+        "temperature": 16
       },
       {
         "location": "命�的神殿",
         "location_jp": "命蓮寺",
-        "condition": "小雨",
-        "icon": "🌦️",
-        "temperature": 27
+        "condition": "樱吹雪",
+        "icon": "🌸",
+        "temperature": 18
       }
     ]
   },

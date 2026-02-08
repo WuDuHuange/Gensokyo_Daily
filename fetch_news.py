@@ -564,29 +564,25 @@ def extract_image(entry) -> Optional[str]:
 # ============================================================
 # 🛠️ 核心函数：使用老接口直连 B 站
 # ============================================================
-def fetch_bilibili_partition_rank(rid: int) -> list:
+def fetch_bilibili_partition_newlist(rid: int, partition_name: str) -> list:
     """
-    [降级方案] 使用 /x/web-interface/ranking/region 接口
-    无需 WBI 签名，但需要 Cookie 伪装。
+    [战术升级] 使用 /x/web-interface/newlist 接口 (最新视频)
+    策略：以量取胜。拉取最新 50 条视频，总有几条是东方的。
     """
-    # 接口地址：旧版分区排行 (day=3 表示三日榜)
-    api_url = f"https://api.bilibili.com/x/web-interface/ranking/region?rid={rid}&day=3&original=0"
+    # ps=50 表示一次拉 50 条 (最大值)
+    api_url = f"https://api.bilibili.com/x/web-interface/newlist?rid={rid}&ps=50&pn=1"
     
-    # ⚡ 关键：伪造一个看起来很真的 Cookie
-    # buvid3 是 B 站追踪用户的核心指纹，我们随机生成一个
+    # 伪造 Cookie 依然是必须的
     fake_buvid3 = str(uuid.uuid4()) + "infoc"
-    
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Referer": f"https://www.bilibili.com/v/popular/rank/all",
-        "Origin": "https://www.bilibili.com",
-        "Cookie": f"buvid3={fake_buvid3}; buvid_fp={str(uuid.uuid4())}; nostalgia_conf=-1"
+        "Referer": "https://www.bilibili.com/",
+        "Cookie": f"buvid3={fake_buvid3}; nostalgia_conf=-1"
     }
     
-    print(f"    ⚡ 正在请求分区 {rid} (旧版接口)...")
+    print(f"    ⚡ 正在请求分区 {rid} ({partition_name}) 最新投稿...")
     
     try:
-        # 增加 timeout 到 10 秒
         resp = requests.get(api_url, headers=headers, timeout=10)
         
         if resp.status_code != 200:
@@ -594,48 +590,52 @@ def fetch_bilibili_partition_rank(rid: int) -> list:
             return []
 
         data = resp.json()
-        
-        # 检查业务状态码
         if data["code"] != 0:
-            print(f"    ❌ 业务拒绝: Code {data['code']} - {data.get('message')}")
-            # 如果是 -412 或 -403，说明 IP 彻底废了
+            print(f"    ❌ 业务拒绝: {data['message']}")
             return []
             
-        items = []
-        # 旧接口的数据结构：data -> list (或者 data -> 数组)
-        video_list = data.get("data", [])
+        # 获取视频列表 (新接口结构: data -> archives)
+        video_list = data.get("data", {}).get("archives", [])
         
-        # 兜底：有时候 data 本身就是列表
-        if isinstance(data.get("data"), dict):
-             video_list = data.get("data", {}).get("list", [])
-
         if not video_list:
-            print("    ⚠ 返回数据为空")
+            print("    ⚠ 返回列表为空")
             return []
 
-        print(f"    ✅ 成功获取 {len(video_list)} 条原始数据")
-
-        for v in video_list[:15]: # 取前15名
-            title = v["title"]
-            desc = v.get("desc", "") or v.get("description", "") or ""
-            
-            # 关键词过滤 (你的 is_touhou_related 函数)
-            if not is_touhou_related(title + " " + desc):
-                continue
-                
-            items.append({
-                "id": generate_id(v["bvid"], "bilibili_region"),
-                "title": title,
-                "link": f"https://www.bilibili.com/video/{v['bvid']}",
-                "summary": desc[:80].replace("\n", " ") + "...",
-                "image": v["pic"].replace("http:", "https:"),
-                "source": "B站热点", # 这里可以后续替换成具体分区名
-                "source_icon": "📺",
-                "priority": 1,
-                "published": datetime.now(timezone.utc).isoformat(), # 排行榜无具体发布时间，用当前时间
-                "fetched_at": datetime.now(timezone.utc).isoformat(),
-            })
+        print(f"    ✅ 成功获取 {len(video_list)} 条候选视频，开始筛选...")
         
+        items = []
+        dropped_count = 0
+        
+        for v in video_list:
+            title = v["title"]
+            desc = v.get("desc", "") or ""
+            # 获取作者名，增加判断准确度
+            author = v.get("owner", {}).get("name", "")
+            
+            # 组合检查：标题 + 简介 + 作者
+            full_text = f"{title} {desc} {author}"
+            
+            if is_touhou_related(full_text):
+                # 命中！
+                items.append({
+                    "id": generate_id(v["bvid"], "bilibili_new"),
+                    "title": title,
+                    "link": f"https://www.bilibili.com/video/{v['bvid']}",
+                    "summary": desc[:80].replace("\n", " ") + "...",
+                    "image": v["pic"].replace("http:", "https:"),
+                    "source": partition_name,
+                    "source_icon": "📺", # 这里也可以用传进来的 icon
+                    "priority": 1,
+                    "published": datetime.fromtimestamp(v["pubdate"], tz=timezone.utc).isoformat(),
+                    "fetched_at": datetime.now(timezone.utc).isoformat(),
+                })
+            else:
+                dropped_count += 1
+                # 打印前3个被扔掉的标题，让你知道发生了什么 (调试用)
+                if dropped_count <= 3:
+                    print(f"       [过滤] 扔掉: {title[:20]}...")
+
+        print(f"    📊 筛选结果: {len(items)} 条命中 / {len(video_list)} 条总数")
         return items
 
     except Exception as e:
@@ -719,23 +719,21 @@ def fetch_all_news() -> dict:
 
         # 特殊处理：如果是 community 分类，先插入 B 站分区数据
         if category_key == "community":
-            print(f"  👉 启动 B站分区抓取子系统 (旧版接口降级)...")
+            print(f"  👉 启动 B站分区抓取子系统 (Newlist 概率学模式)...")
             bili_items = []
             for part in BILIBILI_PARTITIONS:
                 print(f"  🔗 正在抓取: {part['name']}")
                 
-                # 直接调用新函数
-                part_items = fetch_bilibili_partition_rank(part['rid'])
+                # 调用新函数：fetch_bilibili_partition_newlist
+                part_items = fetch_bilibili_partition_newlist(part['rid'], part['name'])
                 
                 if part_items:
-                    # 修正来源名称和图标
                     for item in part_items:
-                        item["source"] = part["name"] # 显示 "B站 MMD榜"
-                        item["source_icon"] = part["icon"]
+                        item["source_icon"] = part["icon"] # 补上图标
                         item["category"] = "community"
                     bili_items.extend(part_items)
                 else:
-                    print(f"  ⚠️ 分区 {part['name']} 暂无数据")
+                    print(f"  ⚠️ 分区 {part['name']} 暂无命中")
             
             print(f"  ✅ B站分区抓取结束，共 {len(bili_items)} 条数据待合并")
             items.extend(bili_items)

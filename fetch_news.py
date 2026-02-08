@@ -288,6 +288,98 @@ def extract_image(entry) -> Optional[str]:
     return None
 
 
+def fetch_bilibili_rank_api(rid: int, label: str) -> list:
+    """
+    [API直连] 获取 B站指定分区的排行榜数据
+    rid: 25(MMD), 24(MAD), 17(单机)
+    """
+    api_url = f"https://api.bilibili.com/x/web-interface/ranking/v2?rid={rid}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://www.bilibili.com/"
+    }
+    
+    print(f"  ⚡ 正在请求 B站 API (分区 {rid})...")
+    try:
+        resp = requests.get(api_url, headers=headers, timeout=10)
+        data = resp.json()
+        
+        if data["code"] != 0:
+            print(f"  ❌ B站 API 错误: {data['message']}")
+            return []
+            
+        items = []
+        # API 返回的数据在 data -> list 中
+        # 我们只取前 15 名，避免太多杂音
+        for v in data["data"]["list"][:15]:
+            title = v["title"]
+            desc = v.get("desc", "") or v.get("dynamic", "")
+            
+            # 依然需要关键词过滤，确保含“车万”量
+            combined_text = title + " " + desc
+            if not is_touhou_related(combined_text):
+                continue
+                
+            items.append({
+                "id": generate_id(v["bvid"], "bilibili"),
+                "title": v["title"],
+                "link": f"https://www.bilibili.com/video/{v['bvid']}",
+                "summary": desc[:100] + "...",
+                "image": v["pic"].replace("http:", "https:"), # 修复封面图协议
+                "source": f"B站 {label}榜",
+                "source_icon": "📺",
+                "priority": 1,
+                "published": datetime.now(timezone.utc).isoformat(), # 排行榜通常没有精确发布时间，用当前时间替代
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            })
+        return items
+    except Exception as e:
+        print(f"  ⚠ B站 API 请求失败: {e}")
+        return []
+
+
+def fetch_safebooru_api(tags: str = "touhou") -> list:
+    """
+    [API直连] 获取 Safebooru 图片列表 (JSON)
+    """
+    # json=1 表示返回 JSON 格式
+    api_url = f"https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags={tags}&limit=10"
+    headers = {"User-Agent": "GensokyoDaily/1.0"}
+    
+    print(f"  ⚡ 正在请求 Safebooru API...")
+    try:
+        resp = requests.get(api_url, headers=headers, timeout=10)
+        # Safebooru API 有时返回空或非标准 JSON，需要小心
+        if not resp.text.strip():
+            return []
+            
+        data = resp.json()
+        items = []
+        
+        for img in data:
+            # 构造图片 URL
+            # Safebooru 图片路径通常是 images/{directory}/{image}
+            image_url = f"https://safebooru.org/images/{img['directory']}/{img['image']}"
+            post_url = f"https://safebooru.org/index.php?page=post&s=view&id={img['id']}"
+            
+            items.append({
+                "id": str(img['id']),
+                "title": f"Safebooru: {img['id']}", # 图站通常没标题
+                "link": post_url,
+                "summary": f"Tags: {img['tags'][:50]}...",
+                "image": image_url,
+                "source": "Safebooru",
+                "source_icon": "🎨",
+                "priority": 2,
+                "published": datetime.fromtimestamp(int(img.get('change', time.time())), tz=timezone.utc).isoformat(),
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            })
+        return items
+    except Exception as e:
+        print(f"  ⚠ Safebooru API 请求失败: {e}")
+        return []
+
+
 def parse_date(entry) -> str:
     """解析发布时间，返回 ISO 格式字符串"""
     if hasattr(entry, "published_parsed") and entry.published_parsed:
@@ -462,10 +554,51 @@ def fetch_all_news() -> dict:
 
             print(f"  ✅ 获取到 {count} 条")
 
+        # 将items合并到all_news中（暂时不排序和截断，等API数据加进来一起处理）
+        all_news[category_key] = {
+            "label": category_config["label"],
+            "items": items,
+            "count": len(items),
+        }
+
+    # === 2. [新增] 专门调用 B站 API ===
+    print(f"\n📂 分类: 社会·民生 (B站 API)")
+    bili_items = []
+    # 抓取 MMD 分区 (rid=25)
+    bili_items.extend(fetch_bilibili_rank_api(25, "MMD"))
+    # 抓取 MAD 分区 (rid=24)
+    bili_items.extend(fetch_bilibili_rank_api(24, "MAD"))
+    # 抓取 游戏 分区 (rid=17)
+    bili_items.extend(fetch_bilibili_rank_api(17, "游戏"))
+    
+    print(f"  ✅ B站 API 共获取 {len(bili_items)} 条有效数据")
+    
+    # 将 B站数据合并到 community 分类中
+    if "community" not in all_news:
+        all_news["community"] = {"label": "社会·民生", "items": [], "count": 0}
+    all_news["community"]["items"].extend(bili_items)
+    all_news["community"]["count"] += len(bili_items)
+
+
+    # === 3. [新增] 专门调用 Safebooru API ===
+    print(f"\n📂 分类: 艺术·副刊 (Safebooru API)")
+    safe_items = fetch_safebooru_api("touhou")
+    print(f"  ✅ Safebooru API 获取 {len(safe_items)} 条")
+    
+    # 将 Safebooru 数据合并到 art 分类中
+    if "art" not in all_news:
+        all_news["art"] = {"label": "艺术·副刊", "items": [], "count": 0}
+    all_news["art"]["items"].extend(safe_items)
+    all_news["art"]["count"] += len(safe_items)
+
+    # === 4. 对所有分类进行统一的去重、排序、截断 ===
+    for category_key, category_data in all_news.items():
+        original_items = category_data["items"]
+        
         # 去重（按 id）
         seen_ids = set()
         unique_items = []
-        for item in items:
+        for item in original_items:
             if item["id"] not in seen_ids:
                 seen_ids.add(item["id"])
                 unique_items.append(item)
@@ -484,13 +617,11 @@ def fetch_all_news() -> dict:
         # 截断到最大条目数
         unique_items = unique_items[:MAX_ITEMS_PER_CATEGORY]
 
-        all_news[category_key] = {
-            "label": category_config["label"],
-            "items": unique_items,
-            "count": len(unique_items),
-        }
-
-        print(f"  📊 分类 [{category_config['label']}] 共收录 {len(unique_items)} 条")
+        # 更新 category_data
+        category_data["items"] = unique_items
+        category_data["count"] = len(unique_items)
+        
+        print(f"  📊 分类 [{category_data['label']}] 最终收录 {len(unique_items)} 条")
 
     return all_news
 

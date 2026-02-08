@@ -146,27 +146,6 @@ RSS_SOURCES = {
         "label": "社会·民生",
         "feeds": [
             {
-                "name": "B站 MMD榜", 
-                "url": f"{RSSHUB_BASE}/bilibili/ranking/25/3/1", # 25=MMD分区, 3=三日榜
-                "icon": "💃",
-                "priority": 1,
-                "needs_filter": True, # 依然需要关键词过滤，防止抓到原神/崩铁
-            },
-            {
-                "name": "B站 MAD榜", 
-                "url": f"{RSSHUB_BASE}/bilibili/ranking/24/3/1", # 24=MAD分区
-                "icon": "🎬",
-                "priority": 1,
-                "needs_filter": True,
-            },
-            {
-                "name": "B站 游戏榜", 
-                "url": f"{RSSHUB_BASE}/bilibili/ranking/17/3/1", # 17=单机分区
-                "icon": "🎮",
-                "priority": 2,
-                "needs_filter": True,
-            },
-            {
                 "name": "Reddit r/touhou",
                 # 直接使用 Reddit 原生 RSS
                 "url": "https://www.reddit.com/r/touhou/new/.rss",
@@ -187,13 +166,7 @@ RSS_SOURCES = {
     "art": {
         "label": "艺术·副刊",
         "feeds": [
-            {
-                "name": "Safebooru (Touhou)",
-                # 使用友好的 Booru 站点替代 Pixiv
-                "url": "https://safebooru.org/index.php?page=rss&s=post&q=touhou",
-                "icon": "🎨",
-                "priority": 1,
-            },
+            # Safebooru 已改为 API 调用，此处留空或保留其他RSS源
         ],
     },
 }

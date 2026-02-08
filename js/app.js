@@ -106,11 +106,13 @@
     grid.innerHTML = weather.forecasts
       .map(
         (w) => `
-      <div class="weather-item">
-        <span class="weather-icon">${escapeHtml(w.icon)}</span>
-        <span class="weather-location">${escapeHtml(w.location)}</span>
-        <span class="weather-temp">${w.temperature}°C</span>
-        <span class="weather-cond">${escapeHtml(w.condition)}</span>
+      <div class="weather-item p-3 border-r border-b border-rule-light text-center last:border-r-0">
+        <span class="weather-icon text-2xl block mb-1 filter grayscale contrast-125">${escapeHtml(w.icon)}</span>
+        <span class="weather-location font-bold text-xs text-ink-dark block">${escapeHtml(w.location)}</span>
+        <div class="mt-1">
+            <span class="weather-temp font-mono text-sm text-accent-red">${w.temperature}°C</span>
+            <span class="weather-cond text-xs text-ink-gray ml-1">${escapeHtml(w.condition)}</span>
+        </div>
       </div>
     `
       )
@@ -128,22 +130,24 @@
    */
   function createNewsCard(item, isHeadline = false) {
     const hasImage = !!item.image;
+    
+    // 如果是头条，使用 grid 布局；普通使用 flex col
     const cardClass = isHeadline
-      ? 'news-card news-card--headline'
-      : `news-card ${hasImage ? '' : 'news-card--no-image'}`;
+      ? 'mb-8 pb-8 border-b-2 border-rule-color grid grid-cols-1 md:grid-cols-2 gap-8 break-inside-avoid'
+      : 'mb-6 pb-6 border-b border-rule-light border-dotted break-inside-avoid';
 
     const imageHtml = hasImage
       ? `
-      <div class="news-card__image-wrapper">
+      <div class="${isHeadline ? 'h-full max-h-[400px]' : 'mb-3'} relative group overflow-hidden border border-ink-dark">
         <img
-          class="news-card__image"
+          class="w-full ${isHeadline ? 'h-full object-cover' : 'h-[200px] object-cover'} filter grayscale contrast-110 transition-all duration-300 group-hover:grayscale-0 group-hover:contrast-100"
           src="${escapeHtml(item.image)}"
           alt="${escapeHtml(item.title)}"
           loading="lazy"
           referrerpolicy="no-referrer"
           onerror="this.parentElement.style.display='none'"
         />
-        <span class="news-card__source-badge">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
+        <span class="absolute bottom-0 right-0 bg-ink-dark/90 text-paper-bg text-[0.65rem] px-2 py-1 font-mono">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
       </div>
     `
       : '';
@@ -154,33 +158,34 @@
       return `
         <article class="${cardClass}">
           ${imageHtml}
-          <div class="news-card__body">
-            <h3 class="news-card__title">
+          <div class="flex flex-col justify-center">
+            <h3 class="font-title text-3xl font-bold leading-tight mb-4 hover:text-accent-red transition-colors">
               <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
                 ${escapeHtml(item.title)}
               </a>
             </h3>
-            <p class="news-card__summary">${escapeHtml(summaryText)}</p>
-            <div class="news-card__meta">
-              <span class="news-card__meta-source">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
-              <span>${timeAgo(item.published)}</span>
+            <p class="font-body text-ink-dark text-lg mb-4 leading-relaxed">${escapeHtml(summaryText)}</p>
+            <div class="flex justify-between items-center text-sm text-ink-gray border-t border-rule-light pt-2 mt-auto">
+              <span class="font-bold">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
+              <span class="font-mono">${timeAgo(item.published)}</span>
             </div>
           </div>
         </article>
       `;
     }
 
+    // 普通卡片
     return `
       <article class="${cardClass}">
         ${imageHtml}
-        <h3 class="news-card__title">
+        <h3 class="font-heading text-xl font-bold leading-snug mb-2 hover:text-accent-red transition-colors">
           <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
             ${escapeHtml(item.title)}
           </a>
         </h3>
-        ${summaryText ? `<p class="news-card__summary">${escapeHtml(summaryText)}</p>` : ''}
-        <div class="news-card__meta">
-          <span class="news-card__meta-source">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
+        ${summaryText ? `<p class="text-ink-gray text-sm mb-3 leading-relaxed text-justify">${escapeHtml(summaryText)}</p>` : ''}
+        <div class="flex justify-between items-center text-xs text-ink-light font-mono">
+          <span>${escapeHtml(item.source)}</span>
           <span>${timeAgo(item.published)}</span>
         </div>
       </article>
@@ -198,7 +203,6 @@
     }
     
     // 标签优化: 仅取前3个
-    // 假设 summary 格式为 "Tags: tag1, tag2, ..."
     let tags = item.summary;
     if (tags.startsWith("Tags:")) {
       const tagList = tags.replace("Tags:", "").split(",").map(t => t.trim()).filter(Boolean);
@@ -208,21 +212,21 @@
     }
 
     return `
-      <div class="art-card">
-        <a href="${escapeHtml(item.link)}" class="art-card__link" target="_blank" rel="noopener noreferrer">
-          <div class="art-card__image-wrapper">
+      <div class="art-card bg-white p-3 pb-8 shadow-polaroid border border-gray-200 transition-all duration-300 hover:scale-105 hover:shadow-polaroid-hover hover:z-10 relative">
+        <a href="${escapeHtml(item.link)}" class="block group" target="_blank" rel="noopener noreferrer">
+          <div class="aspect-square overflow-hidden border border-gray-100 bg-gray-50 mb-3">
             <img 
-              class="art-card__image" 
+              class="w-full h-full object-cover filter grayscale opacity-90 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100" 
               src="${escapeHtml(item.image)}" 
               loading="lazy" 
               referrerpolicy="no-referrer"
-              onerror="this.parentElement.innerHTML='<span class=\'art-error\'>Image Lost</span>'"
+              onerror="this.parentElement.innerHTML='<span class=\'flex items-center justify-center h-full text-xs text-gray-400\'>Image Lost</span>'"
             />
           </div>
         </a>
-        <div class="art-card__caption">
-          <span class="art-card__title">${escapeHtml(displayTitle)}</span>
-          <span class="art-card__meta">${escapeHtml(tags)}</span>
+        <div class="text-center font-mono">
+          <span class="block font-bold text-ink-dark text-sm mb-1">${escapeHtml(displayTitle)}</span>
+          <span class="block text-[0.65rem] text-gray-400 italic truncate px-2">${escapeHtml(tags)}</span>
         </div>
       </div>
     `;
@@ -266,7 +270,7 @@
       }
       // 其余条目用多栏
       if (items.length > 1) {
-        html += '<div class="news-columns--multi">';
+        html += '<div class="columns-1 md:columns-2 gap-8 space-y-8">'; // Tailwind multi-column
         for (let i = 1; i < items.length; i++) {
           html += createNewsCard(items[i], false);
         }
@@ -274,7 +278,7 @@
       }
     } else if (categoryKey === 'art') {
       // 艺术/副刊：使用 Polaroid 风格网格
-      html += '<div class="art-grid">';
+      html += '<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">';
       for (const item of items) {
         // 过滤没有图片的条目
         if (!item.image) continue;
@@ -283,9 +287,11 @@
       html += '</div>';
     } else {
       // 普通分类：直接多栏布局
+      html += '<div class="columns-1 gap-8 space-y-8">'; // Single column in grid cell really
       for (const item of items) {
         html += createNewsCard(item, false);
       }
+      html += '</div>';
     }
 
     container.innerHTML = html;

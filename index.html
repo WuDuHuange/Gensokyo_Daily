@@ -8,130 +8,97 @@
   <meta name="description" content="幻想乡日报 — 射命丸文主编，聚合东方 Project 官方消息与社区热点的新闻日报。" />
   <meta name="keywords" content="东方Project, Touhou, 幻想乡, Gensokyo, 日报, 射命丸文" />
 
-  <!-- Google Fonts: 使用 Noto Serif SC 作为报纸风格字体 -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Ma+Shan+Zheng&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Tailwind Output -->
+  <link rel="stylesheet" href="css/output.css" />
 </head>
 
-<body>
+<body class="bg-[#d5cbae] font-body text-ink-black antialiased bg-paper-texture leading-relaxed">
   <!-- ============ 纸张容器 ============ -->
-  <div class="newspaper">
+  <div class="newspaper max-w-[1200px] mx-auto my-8 bg-paper-bg px-6 py-8 md:px-12 md:py-10 shadow-paper border border-[#c4b898] relative">
 
     <!-- ============ 报头 ============ -->
-    <header class="masthead">
-      <div class="masthead-top">
-        <span class="masthead-date" id="edition-date">第 00000000 期</span>
-        <span class="masthead-weather" id="header-weather">博丽神社 ☀️ 25°C</span>
+    <header class="text-center pb-4 relative mb-8">
+      <div class="flex justify-between items-center text-sm text-ink-gray font-body mb-2 border-b border-rule-color pb-1.5">
+        <span id="edition-date" class="font-bold">第 00000000 期</span>
+        <span id="header-weather">博丽神社 ☀️ 25°C</span>
       </div>
-      <h1 class="masthead-title">
-        <ruby>幻想乡日报<rp>(</rp><rt>げんそうきょうにっぽう</rt><rp>)</rp></ruby>
+      <h1 class="font-title text-5xl md:text-7xl font-black tracking-[0.2em] md:tracking-[0.5em] leading-[1.2] text-ink-black my-4 masthead-title">
+        <ruby>幻想乡日报<rp>(</rp><rt class="text-[0.3em] tracking-[0.2em] text-ink-gray">げんそうきょうにっぽう</rt><rp>)</rp></ruby>
       </h1>
-      <div class="masthead-sub">
-        <span class="masthead-subtitle">GENSOKYO DAILY</span>
-        <span class="masthead-editor">主编：射命丸 文 ｜ 排版：鸦天狗印刷所</span>
+      <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline text-xs md:text-sm text-ink-gray mb-2 gap-2 md:gap-0">
+        <span class="font-mono text-base tracking-[0.3em] uppercase text-ink-dark">GENSOKYO DAILY</span>
+        <span class="text-ink-light text-xs">主编：射命丸 文 ｜ 排版：鸦天狗印刷所</span>
       </div>
-      <div class="masthead-rule"></div>
+      <div class="h-1 bg-ink-black border-b border-ink-black mt-1 w-full"></div>
     </header>
 
     <!-- ============ 天气栏 ============ -->
-    <section class="weather-bar" id="weather-bar">
-      <h3 class="section-label">🌤️ 幻想乡天气预报</h3>
-      <div class="weather-grid" id="weather-grid">
+    <section class="py-4 border-b-2 border-rule-color mb-8" id="weather-bar">
+      <h3 class="font-heading text-sm font-bold mb-3 text-ink-dark flex items-center gap-2">
+        <span>🌤️</span> 幻想乡天气预报
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border-l border-t border-rule-light" id="weather-grid">
         <!-- JS 动态填充 -->
       </div>
     </section>
 
     <!-- ============ 头版头条 ============ -->
-    <section class="news-section" id="section-official">
-      <h2 class="section-title">
-        <span class="section-icon">📰</span>
-        头版头条
-        <span class="section-subtitle">OFFICIAL NEWS</span>
-      </h2>
-      <div class="news-columns news-columns--headline" id="news-official">
+    <section class="mb-12" id="section-official">
+      <div class="font-heading text-2xl font-black border-b-[3px] border-double border-rule-color pb-1 mb-6 flex items-baseline gap-2">
+        <span class="text-xl">📰</span> 头版头条
+        <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">HEADLINES</span>
+      </div>
+      <div id="container-official">
         <!-- JS 动态填充 -->
+        <div class="p-8 text-center text-ink-gray animate-pulse">
+            正在通过天狗急件获取最新资讯...
+        </div>
       </div>
     </section>
 
-    <!-- ============ 分隔线 ============ -->
-    <div class="section-divider"></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <!-- ============ 社会·民生 ============ -->
+      <section class="mb-8" id="section-community">
+        <div class="font-heading text-2xl font-black border-b-[3px] border-double border-rule-color pb-1 mb-6 flex items-baseline gap-2">
+          <span class="text-xl">💬</span> 社会·民生
+          <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">COMMUNITY</span>
+        </div>
+        <div id="container-community"></div>
+      </section>
 
-    <!-- ============ 社会·民生 ============ -->
-    <section class="news-section" id="section-community">
-      <h2 class="section-title">
-        <span class="section-icon">📺</span>
-        社会·民生
-        <span class="section-subtitle">COMMUNITY</span>
-      </h2>
-      <div class="news-columns news-columns--multi" id="news-community">
-        <!-- JS 动态填充 -->
-      </div>
-    </section>
-
-    <!-- ============ 分隔线 ============ -->
-    <div class="section-divider"></div>
-
-    <!-- ============ 艺术·副刊 ============ -->
-    <section class="news-section" id="section-art">
-      <h2 class="section-title">
-        <span class="section-icon">🎨</span>
-        艺术·副刊
-        <span class="section-subtitle">ART &amp; CULTURE</span>
-      </h2>
-      <div class="news-columns news-columns--multi" id="news-art">
-        <!-- JS 动态填充 -->
-      </div>
-    </section>
-
-    <!-- ============ 分隔线 ============ -->
-    <div class="section-divider"></div>
-
-    <!-- ============ 分类广告 ============ -->
-    <section class="ads-section" id="ads-section">
-      <h2 class="section-title">
-        <span class="section-icon">📋</span>
-        分类广告
-        <span class="section-subtitle">CLASSIFIEDS</span>
-      </h2>
-      <div class="ads-grid" id="ads-grid">
-        <!-- JS 动态填充 -->
-      </div>
-    </section>
+      <!-- ============ 艺术·副刊 ============ -->
+      <section class="mb-8" id="section-art">
+        <div class="font-heading text-2xl font-black border-b-[3px] border-double border-rule-color pb-1 mb-6 flex items-baseline gap-2">
+           <span class="text-xl">🎨</span> 艺术·副刊
+           <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">ART & CULTURE</span>
+        </div>
+        <div id="container-art"></div>
+      </section>
+    </div>
 
     <!-- ============ 页脚 ============ -->
-    <footer class="footer">
-      <div class="footer-rule"></div>
-      <div class="footer-content">
-        <p class="footer-disclaimer">
-          本报内容均来自公开 RSS 源，仅做索引与摘要。点击标题跳转至原始链接。
-          本报不存储任何第三方版权内容。
-        </p>
-        <p class="footer-info">
-          <span>鸦天狗印刷所 · 妖怪山第九号洞穴</span>
-          <span>|</span>
-          <span>Powered by RSSHub & GitHub Actions</span>
-          <span>|</span>
-          <span id="last-updated">最后更新：--</span>
-        </p>
-        <p class="footer-logo">
-          文 々。新聞
-        </p>
-      </div>
+    <footer class="text-center pt-8 border-t border-rule-light mt-12 text-sm text-ink-gray font-body pb-4">
+      <p class="mb-4">
+        本报由 GitHub Actions 自动生成 ·
+        <a href="https://github.com/WuDuHuange/Gensokyo_Daily" target="_blank" class="hover:text-accent-red underline transition-colors">项目源码</a>
+      </p>
+      <div class="font-title text-4xl text-ink-light mt-2 tracking-[0.3em] opacity-40">文 々。新聞</div>
+      <div id="last-updated" class="text-xs text-ink-light mt-4 font-mono"></div>
     </footer>
-
   </div>
-  <!-- /.newspaper -->
 
-  <!-- ============ 加载提示 ============ -->
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <p>射命丸文正在采风中…</p>
+  <!-- ============ Loading Overlay ============ -->
+  <div id="loading-overlay" class="fixed inset-0 bg-[#f5f0e1]/95 flex items-center justify-center z-[9999] transition-opacity duration-500">
+    <div class="text-center font-heading">
+        <div class="text-5xl mb-4 animate-bounce">📨</div>
+        <div class="text-xl tracking-widest text-ink-dark">正在取信...</div>
     </div>
   </div>
 

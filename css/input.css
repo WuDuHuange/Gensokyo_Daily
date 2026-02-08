@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #d5cbae;
+  }
+}
+
+@layer components {
+    /* Polaroid Style Rotation */
+    .art-card:nth-child(3n+1) { --rot: -2deg; }
+    .art-card:nth-child(3n+2) { --rot: 1.5deg; }
+    .art-card:nth-child(4n)   { --rot: 3deg; }
+    .art-card:nth-child(5n)   { --rot: -1deg; }
+}
+
+/* Custom styles that are complex to port to utilities immediately */
+.masthead-title {
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.newspaper {
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(139, 119, 80, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse at 80% 50%, rgba(139, 119, 80, 0.04) 0%, transparent 70%);
+}

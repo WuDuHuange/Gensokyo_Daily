@@ -182,6 +182,7 @@ BLACKLIST_KEYWORDS = [
     "王者荣耀", "LOL", "英雄联盟", "永劫无间", "Naraka",
     "第五人格", "阴阳师", "赛马娘",
     "Fate", "FGO", "Fate/Grand Order",
+    "超时空辉夜姬", "超時空輝夜姫", # 相同的传说原设但是其实不相关
     
     # 虚拟主播 (Vtubers 经常和 MMD 混在一起)
     "Hololive", "Nijisanji", "Asoul", "嘉然", "贝拉", 
@@ -649,79 +650,99 @@ def fetch_bilibili_partition_newlist(rid: int, partition_name: str) -> list:
 
 def fetch_thwiki_api() -> list:
     """
-    [API直连] 获取 THWiki 最近更改 (通过 MediaWiki API + AllOrigins 代理)
+    [API直连] 获取 THWiki 最近更改 (优先直连，失败转代理 + 重试)
     """
     # 1. THWiki 官方 API 参数
-    # action=query: 查询
-    # list=recentchanges: 最近更改
-    # rcnamespace=0: 只看“主条目” (过滤掉用户页、讨论页等杂音)
-    # rclimit=10: 只取最后 10 条
-    # format=json: 返回 JSON
     target_url = "https://thwiki.cc/api.php?action=query&list=recentchanges&rcnamespace=0&rcprop=title|ids|timestamp|user|comment&format=json&rclimit=10"
     
-    # 2. 使用 AllOrigins 代理包裹请求
-    # 这个代理会帮我们在美国/欧洲的服务器上请求 THWiki，然后把结果传回来
-    proxy_url = f"https://api.allorigins.win/get?url={requests.utils.quote(target_url)}"
-    
-    print(f"  ⚡ 正在请求 THWiki API (via AllOrigins)...")
-    
-    try:
-        # 这里的 timeout 给长一点，因为走了代理
-        resp = requests.get(proxy_url, timeout=20)
-        
-        if resp.status_code != 200:
-            print(f"    ❌ 代理请求失败: HTTP {resp.status_code}")
-            return []
-            
-        # 3. 解析双层 JSON
-        # 第一层：AllOrigins 返回的包装
-        wrapper_data = resp.json()
-        
-        # 检查代理是否真的拿到了数据
-        if not wrapper_data.get("contents"):
-            print("    ⚠ 代理返回内容为空 (可能是 THWiki 拒绝了代理 IP)")
-            return []
-            
-        # 第二层：THWiki 实际返回的 JSON (在 contents 字段里，是字符串形式)
-        real_data = json.loads(wrapper_data["contents"])
-        
+    # 辅助函数：处理数据
+    def process_data(data):
         items = []
-        # 提取最近更改列表
-        rc_list = real_data.get("query", {}).get("recentchanges", [])
-        
+        rc_list = data.get("query", {}).get("recentchanges", [])
         if not rc_list:
-            print("    ⚠ THWiki 返回列表为空")
             return []
             
-        print(f"    ✅ 成功获取 {len(rc_list)} 条维基动态")
-
         for rc in rc_list:
             title = rc["title"]
             comment = rc.get("comment", "") or "无编辑摘要"
             user = rc.get("user", "匿名用户")
-            
-            # 简单过滤：跳过机器人的自动编辑
+            # 过滤机器人
             if "bot" in user.lower() or "Bot" in user:
                 continue
-                
             items.append({
                 "id": f"thwiki_{rc['rcid']}",
-                "title": f"【百科】{title}", # 加个前缀区分
+                "title": f"【百科】{title}",
                 "link": f"https://thwiki.cc/{requests.utils.quote(title)}",
                 "summary": f"编者: {user}\n备注: {comment}",
-                "image": None, # 维基文字更新通常无图
+                "image": None,
                 "source": "THWiki",
                 "source_icon": "📚",
                 "priority": 2,
                 "published": rc["timestamp"],
                 "fetched_at": datetime.now(timezone.utc).isoformat(),
             })
-            
         return items
 
+    # --- 阶段 1: 尝试直连 ---
+    print(f"  ⚡ 正在尝试直连 THWiki API...")
+    try:
+        # 直连通常很快，或者直接不通，所以超时设短一点
+        resp = requests.get(target_url, timeout=5, headers={
+            "User-Agent": "GensokyoDaily/1.0 (Direct)"
+        })
+        if resp.status_code == 200:
+            data = resp.json()
+            items = process_data(data)
+            if items:
+                print(f"    ✅ 直连成功！获取 {len(items)} 条数据")
+                return items
+            else:
+                print("    ⚠ 直连返回数据为空，尝试代理...")
+        else:
+            print(f"    ⚠ 直连失败 (HTTP {resp.status_code})，切换代理...")
     except Exception as e:
-        print(f"    ⚠ THWiki API 异常: {e}")
-        return []
+        print(f"    ⚠ 直连异常 ({e})，切换代理...")
+
+    # --- 阶段 2: 代理重试模式 ---
+    proxy_url = f"https://api.allorigins.win/get?url={requests.utils.quote(target_url)}"
+    print(f"  ⚡ 启动 Plan B: THWiki API (via AllOrigins)...")
+    
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            # ⏳ 把超时时间从 20s 延长到 30s
+            resp = requests.get(proxy_url, timeout=30)
+            
+            if resp.status_code != 200:
+                print(f"    ⚠ [第{attempt}次] 代理返回 HTTP {resp.status_code}，重试中...")
+                time.sleep(2)
+                continue
+                
+            wrapper_data = resp.json()
+            if not wrapper_data.get("contents"):
+                print(f"    ⚠ [第{attempt}次] 代理返回空内容，重试中...")
+                time.sleep(2)
+                continue
+                
+            real_data = json.loads(wrapper_data["contents"])
+            items = process_data(real_data)
+            
+            if not items:
+                print("    ⚠ THWiki 返回列表为空")
+                return []
+                
+            print(f"    ✅ 代理成功获取 {len(items)} 条维基动态")
+            return items
+
+        except Exception as e:
+            print(f"    ⚠ [第{attempt}次] 连接异常: {e}")
+            if attempt < max_retries:
+                print("       等待 5 秒后重试...")
+                time.sleep(5)
+            else:
+                print("    💀 最终失败：THWiki 接口多次尝试均超时")
+                return []
+    return []
 
 # ============================================================
 # 天气模块（虚构 - 幻想乡天气）

@@ -10,6 +10,8 @@ import os
 import re
 import time
 import hashlib
+import uuid
+import random
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -294,15 +296,25 @@ def fetch_bilibili_rank_api(rid: int, label: str) -> list:
     """
     api_url = f"https://api.bilibili.com/x/web-interface/ranking/v2?rid={rid}"
     
-    # ⚡ 关键修改：加强 Headers 伪装
+    # 生成随机指纹
+    buvid3 = str(uuid.uuid4()) + "infoc"
+    _uuid = str(uuid.uuid4())
+    
+    # ⚡ 关键修改：加强 Headers 伪装 + Sec Headers
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "Referer": "https://www.bilibili.com/v/popular/rank/all",
         "Origin": "https://www.bilibili.com",
         "Accept": "application/json, text/plain, */*",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-        # 欺骗 B站，让它以为我们有一个空的指纹 (buvid3)
-        "Cookie": "buvid3=infoc;" 
+        # 模拟浏览器环境头 (Sec-*)
+        "Sec-Ch-Ua": '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
+        "Cookie": f"buvid3={buvid3}; _uuid={_uuid};" 
     }
     
     print(f"  ⚡ 正在请求 B站 API (分区 {rid})...")
@@ -408,8 +420,10 @@ def parse_date(entry) -> str:
 def fetch_feed(url: str, timeout: int = REQUEST_TIMEOUT) -> Optional[feedparser.FeedParserDict]:
     """获取并解析 RSS feed"""
     try:
+        # 使用浏览器 UA 避免被防火墙拦截 (如 THWiki)
         headers = {
-            "User-Agent": "Gensokyo-Daily/1.0 (RSS Reader; +https://github.com/gensokyo-daily)"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            "Accept": "application/atom+xml,application/rss+xml,application/xml,text/xml;q=0.9,*/*;q=0.8"
         }
         with requests.Session() as session:
             resp = session.get(url, headers=headers, timeout=timeout)

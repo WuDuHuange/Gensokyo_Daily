@@ -21,25 +21,13 @@ import feedparser
 import requests
 
 # ============================================================
-# 🌍 核心战术：RSSHub 镜像池 (绕过 B 站对云服务 IP 的封锁)
+# ⚙️ B站分区配置 (ID 不变)
 # ============================================================
-RSSHUB_MIRRORS = [
-    "https://rsshub.feedlib.xyz",       # 社区稳定镜像
-    "https://rsshub.ktachibana.party",  # 长期存活镜像
-    "https://rsshub.mou.science",       # 备用镜像
-    "https://rsshub.shres.me",          # 备用镜像
-    "https://rsshub.app",               # 官方节点 (最后保底)
-]
-
-# ============================================================
-# ⚙️ B站分区配置：只保留最具“东方浓度”的四个核心分区
-# ============================================================
-# 25: MMD/3D, 24: MAD/AMV, 28: 同人音乐, 17: 单机游戏
 BILIBILI_PARTITIONS = [
-    {"name": "B站 MMD榜", "path": "/bilibili/ranking/25/3/1", "icon": "💃", "priority": 1},
-    {"name": "B站 手书榜", "path": "/bilibili/ranking/24/3/1", "icon": "🎬", "priority": 1},
-    {"name": "B站 音乐榜", "path": "/bilibili/ranking/28/3/1", "icon": "🎵", "priority": 2},
-    {"name": "B站 游戏榜", "path": "/bilibili/ranking/17/3/1", "icon": "🎮", "priority": 2},
+    {"name": "B站 MMD榜", "rid": 25, "icon": "💃", "priority": 1},
+    {"name": "B站 手书榜", "rid": 24, "icon": "🎬", "priority": 1},
+    {"name": "B站 音乐榜", "rid": 28, "icon": "🎵", "priority": 2},
+    {"name": "B站 游戏榜", "rid": 17, "icon": "🎮", "priority": 2},
 ]
 
 # ============================================================
@@ -573,53 +561,86 @@ def extract_image(entry) -> Optional[str]:
         
     return None
 
-def fetch_rsshub_with_fallback(path: str) -> list:
+# ============================================================
+# 🛠️ 核心函数：使用老接口直连 B 站
+# ============================================================
+def fetch_bilibili_partition_rank(rid: int) -> list:
     """
-    镜像轮询抓取 B 站数据。
-    返回解析后的条目列表，如果全部失败则返回空列表。
+    [降级方案] 使用 /x/web-interface/ranking/region 接口
+    无需 WBI 签名，但需要 Cookie 伪装。
     """
-    mirrors = RSSHUB_MIRRORS.copy()
-    random.shuffle(mirrors) # 随机打乱顺序，分散请求压力
-
-    for base_url in mirrors:
-        target_url = base_url + path
-        print(f"    🔄 尝试镜像: {base_url} ...")
+    # 接口地址：旧版分区排行 (day=3 表示三日榜)
+    api_url = f"https://api.bilibili.com/x/web-interface/ranking/region?rid={rid}&day=3&original=0"
+    
+    # ⚡ 关键：伪造一个看起来很真的 Cookie
+    # buvid3 是 B 站追踪用户的核心指纹，我们随机生成一个
+    fake_buvid3 = str(uuid.uuid4()) + "infoc"
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Referer": f"https://www.bilibili.com/v/popular/rank/all",
+        "Origin": "https://www.bilibili.com",
+        "Cookie": f"buvid3={fake_buvid3}; buvid_fp={str(uuid.uuid4())}; nostalgia_conf=-1"
+    }
+    
+    print(f"    ⚡ 正在请求分区 {rid} (旧版接口)...")
+    
+    try:
+        # 增加 timeout 到 10 秒
+        resp = requests.get(api_url, headers=headers, timeout=10)
         
-        try:
-            # 设置较短的超时时间，快速失败并切换下一个镜像
-            feed = feedparser.parse(target_url, agent="GensokyoDaily/1.0")
+        if resp.status_code != 200:
+            print(f"    ❌ HTTP Error: {resp.status_code}")
+            return []
+
+        data = resp.json()
+        
+        # 检查业务状态码
+        if data["code"] != 0:
+            print(f"    ❌ 业务拒绝: Code {data['code']} - {data.get('message')}")
+            # 如果是 -412 或 -403，说明 IP 彻底废了
+            return []
             
-            # 验证状态码为 200 且确实拿到了数据条目
-            if feed.get("status") == 200 and len(feed.entries) > 0:
-                print(f"    ✅ 成功获取 {len(feed.entries)} 条数据")
-                
-                processed_items = []
-                for entry in feed.entries[:15]: # 每个分区取前 15 名
-                    # 使用关键词过滤函数
-                    if not is_touhou_related(entry.title + " " + entry.get("summary", "")):
-                        continue
-                        
-                    processed_items.append({
-                        "id": generate_id(entry.title, entry.link),
-                        "title": entry.title,
-                        "link": entry.link,
-                        "summary": clean_html(entry.get("summary", "")),
-                        "image": extract_image(entry), # 提取封面图
-                        "source": "B站热点",
-                        "source_icon": "📺",
-                        "priority": 1,
-                        "published": parse_date(entry),
-                        "fetched_at": datetime.now(timezone.utc).isoformat(),
-                    })
-                return processed_items
-                
-            print(f"    ❌ 镜像无效 (Status {feed.get('status', 'Unknown')})，尝试下一个...")
-                
-        except Exception as e:
-            print(f"    ⚠ 连接异常: {e}")
+        items = []
+        # 旧接口的数据结构：data -> list (或者 data -> 数组)
+        video_list = data.get("data", [])
+        
+        # 兜底：有时候 data 本身就是列表
+        if isinstance(data.get("data"), dict):
+             video_list = data.get("data", {}).get("list", [])
+
+        if not video_list:
+            print("    ⚠ 返回数据为空")
+            return []
+
+        print(f"    ✅ 成功获取 {len(video_list)} 条原始数据")
+
+        for v in video_list[:15]: # 取前15名
+            title = v["title"]
+            desc = v.get("desc", "") or v.get("description", "") or ""
             
-    print(f"    💀 该分区所有镜像均尝试失败: {path}")
-    return []
+            # 关键词过滤 (你的 is_touhou_related 函数)
+            if not is_touhou_related(title + " " + desc):
+                continue
+                
+            items.append({
+                "id": generate_id(v["bvid"], "bilibili_region"),
+                "title": title,
+                "link": f"https://www.bilibili.com/video/{v['bvid']}",
+                "summary": desc[:80].replace("\n", " ") + "...",
+                "image": v["pic"].replace("http:", "https:"),
+                "source": "B站热点", # 这里可以后续替换成具体分区名
+                "source_icon": "📺",
+                "priority": 1,
+                "published": datetime.now(timezone.utc).isoformat(), # 排行榜无具体发布时间，用当前时间
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            })
+        
+        return items
+
+    except Exception as e:
+        print(f"    ⚠ 连接异常: {e}")
+        return []
 
 # ============================================================
 # 天气模块（虚构 - 幻想乡天气）
@@ -698,19 +719,26 @@ def fetch_all_news() -> dict:
 
         # 特殊处理：如果是 community 分类，先插入 B 站分区数据
         if category_key == "community":
-            print(f"  👉 启动 B站分区抓取子系统...")
+            print(f"  👉 启动 B站分区抓取子系统 (旧版接口降级)...")
+            bili_items = []
             for part in BILIBILI_PARTITIONS:
                 print(f"  🔗 正在抓取: {part['name']}")
-                bili_items = fetch_rsshub_with_fallback(part['path'])
-                if bili_items:
-                    # 为每个条目打上它专属的图标（如 💃 或 🎮）
-                    for item in bili_items:
+                
+                # 直接调用新函数
+                part_items = fetch_bilibili_partition_rank(part['rid'])
+                
+                if part_items:
+                    # 修正来源名称和图标
+                    for item in part_items:
+                        item["source"] = part["name"] # 显示 "B站 MMD榜"
                         item["source_icon"] = part["icon"]
-                        # 确保属于 community 分类
                         item["category"] = "community"
-                    items.extend(bili_items)
+                    bili_items.extend(part_items)
+                else:
+                    print(f"  ⚠️ 分区 {part['name']} 暂无数据")
             
-            print(f"  ✅ B站分区抓取结束，共 {len(items)} 条数据待合并")
+            print(f"  ✅ B站分区抓取结束，共 {len(bili_items)} 条数据待合并")
+            items.extend(bili_items)
 
         for feed_config in category_config["feeds"]:
             print(f"  🔗 正在获取: {feed_config['name']}")
@@ -759,31 +787,12 @@ def fetch_all_news() -> dict:
 
             print(f"  ✅ 获取到 {count} 条")
 
-        # 将items合并到all_news中（暂时不排序和截断，等API数据加进来一起处理）
+        # 将items合并到all_news中
         all_news[category_key] = {
             "label": category_config["label"],
             "items": items,
             "count": len(items),
         }
-
-    # === 2. [新增] 专门调用 B站 API ===
-    print(f"\n📂 分类: 社会·民生 (B站 API)")
-    bili_items = []
-    # 抓取 MMD 分区 (rid=25)
-    bili_items.extend(fetch_bilibili_rank_api(25, "MMD"))
-    # 抓取 MAD 分区 (rid=24)
-    bili_items.extend(fetch_bilibili_rank_api(24, "MAD"))
-    # 抓取 游戏 分区 (rid=17)
-    bili_items.extend(fetch_bilibili_rank_api(17, "游戏"))
-    
-    print(f"  ✅ B站 API 共获取 {len(bili_items)} 条有效数据")
-    
-    # 将 B站数据合并到 community 分类中
-    if "community" not in all_news:
-        all_news["community"] = {"label": "社会·民生", "items": [], "count": 0}
-    all_news["community"]["items"].extend(bili_items)
-    all_news["community"]["count"] += len(bili_items)
-
 
     # === 3. [新增] 专门调用 Safebooru API ===
     print(f"\n📂 分类: 艺术·副刊 (Safebooru API)")

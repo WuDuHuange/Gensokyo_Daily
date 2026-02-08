@@ -126,81 +126,66 @@ TOUHOU_KEYWORDS = CORE_KEYWORDS + CHARACTER_KEYWORDS + GAME_KEYWORDS + MUSIC_KEY
 # RSS 源配置
 # ============================================================
 RSS_SOURCES = {
-    # === 头版头条 (Official / Major Updates) ===
+    # === 头版头条 (Official) ===
     "official": {
         "label": "头版头条",
         "feeds": [
             {
                 "name": "东方官方资讯站",
-                "url": f"{RSSHUB_BASE}/touhou-project/news",
+                # 优先使用原生 WordPress feed，绕过 RSSHub
+                "url": "https://touhou-project.news/feed/",
                 "icon": "📰",
                 "priority": 1,
             },
             {
-                "name": "THBWiki 最近更改",
-                "url": f"{RSSHUB_BASE}/huiji/thwiki/recentchanges",
-                "icon": "📚",
+                "name": "Steam 搜索 (示例)",
+                # Steam 抓取比较特殊，保留 RSSHub 的搜索作为备选
+                "url": f"{RSSHUB_BASE}/steam/search/东方Project",
+                "icon": "🎮",
                 "priority": 2,
-            },
-            {
-                "name": "ZUN 推特 (精选)",
-                # exclude_replies=1: 排除回复；include_rts=1: 包含转推
-                "url": f"{RSSHUB_BASE}/twitter/user/korindo/exclude_replies=1/include_rts=1",
-                "icon": "🍺",
-                "priority": 1,
-                "is_zun": True,
             },
         ],
     },
-    # === 社会/民生 (Community & SNS) ===
+
+    # === 社会/民生 (Community) ===
     "community": {
         "label": "社会·民生",
         "feeds": [
-            # 改为搜索模式，获取 B 站内真正属于东方的热点
             {
-                "name": "B站东方热点(搜索)",
-                "url": f"{RSSHUB_BASE}/bilibili/vsearch/东方Project/pubdate",
+                "name": "B站东方总榜",
+                # 日志显示 ranking 接口可用，保留 ranking 路由并开启关键词过滤
+                "url": f"{RSSHUB_BASE}/bilibili/ranking/0/3/1",
                 "icon": "📺",
-                "priority": 2,
+                "priority": 1,
                 "needs_filter": True,
             },
             {
-                "name": "东方Project贴吧",
-                "url": f"{RSSHUB_BASE}/baidu/tieba/forum/东方project",
+                "name": "Reddit r/touhou",
+                # 直接使用 Reddit 原生 RSS
+                "url": "https://www.reddit.com/r/touhou/new/.rss",
                 "icon": "💬",
                 "priority": 2,
             },
             {
-                "name": "X #東方Project",
-                "url": f"{RSSHUB_BASE}/twitter/keyword/%23%E6%9D%B1%E6%96%B9Project",
-                "icon": "🐦",
-                "priority": 2,
-                "needs_filter": True,
-            },
-            {
-                "name": "Reddit r/touhou New",
-                "url": f"{RSSHUB_BASE}/reddit/r/touhou/new",
-                "icon": "💬",
+                "name": "THWiki 最近更改",
+                # 使用 THWiki 原生 Atom feed
+                "url": "https://thwiki.cc/index.php?title=Special:%E6%9C%80%E8%BF%91%E6%9B%B4%E6%94%B9&feed=atom",
+                "icon": "📚",
                 "priority": 3,
             },
         ],
     },
-    # === 艺术/副刊 (Art & Music) ===
+
+    # === 艺术/副刊 (Art) ===
     "art": {
         "label": "艺术·副刊",
         "feeds": [
             {
-                "name": "Pixiv 东方部(周榜)",
-                "url": f"{RSSHUB_BASE}/pixiv/ranking/week",
+                "name": "Safebooru (Touhou)",
+                # 使用友好的 Booru 站点替代 Pixiv
+                "url": "https://safebooru.org/index.php?page=rss&s=post&q=touhou",
                 "icon": "🎨",
-                "priority": 2,
-                "needs_filter": True,
-            },
-            {
-                "name": "NicoNico 东方新着",
-                "url": f"{RSSHUB_BASE}/nicovideo/tag/%E6%9D%B1%E6%96%B9/new",
-                "icon": "🎵",
-                "priority": 3,
+                "priority": 1,
             },
         ],
     },
@@ -338,11 +323,37 @@ def fetch_feed(url: str, timeout: int = REQUEST_TIMEOUT) -> Optional[feedparser.
         headers = {
             "User-Agent": "Gensokyo-Daily/1.0 (RSS Reader; +https://github.com/gensokyo-daily)"
         }
-        resp = requests.get(url, headers=headers, timeout=timeout)
-        resp.raise_for_status()
-        return feedparser.parse(resp.text)
+        with requests.Session() as session:
+            resp = session.get(url, headers=headers, timeout=timeout)
+
+        # 如果返回非 2xx，尽量打印更多信息以便排查
+        if resp.status_code >= 400:
+            snippet = resp.text[:500].replace("\n", " ") if resp.text else ""
+            print(f"  ⚠ 获取失败: {url} — HTTP {resp.status_code} {resp.reason}")
+            if snippet:
+                print(f"    → 响应片段: {snippet}")
+            return None
+
+        parsed = feedparser.parse(resp.text)
+        # feedparser 有 bozo 标志表示解析时出现异常
+        if getattr(parsed, "bozo", False):
+            be = getattr(parsed, "bozo_exception", None)
+            print(f"  ⚠ 解析警告: {url} — {be}")
+
+        return parsed
     except requests.exceptions.RequestException as e:
-        print(f"  ⚠ 获取失败: {url} — {e}")
+        # requests 异常时尽量输出状态与响应片段（如果有）
+        msg = str(e)
+        resp = getattr(e, "response", None)
+        if resp is not None:
+            try:
+                snippet = resp.text[:500].replace("\n", " ")
+            except Exception:
+                snippet = "(unable to read response body)"
+            print(f"  ⚠ 获取失败: {url} — HTTP {resp.status_code} {resp.reason} — {msg}")
+            print(f"    → 响应片段: {snippet}")
+        else:
+            print(f"  ⚠ 获取失败: {url} — {msg}")
         return None
     except Exception as e:
         print(f"  ⚠ 解析失败: {url} — {e}")
@@ -413,6 +424,7 @@ def fetch_all_news() -> dict:
     """抓取所有分类的新闻"""
     print("=" * 60)
     print("🗞️  幻想乡日报 — 开始抓取新闻")
+    print(f"🔗 使用 RSSHUB_BASE: {RSSHUB_BASE}")
     print(f"📅  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 60)
 

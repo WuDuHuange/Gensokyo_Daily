@@ -15,6 +15,113 @@
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
 
+  // ============ 音效系统 ============
+  const SoundManager = {
+    enabled: false,
+    ctx: null,
+
+    init() {
+      if (this.ctx) return;
+      try {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        console.warn('Web Audio API not available');
+      }
+    },
+
+    /** 相机快门音效 — 模拟短促的机械快门声 */
+    playShutter() {
+      if (!this.enabled || !this.ctx) return;
+      const ctx = this.ctx;
+      const now = ctx.currentTime;
+
+      // 短促噪声 burst
+      const bufLen = ctx.sampleRate * 0.06;
+      const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 3);
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      // 高通滤波 — 让声音更"脆"
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass';
+      hp.frequency.value = 2000;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+      noise.connect(hp).connect(gain).connect(ctx.destination);
+      noise.start(now);
+      noise.stop(now + 0.06);
+
+      // 第二声轻微回响（模拟机械回弹）
+      setTimeout(() => {
+        if (!this.ctx) return;
+        const buf2 = ctx.createBuffer(1, ctx.sampleRate * 0.03, ctx.sampleRate);
+        const data2 = buf2.getChannelData(0);
+        for (let i = 0; i < buf2.length; i++) {
+          data2[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / buf2.length, 5);
+        }
+        const n2 = ctx.createBufferSource();
+        n2.buffer = buf2;
+        const g2 = ctx.createGain();
+        g2.gain.setValueAtTime(0.15, ctx.currentTime);
+        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+        n2.connect(hp.constructor === BiquadFilterNode ? g2 : g2).connect(ctx.destination);
+        const hp2 = ctx.createBiquadFilter();
+        hp2.type = 'highpass';
+        hp2.frequency.value = 3000;
+        n2.disconnect();
+        n2.connect(hp2).connect(g2).connect(ctx.destination);
+        n2.start(ctx.currentTime);
+        n2.stop(ctx.currentTime + 0.03);
+      }, 80);
+    },
+
+    /** 纸张翻动音效 — 模拟柔和的纸张摩擦声 */
+    playPaperRustle() {
+      if (!this.enabled || !this.ctx) return;
+      const ctx = this.ctx;
+      const now = ctx.currentTime;
+      const duration = 0.25;
+
+      const bufLen = ctx.sampleRate * duration;
+      const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+
+      // Brown noise (低频为主的柔和噪声)
+      let last = 0;
+      for (let i = 0; i < bufLen; i++) {
+        const white = Math.random() * 2 - 1;
+        last = (last + 0.02 * white) / 1.02;
+        // 包络：先强后弱
+        const env = Math.sin(Math.PI * i / bufLen) * 0.8;
+        data[i] = last * env * 12;
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      // 带通滤波 — 纸张沙沙声特征频率
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 3500;
+      bp.Q.value = 0.5;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0, now + duration);
+
+      noise.connect(bp).connect(gain).connect(ctx.destination);
+      noise.start(now);
+      noise.stop(now + duration);
+    },
+  };
+
   // ============ 工具函数 ============
 
   /**
@@ -96,6 +203,21 @@
   }
 
   /**
+   * 根据天气条件返回动画 CSS 类名
+   */
+  function getWeatherAnimClass(condition) {
+    if (!condition) return '';
+    const c = condition.toLowerCase();
+    if (c.includes('晴') || c.includes('大暑')) return 'weather-anim-sunny';
+    if (c.includes('雷') || c.includes('暴')) return 'weather-anim-storm';
+    if (c.includes('雨')) return 'weather-anim-rain';
+    if (c.includes('雪')) return 'weather-anim-snow';
+    if (c.includes('异变') || c.includes('弹幕')) return 'weather-anim-anomaly';
+    if (c.includes('阴') || c.includes('雾') || c.includes('花粉') || c.includes('妖雾')) return 'weather-anim-cloudy';
+    return 'weather-anim-cloudy'; // 默认呼吸效果
+  }
+
+  /**
    * 渲染天气栏
    */
   function renderWeather(weather) {
@@ -106,12 +228,12 @@
     grid.innerHTML = weather.forecasts
       .map(
         (w) => `
-      <div class="weather-item p-3 border-r border-b border-rule-light text-center last:border-r-0">
-        <span class="weather-icon text-2xl block mb-1 filter grayscale contrast-125">${escapeHtml(w.icon)}</span>
-        <span class="weather-location font-bold text-xs text-ink-dark block">${escapeHtml(w.location)}</span>
-        <div class="mt-1">
-            <span class="weather-temp font-mono text-sm text-accent-red">${w.temperature}°C</span>
-            <span class="weather-cond text-xs text-ink-gray ml-1">${escapeHtml(w.condition)}</span>
+      <div class="weather-item p-3 border-r-2 border-b-2 border-ink-dark text-center last:border-r-0 ${getWeatherAnimClass(w.condition)}">
+        <span class="weather-icon text-3xl block mb-1.5">${escapeHtml(w.icon)}</span>
+        <span class="weather-location font-black text-sm text-ink-black block tracking-wide">${escapeHtml(w.location)}</span>
+        <div class="mt-1.5">
+            <span class="weather-temp font-mono text-base font-bold text-accent-red">${w.temperature}°C</span>
+            <span class="weather-cond text-xs text-ink-gray ml-1.5 font-bold">${escapeHtml(w.condition)}</span>
         </div>
       </div>
     `
@@ -159,8 +281,8 @@
         <article class="${cardClass}">
           ${imageHtml}
           <div class="flex flex-col justify-center">
-            <h3 class="font-heading text-3xl font-bold leading-tight mb-4 hover:text-accent-red transition-colors">
-              <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
+            <h3 class="font-heading text-3xl font-bold leading-tight mb-4 transition-colors">
+              <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="news-title-link" data-news-link>
                 ${escapeHtml(item.title)}
               </a>
             </h3>
@@ -178,8 +300,8 @@
     return `
       <article class="${cardClass}">
         ${imageHtml}
-        <h3 class="font-heading text-xl font-bold leading-snug mb-2 hover:text-accent-red transition-colors">
-          <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">
+        <h3 class="font-heading text-xl font-bold leading-snug mb-2 transition-colors">
+          <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="news-title-link" data-news-link>
             ${escapeHtml(item.title)}
           </a>
         </h3>
@@ -516,6 +638,9 @@
 
     // 隐藏加载
     hideLoading();
+
+    // 播放快门音效（首次加载完成 — "咔嚓"）
+    setTimeout(() => SoundManager.playShutter(), 300);
   }
 
   /**
@@ -533,6 +658,95 @@
     }
   }
 
+  // ============ 交互与音效绑定 ============
+
+  /**
+   * 初始化音效控制面板
+   */
+  function initAudioControls() {
+    const btnToggle = $('#btn-sound-toggle');
+    const btnAmbient = $('#btn-ambient-toggle');
+
+    if (btnToggle) {
+      btnToggle.addEventListener('click', () => {
+        SoundManager.init();
+        SoundManager.enabled = !SoundManager.enabled;
+        btnToggle.classList.toggle('active', SoundManager.enabled);
+        btnToggle.textContent = SoundManager.enabled ? '🔊' : '🔇';
+
+        // 显示/隐藏环境音按钮
+        if (btnAmbient) {
+          btnAmbient.style.display = SoundManager.enabled ? 'flex' : 'none';
+        }
+
+        // 开启时播放快门确认
+        if (SoundManager.enabled) {
+          SoundManager.playShutter();
+        }
+      });
+    }
+
+    if (btnAmbient) {
+      let ambientPlaying = false;
+      let ambientNodes = null;
+
+      btnAmbient.addEventListener('click', () => {
+        if (!SoundManager.ctx) return;
+        if (!ambientPlaying) {
+          // 创建轻微的环境白噪音（模拟竹林微风）
+          const ctx = SoundManager.ctx;
+          const bufLen = ctx.sampleRate * 2;
+          const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          let last = 0;
+          for (let i = 0; i < bufLen; i++) {
+            last = (last + 0.015 * (Math.random() * 2 - 1)) / 1.015;
+            data[i] = last * 8;
+          }
+          const source = ctx.createBufferSource();
+          source.buffer = buf;
+          source.loop = true;
+
+          const lp = ctx.createBiquadFilter();
+          lp.type = 'lowpass';
+          lp.frequency.value = 800;
+
+          const gain = ctx.createGain();
+          gain.gain.value = 0.06;
+
+          source.connect(lp).connect(gain).connect(ctx.destination);
+          source.start();
+          ambientNodes = { source, gain };
+          ambientPlaying = true;
+          btnAmbient.classList.add('active');
+        } else {
+          if (ambientNodes) {
+            ambientNodes.source.stop();
+            ambientNodes = null;
+          }
+          ambientPlaying = false;
+          btnAmbient.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  /**
+   * 初始化文章点击音效（事件委托）
+   */
+  function initArticleClickSounds() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-news-link]');
+      if (link) {
+        SoundManager.playPaperRustle();
+      }
+    });
+  }
+
   // ============ 启动 ============
-  document.addEventListener('DOMContentLoaded', loadData);
+  document.addEventListener('DOMContentLoaded', () => {
+    initAudioControls();
+    initArticleClickSounds();
+    loadData();
+  });
 })();

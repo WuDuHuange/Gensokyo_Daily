@@ -40,18 +40,19 @@
     </header>
 
     <!-- ============ 天气栏 ============ -->
-    <section class="py-4 border-b-2 border-rule-color mb-8" id="weather-bar">
-      <h3 class="font-heading text-sm font-bold mb-3 text-ink-dark flex items-center gap-2">
-        <span>🌤️</span> 幻想乡天气预报
+    <section class="py-4 border-b-4 border-double border-rule-color mb-8" id="weather-bar">
+      <h3 class="font-heading text-sm font-bold mb-3 text-ink-dark flex items-center gap-2 tracking-wider">
+        <span class="text-lg">🌤️</span> 幻想乡天气预报
+        <span class="font-mono text-[0.6rem] text-ink-light tracking-widest uppercase ml-auto">WEATHER</span>
       </h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border-l border-t border-rule-light" id="weather-grid">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border-l-2 border-t-2 border-ink-dark" id="weather-grid">
         <!-- JS 动态填充 -->
       </div>
     </section>
 
     <!-- ============ 头版头条 ============ -->
     <section class="mb-12" id="section-official">
-      <div class="font-heading text-2xl font-black border-b-[3px] border-double border-rule-color pb-1 mb-6 flex items-baseline gap-2">
+      <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-6 flex items-baseline gap-2 section-divider-ornament">
         <span class="text-xl">📰</span> 头版头条
         <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">HEADLINES</span>
       </div>
@@ -65,8 +66,8 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
       <!-- ============ 社会·民生 ============ -->
-      <section class="mb-8" id="section-community">
-        <div class="font-heading text-2xl font-black border-b-[3px] border-double border-rule-color pb-1 mb-6 flex items-baseline gap-2">
+      <section class="mb-8 md:border-r-2 md:border-rule-light md:pr-6" id="section-community">
+        <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-6 flex items-baseline gap-2 section-divider-ornament">
           <span class="text-xl">💬</span> 社会·民生
           <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">COMMUNITY</span>
         </div>
@@ -74,8 +75,8 @@
       </section>
 
       <!-- ============ 艺术·副刊 ============ -->
-      <section class="mb-8" id="section-art">
-        <div class="font-heading text-2xl font-black border-b-[3px] border-double border-rule-color pb-1 mb-6 flex items-baseline gap-2">
+      <section class="mb-8 md:pl-6" id="section-art">
+        <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-6 flex items-baseline gap-2 section-divider-ornament">
            <span class="text-xl">🎨</span> 艺术·副刊
            <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">ART & CULTURE</span>
         </div>
@@ -92,6 +93,18 @@
       <div class="font-title text-4xl text-ink-light mt-2 tracking-[0.3em] opacity-40">文 々。新聞</div>
       <div id="last-updated" class="text-xs text-ink-light mt-4 font-mono"></div>
     </footer>
+  </div>
+
+  <!-- ============ Audio Control FAB ============ -->
+  <div class="audio-fab" id="audio-fab">
+    <button class="audio-fab-btn" id="btn-sound-toggle" title="音效开关">
+      🔇
+      <span class="audio-fab-tooltip">开启音效</span>
+    </button>
+    <button class="audio-fab-btn" id="btn-ambient-toggle" title="环境音" style="display:none;">
+      🎵
+      <span class="audio-fab-tooltip">环境白噪音</span>
+    </button>
   </div>
 
   <!-- ============ Loading Overlay ============ -->

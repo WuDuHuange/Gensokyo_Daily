@@ -4,7 +4,7 @@
     "title_jp": "幻想郷日報",
     "subtitle": "Gensokyo Daily",
     "edition": "第20260916期",
-    "updated_at": "2026-09-16T10:57:41.164621+00:00",
+    "updated_at": "2026-09-16T16:17:16.046572+00:00",
     "generated_by": "射命丸文 & GitHub Actions",
     "version": "1.0.0"
   },
@@ -12,6 +12,18 @@
     "official": {
       "label": "头版头条",
       "items": [
+        {
+          "id": "b95c600570cd",
+          "title": "【ジグソーパズル】『東方LostWord』のジグソーパズルが新登場！",
+          "link": "https://touhou-project.news/news/17986/",
+          "summary": "株式会社アップルワンより『東方LostWord』のジグソーパズルが7点発売。 9月17日から全国の玩具・ホビー店や各種ECサイト、自社オンラインショップにて販売開始！ &#160; ■1000ピース 組みごたえバッチリの [&#8230;]",
+          "image": null,
+          "source": "东方官方资讯站",
+          "source_icon": "📰",
+          "priority": 1,
+          "published": "2026-09-16T11:03:49+00:00",
+          "fetched_at": "2026-09-16T16:17:12.876797+00:00"
+        },
         {
           "id": "9767d46823a4",
           "title": "セブンパークアリオ柏限定！ 東方プロジェクト キャラクターイラストカードをゲットしよう！",
@@ -22,7 +34,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-09-15T03:00:13+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069516+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876826+00:00"
         },
         {
           "id": "a2b939e7a8d3",
@@ -34,7 +46,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-09-08T03:00:12+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069549+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876848+00:00"
         },
         {
           "id": "218dcaae507f",
@@ -46,7 +58,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-26T11:00:38+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069573+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876868+00:00"
         },
         {
           "id": "a50f7cfbf3f2",
@@ -58,7 +70,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-24T07:57:03+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069595+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876886+00:00"
         },
         {
           "id": "e51f9413b644",
@@ -70,7 +82,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-18T08:00:12+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069616+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876904+00:00"
         },
         {
           "id": "c78e2b50e98b",
@@ -82,7 +94,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-15T03:11:39+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069636+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876922+00:00"
         },
         {
           "id": "53c38c426d4d",
@@ -94,7 +106,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-14T05:41:20+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069656+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876952+00:00"
         },
         {
           "id": "33e9a0260d8f",
@@ -106,7 +118,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-13T09:11:53+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069688+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876970+00:00"
         },
         {
           "id": "9703d702f2ec",
@@ -118,7 +130,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-10T03:00:48+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069733+00:00"
+          "fetched_at": "2026-09-16T16:17:12.876987+00:00"
         },
         {
           "id": "d2119f570fb8",
@@ -130,7 +142,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-09T15:00:09+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069754+00:00"
+          "fetched_at": "2026-09-16T16:17:12.877004+00:00"
         },
         {
           "id": "b9f9644a6da7",
@@ -142,7 +154,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-08-06T09:00:17+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069771+00:00"
+          "fetched_at": "2026-09-16T16:17:12.877021+00:00"
         },
         {
           "id": "2023fd82a23f",
@@ -154,7 +166,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-07-31T08:36:10+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069790+00:00"
+          "fetched_at": "2026-09-16T16:17:12.877037+00:00"
         },
         {
           "id": "2e519a6ab332",
@@ -166,7 +178,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-07-31T03:00:41+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069808+00:00"
+          "fetched_at": "2026-09-16T16:17:12.877052+00:00"
         },
         {
           "id": "624d39cb4c9e",
@@ -178,19 +190,7 @@
           "source_icon": "📰",
           "priority": 1,
           "published": "2026-07-29T08:16:35+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069826+00:00"
-        },
-        {
-          "id": "448ad5ec4103",
-          "title": "【ベルファイン】ワンフェス2026夏 新作ぬいぐるみ展示が決定！",
-          "link": "https://touhou-project.news/news/17493/",
-          "summary": "株式会社ベルファインは、2026年7月26日(日) に幕張メッセで開催される【ワンダーフェスティバル2026夏】にて、東方Project新作ぬいぐるみの展示が決定いたしました！ &#160; これまで名古屋開催の【東方名 [&#8230;]",
-          "image": null,
-          "source": "东方官方资讯站",
-          "source_icon": "📰",
-          "priority": 1,
-          "published": "2026-07-25T03:00:18+00:00",
-          "fetched_at": "2026-09-16T10:57:38.069844+00:00"
+          "fetched_at": "2026-09-16T16:17:12.877068+00:00"
         }
       ],
       "count": 15
@@ -198,6 +198,330 @@
     "community": {
       "label": "社会·民生",
       "items": [
+        {
+          "id": "452b3e0d642f",
+          "title": "Beach Komeiji",
+          "link": "https://www.reddit.com/r/touhou/comments/1wi1qrd/beach_komeiji/",
+          "summary": "&#32; submitted by &#32;  /u/SingleEnvironment649   [link] &#32; [comments]",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T16:15:07+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116770+00:00"
+        },
+        {
+          "id": "thwiki_1343994",
+          "title": "【百科】魔女の上手なつくりかた",
+          "link": "https://thwiki.cc/%E9%AD%94%E5%A5%B3%E3%81%AE%E4%B8%8A%E6%89%8B%E3%81%AA%E3%81%A4%E3%81%8F%E3%82%8A%E3%81%8B%E3%81%9F",
+          "summary": "编者: Satori suki\n备注: 创建页面，内容为“{{同人志头部}}  == 作品信息 == {{同人志信息| | 封面 = jpg | 封面角色 = 雾雨魔理沙， | 名称 = 魔女の上手なつくりかた | 译名 =  | 制作方 = 偽英国紳士団， | 类型 = 漫画， | 展会 =  | 年龄限制 = 一般向 | 尺寸 =  | 页数 = 32 | 登场人物 = 雾雨魔理沙，{{爱丽丝}}，{{帕秋莉}}，森近霖之助， | 会场售价 =  | 通贩售价 = 700日元 | 官网页面 = https://n-e-studio.com/works…”",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T16:12:58Z",
+          "fetched_at": "2026-09-16T16:17:15.661689+00:00"
+        },
+        {
+          "id": "2fbc9f626010",
+          "title": "Reimu",
+          "link": "https://www.reddit.com/r/touhou/comments/1wi1ayl/reimu/",
+          "summary": "Idk  &#32; submitted by &#32;  /u/cclwnm   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/ymf84gwgnwph1.jpeg?width=640&crop=smart&auto=webp&s=f0b8d49ae3f4b8ac00e24ec0c409cccd1417568a",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T15:59:54+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116802+00:00"
+        },
+        {
+          "id": "thwiki_1343992",
+          "title": "【百科】東方の迷宮",
+          "link": "https://thwiki.cc/%E6%9D%B1%E6%96%B9%E3%81%AE%E8%BF%B7%E5%AE%AE",
+          "summary": "编者: Satori suki\n备注: 创建页面，内容为“__OMAKE__ {{同人软件头部}}  == 软件信息 == {{同人软件信息| | 封面 = jpg | 封面角色 = 博丽灵梦，雾雨魔理沙，八云紫，橙，射命丸文，露米娅，八云蓝，小野塚小町，{{铃仙}}，永江衣玖，{{莉格露}}，魂魄妖梦，{{爱丽丝}}，十六夜咲夜，红美铃，秋穰子，藤原妹红， | 名称 = 東方の迷宮 | 译名 = 东方的迷宫 | 制作方 = 偽英国紳士団， | 展会 = {{CM|3|76}} |…”",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:59:09Z",
+          "fetched_at": "2026-09-16T16:17:15.661717+00:00"
+        },
+        {
+          "id": "thwiki_1343991",
+          "title": "【百科】みすちーカレンダー合同 夜雀七曜表",
+          "link": "https://thwiki.cc/%E3%81%BF%E3%81%99%E3%81%A1%E3%83%BC%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC%E5%90%88%E5%90%8C%20%E5%A4%9C%E9%9B%80%E4%B8%83%E6%9B%9C%E8%A1%A8",
+          "summary": "编者: VincentDirac\n备注: 已还原[[Special:Contributions/不拘一嗝降人才|不拘一嗝降人才]]（[[User talk:不拘一嗝降人才|讨论]]）的编辑至最后由[[User:鬼人正邪不听话|鬼人正邪不听话]]修订的版本",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:49:59Z",
+          "fetched_at": "2026-09-16T16:17:15.661735+00:00"
+        },
+        {
+          "id": "thwiki_1343990",
+          "title": "【百科】みすちーカレンダー合同 夜雀七曜表 第四期",
+          "link": "https://thwiki.cc/%E3%81%BF%E3%81%99%E3%81%A1%E3%83%BC%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC%E5%90%88%E5%90%8C%20%E5%A4%9C%E9%9B%80%E4%B8%83%E6%9B%9C%E8%A1%A8%20%E7%AC%AC%E5%9B%9B%E6%9C%9F",
+          "summary": "编者: VincentDirac\n备注: 已还原[[Special:Contributions/不拘一嗝降人才|不拘一嗝降人才]]（[[User talk:不拘一嗝降人才|讨论]]）的编辑至最后由[[User:鬼人正邪不听话|鬼人正邪不听话]]修订的版本",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:47:53Z",
+          "fetched_at": "2026-09-16T16:17:15.661745+00:00"
+        },
+        {
+          "id": "thwiki_1343989",
+          "title": "【百科】みすちーカレンダー合同 夜雀七曜表 第二期",
+          "link": "https://thwiki.cc/%E3%81%BF%E3%81%99%E3%81%A1%E3%83%BC%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC%E5%90%88%E5%90%8C%20%E5%A4%9C%E9%9B%80%E4%B8%83%E6%9B%9C%E8%A1%A8%20%E7%AC%AC%E4%BA%8C%E6%9C%9F",
+          "summary": "编者: VincentDirac\n备注: 无编辑摘要",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:47:22Z",
+          "fetched_at": "2026-09-16T16:17:15.661754+00:00"
+        },
+        {
+          "id": "thwiki_1343988",
+          "title": "【百科】みすちーカレンダー合同 夜雀七曜表 第三期",
+          "link": "https://thwiki.cc/%E3%81%BF%E3%81%99%E3%81%A1%E3%83%BC%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC%E5%90%88%E5%90%8C%20%E5%A4%9C%E9%9B%80%E4%B8%83%E6%9B%9C%E8%A1%A8%20%E7%AC%AC%E4%B8%89%E6%9C%9F",
+          "summary": "编者: VincentDirac\n备注: 已还原[[Special:Contributions/不拘一嗝降人才|不拘一嗝降人才]]（[[User talk:不拘一嗝降人才|讨论]]）的编辑至最后由[[User:鬼人正邪不听话|鬼人正邪不听话]]修订的版本",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:47:07Z",
+          "fetched_at": "2026-09-16T16:17:15.661768+00:00"
+        },
+        {
+          "id": "thwiki_1343987",
+          "title": "【百科】宵月夜",
+          "link": "https://thwiki.cc/%E5%AE%B5%E6%9C%88%E5%A4%9C",
+          "summary": "编者: VincentDirac\n备注: 无编辑摘要",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:47:00Z",
+          "fetched_at": "2026-09-16T16:17:15.661773+00:00"
+        },
+        {
+          "id": "thwiki_1343986",
+          "title": "【百科】みすちーカレンダー合同 夜雀七曜表 第五期",
+          "link": "https://thwiki.cc/%E3%81%BF%E3%81%99%E3%81%A1%E3%83%BC%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC%E5%90%88%E5%90%8C%20%E5%A4%9C%E9%9B%80%E4%B8%83%E6%9B%9C%E8%A1%A8%20%E7%AC%AC%E4%BA%94%E6%9C%9F",
+          "summary": "编者: VincentDirac\n备注: 已还原[[Special:Contributions/不拘一嗝降人才|不拘一嗝降人才]]（[[User talk:不拘一嗝降人才|讨论]]）的编辑至最后由[[User:鬼人正邪不听话|鬼人正邪不听话]]修订的版本",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:45:32Z",
+          "fetched_at": "2026-09-16T16:17:15.661784+00:00"
+        },
+        {
+          "id": "390e58cd8ad7",
+          "title": "Explaining the situation",
+          "link": "https://www.reddit.com/r/touhou/comments/1wi048o/explaining_the_situation/",
+          "summary": "&#32; submitted by &#32;  /u/Playful-Bullfrog-470   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/5envgfdpfwph1.png?width=140&height=101&auto=webp&s=f685288e5c59bc5dfb498ae5813a53f741684b32",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T15:16:36+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116826+00:00"
+        },
+        {
+          "id": "thwiki_1343985",
+          "title": "【百科】幻想战闻录/第23届",
+          "link": "https://thwiki.cc/%E5%B9%BB%E6%83%B3%E6%88%98%E9%97%BB%E5%BD%95/%E7%AC%AC23%E5%B1%8A",
+          "summary": "编者: 渭清\n备注: /* 概述 */",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T15:09:20Z",
+          "fetched_at": "2026-09-16T16:17:15.661799+00:00"
+        },
+        {
+          "id": "thwiki_1343983",
+          "title": "【百科】会帆",
+          "link": "https://thwiki.cc/%E4%BC%9A%E5%B8%86",
+          "summary": "编者: Gzz\n备注: 无编辑摘要",
+          "image": null,
+          "source": "THWiki",
+          "source_icon": "📚",
+          "priority": 2,
+          "published": "2026-09-16T14:36:16Z",
+          "fetched_at": "2026-09-16T16:17:15.661806+00:00"
+        },
+        {
+          "id": "4e021caae759",
+          "title": "Get a break of ship art and things, here's Koishi eating a giant tangerine.",
+          "link": "https://www.reddit.com/r/touhou/comments/1whyxfd/get_a_break_of_ship_art_and_things_heres_koishi/",
+          "summary": "&#32; submitted by &#32;  /u/Tales_Of_Kryztalia   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/01gpx76u7wph1.png?width=640&crop=smart&auto=webp&s=12f5140d7395a693bc18a885b53916fdc803a26b",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T14:32:18+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116850+00:00"
+        },
+        {
+          "id": "9957b8ceedb7",
+          "title": "Cirno and Dai witnessing Koumakyou New Classic (by トオルン)",
+          "link": "https://www.reddit.com/r/touhou/comments/1whydb0/cirno_and_dai_witnessing_koumakyou_new_classic_by/",
+          "summary": "She hasn’t forgotten “1”, so she’s so smart! source  &#32; submitted by &#32;  /u/AmbersGloom   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/ftm0l5p34wph1.jpeg?width=640&crop=smart&auto=webp&s=98fbce3ab82fd65f5fc217f5322c7dafc00b2bf3",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T14:11:23+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116878+00:00"
+        },
+        {
+          "id": "3687153af470",
+          "title": "Mononobe no Futo Art.",
+          "link": "https://www.reddit.com/r/touhou/comments/1whxw70/mononobe_no_futo_art/",
+          "summary": "Heyo everyone, hope y'all enjoy this Art and feel free to request down the comments.   &#32; submitted by &#32;  /u/Dansoy-kun   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/yznoweaw0wph1.png?width=640&crop=smart&auto=webp&s=9390f380ec6f211ec7a3936ec2fca6027e0082fd",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T13:53:24+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116900+00:00"
+        },
+        {
+          "id": "15c3b1c8388b",
+          "title": "Nitori and Nichori (tw for dead touhou)",
+          "link": "https://www.reddit.com/r/touhou/comments/1whxuic/nitori_and_nichori_tw_for_dead_touhou/",
+          "summary": "I like Nichori, I hope she doesn't rip my head off and turn me into a yukkuri  &#32; submitted by &#32;  /u/Gibblechen   [link] &#32; [comments]",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T13:51:32+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116922+00:00"
+        },
+        {
+          "id": "939a175169dc",
+          "title": "Patchouli has a workout schedule in the library",
+          "link": "https://www.reddit.com/r/touhou/comments/1whxb7z/patchouli_has_a_workout_schedule_in_the_library/",
+          "summary": "Muscle/Buff AU  &#32; submitted by &#32;  /u/airshi   [link] &#32; [comments]",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T13:30:15+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116943+00:00"
+        },
+        {
+          "id": "970c5f54c3b2",
+          "title": "What would you choose?",
+          "link": "https://www.reddit.com/r/touhou/comments/1whx5sa/what_would_you_choose/",
+          "summary": "&#32; submitted by &#32;  /u/Vivid-Weather-9407   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/igc9o6cmvvph1.jpeg?width=640&crop=smart&auto=webp&s=6c7f76028c03a6c4b9c2e6ac61b8d32173affe57",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T13:24:16+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116963+00:00"
+        },
+        {
+          "id": "e6f981a072c0",
+          "title": "Reimu (Art by @mikan7f)",
+          "link": "https://www.reddit.com/r/touhou/comments/1whx0ae/reimu_art_by_mikan7f/",
+          "summary": "&#32; submitted by &#32;  /u/blushberrysz   [link] &#32; [comments]",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T13:18:11+00:00",
+          "fetched_at": "2026-09-16T16:17:15.116983+00:00"
+        },
+        {
+          "id": "094d55963e16",
+          "title": "Fried Chicken.",
+          "link": "https://www.reddit.com/r/touhou/comments/1whw9c9/fried_chicken/",
+          "summary": "Link: https://www.zounoashi.com/#/game/karaage?card=square2  &#32; submitted by &#32;  /u/Amazing_Ad_5198   [link] &#32; [comments]",
+          "image": "https://external-preview.redd.it/Njd1bWhxeDJwdnBoMTVUMV3muPEPzTlMA3UMim1dXuEPaquOj-JfINO4cB70.png?width=640&crop=smart&auto=webp&s=cdccab709eeace91ebbda6d56833ac7521c990b9",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T12:47:15+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117007+00:00"
+        },
+        {
+          "id": "3e151de4bebf",
+          "title": "Remilia introducing Marisa and Reimu to sandwiches [TL]",
+          "link": "https://www.reddit.com/r/touhou/comments/1whvzex/remilia_introducing_marisa_and_reimu_to/",
+          "summary": "Marisa's 14th, 15th, 16th, and 17th slices of bread.  Illustrator is Deetamu.   &#32; submitted by &#32;  /u/Aenigmatrix   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/8t6nsc8qmvph1.png?width=640&crop=smart&auto=webp&s=cff965fb236bd7e1bcabed110e89634dd8810880",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T12:34:56+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117032+00:00"
+        },
+        {
+          "id": "058a03b3db5a",
+          "title": "Keyboard on touhou koumakyou new classic ps5",
+          "link": "https://www.reddit.com/r/touhou/comments/1whvl19/keyboard_on_touhou_koumakyou_new_classic_ps5/",
+          "summary": "Can i use a keyboard to play touhou koumakyou new classic on the ps5? I want to play it on the ps5 specifically so i can get the platinum trophy for it, but i also want to use a keyboard because i feel that a keyboard is more precise than joysticks  &#32; submitted by &#32;  /u/fudsa   [link] &#32; [comments]",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T12:17:07+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117054+00:00"
+        },
+        {
+          "id": "f55a1b15102e",
+          "title": "Name any 2hu character, and I'll add the most upvoted one",
+          "link": "https://www.reddit.com/r/touhou/comments/1whva0w/name_any_2hu_character_and_ill_add_the_most/",
+          "summary": "First is Yukari, my choice  &#32; submitted by &#32;  /u/zoresvee999   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/wib0miq7hvph1.png?width=140&height=140&auto=webp&s=768c8abb67bfc31b769357cb72faf331db228562",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T12:03:07+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117075+00:00"
+        },
+        {
+          "id": "1c1b66541fad",
+          "title": "I still can't believe this shit is real lmao",
+          "link": "https://www.reddit.com/r/touhou/comments/1whumar/i_still_cant_believe_this_shit_is_real_lmao/",
+          "summary": "https://youtu.be/ZyvSysQwuF8  &#32; submitted by &#32;  /u/AungCowMyat   [link] &#32; [comments]",
+          "image": "https://external-preview.redd.it/dzVhOGtqYm1idnBoMWpvpZi-s3AGlit8T8WFTZGAEh0hTX0bMuvp06o1_iMq.jpeg?width=640&crop=smart&auto=webp&s=0fe9e094fa739f2952ca3f6239b4e78283e756a1",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T11:31:45+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117098+00:00"
+        },
+        {
+          "id": "f210d397b61a",
+          "title": "About canon endings",
+          "link": "https://www.reddit.com/r/touhou/comments/1whuj34/about_canon_endings/",
+          "summary": "(Source from WaHH C27) Does this image means that all canon endings from EoSD to DDC are Needles Reimu? (Or at least, Needles Reimu reached the final boss but received the bad ending?)  &#32; submitted by &#32;  /u/A_E_R_I_E   [link] &#32; [comments]",
+          "image": "https://preview.redd.it/rqbxnoavavph1.jpeg?width=640&crop=smart&auto=webp&s=337c084bc213198bb55bdd8038bacebf26901909",
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T11:27:32+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117119+00:00"
+        },
+        {
+          "id": "9b5703b3a9a8",
+          "title": "Lol mtn dew is peak",
+          "link": "https://www.reddit.com/r/touhou/comments/1whu86n/lol_mtn_dew_is_peak/",
+          "summary": "&#32; submitted by &#32;  /u/RomanceAnimeAddict67   [link] &#32; [comments]",
+          "image": null,
+          "source": "Reddit r/touhou",
+          "source_icon": "💬",
+          "priority": 2,
+          "published": "2026-09-16T11:12:22+00:00",
+          "fetched_at": "2026-09-16T16:17:15.117139+00:00"
+        },
         {
           "id": "b057d928c42a",
           "title": "Fujiwara no Mokou but fire and ice",
@@ -208,7 +532,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T10:56:32+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158328+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117160+00:00"
         },
         {
           "id": "thwiki_1343959",
@@ -316,7 +640,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T10:31:30+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158369+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117187+00:00"
         },
         {
           "id": "thwiki_1343950",
@@ -352,7 +676,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T09:30:38+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158394+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117207+00:00"
         },
         {
           "id": "4d07652dd8d7",
@@ -364,7 +688,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T09:29:32+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158423+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117245+00:00"
         },
         {
           "id": "1d12fe5414bb",
@@ -376,7 +700,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T09:27:03+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158447+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117266+00:00"
         },
         {
           "id": "04a92ade7126",
@@ -388,7 +712,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T09:26:47+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158473+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117289+00:00"
         },
         {
           "id": "516ac4e66953",
@@ -400,7 +724,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T08:06:12+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158497+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117310+00:00"
         },
         {
           "id": "7be165ffa759",
@@ -412,7 +736,7 @@
           "source_icon": "💬",
           "priority": 2,
           "published": "2026-09-16T07:42:19+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158519+00:00"
+          "fetched_at": "2026-09-16T16:17:15.117329+00:00"
         },
         {
           "id": "587974baca67",
@@ -473,330 +797,6 @@
           "priority": 2,
           "published": "2026-09-16T06:04:38+00:00",
           "fetched_at": "2026-09-16T10:57:40.158639+00:00"
-        },
-        {
-          "id": "2a541bd51c40",
-          "title": "Is there a right or wrong way of enjoying Touhou?",
-          "link": "https://www.reddit.com/r/touhou/comments/1wholvk/is_there_a_right_or_wrong_way_of_enjoying_touhou/",
-          "summary": "So uh- I’m mostly asking this for clarity, but I want to raise the above question. I’ve considered myself a Touhou fan for about… 4 or 5 years now? I entered the franchise through fan animations and… Bad Apple (Real original origin story, I know) - but lately… I’ve highkey been scared of being called a fake fan ? (Mostly by the made up people in my head) - especially with the recent larper/poser epidemic  When it comes to Touhou, I love both canon AND fanon - My interpretations of characters tend to land somewhere in the middle of the two - however, I’ve noticed a recent trend of people being either hard FOR one side, and hard AGAINST another - Where do I stand? I like researching my favorite characters, and I may combine the canon information with headcanons or fanon traits I like Canon is harder get into, in my opinion? I’ve messed around on PCB (Normal mode with max lives and continues) - and I’ve only mad it past Youmu, and never to Yuyuko, which is a shame, because I love how goofy and nonsensical the character writing is in this franchise (Despite ZUN not focusing too much of narrative, at least from what I can tell)  I’m also like- Not sure what the anti-fanon is meant to mean? Is it like, the rejection of everything fanon (Like Mokou getting upset about her immortality in fanon, when she really doesn’t care in canon) - or is it just the VERY inaccurate stuff (Like murder loving Flandre) and outdated memes (Like Sakuya Pads, Narcoleptic Meiling, Masochist Tenshi, etc)  To summarize my thoughts: I love canon and want to learn more about it, but that’s not always easier said than done, and I don’t understand the complete rejection of fanon (Especially when it fills in the blanks that canon leaves) - Tbh, I consider Touhou to be the Vocaloid of Video Games: As in; “Here’s the character’s basic information and lore - go do whatever” I don’t really have anyone in my life to talk Touhou with, so hopefully getting some stranger’s insight may help me stop feeling bad for liking a piece of media haha 😅  &#32; submitted by &#32;  /u/TechinallyAnAxolotl   [link] &#32; [comments]",
-          "image": null,
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T05:55:37+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158672+00:00"
-        },
-        {
-          "id": "6d8b4e3ec47e",
-          "title": "Concerned that there still hasn’t been an official statement from SAR regarding the AI-generated images.",
-          "link": "https://www.reddit.com/r/touhou/comments/1who8uu/concerned_that_there_still_hasnt_been_an_official/",
-          "summary": "Personally, I’m not particularly concerned about whether ZUN—or, of course, the SAR team member who actually worked on the backgrounds assets—was right or wrong to use AI. However, regardless of how one feels about AI, if this does violate Steam’s policy, I would think it would be better to address the issue quickly, either by disclosing the use of AI on Steam or by removing or modifying the backgrounds before they receive even more criticism. I haven’t seen any mention of this issue on the Japanese side of the internet yet. Is it possible that the news simply hasn’t reached Japan yet?  &#32; submitted by &#32;  /u/Initial-Cod-9170   [link] &#32; [comments]",
-          "image": null,
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T05:35:32+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158720+00:00"
-        },
-        {
-          "id": "ba0041192105",
-          "title": "The touhou art comes from the game Keine expansion class from steam, i gave the name cuz the rules \"YEAH SURE\"",
-          "link": "https://www.reddit.com/r/touhou/comments/1whnuid/the_touhou_art_comes_from_the_game_keine/",
-          "summary": "&#32; submitted by &#32;  /u/Alguien_Con_Tiempo   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/xjkvl4v4gtph1.png?width=320&crop=smart&auto=webp&s=67edb34498ff154f8c482df026e2848886b0d48c",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T05:13:28+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158748+00:00"
-        },
-        {
-          "id": "7f8d0a9aab66",
-          "title": "Anyone else noticed these songs sound exactly the same?",
-          "link": "https://www.reddit.com/r/touhou/comments/1whnpu0/anyone_else_noticed_these_songs_sound_exactly_the/",
-          "summary": "&#32; submitted by &#32;  /u/RickAlbuquerque   [link] &#32; [comments]",
-          "image": "https://external-preview.redd.it/aHAwNTUyMnVldHBoMXkRwWDY8DYmUMgoYecXfYuqDLHEu0StYpG4ZHL4ezAN.png?width=640&crop=smart&auto=webp&s=96cb30c979f7b738ef963b5cafbb9875714e84f0",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T05:06:35+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158770+00:00"
-        },
-        {
-          "id": "25f7109bc2a7",
-          "title": "This might be my peak performance",
-          "link": "https://www.reddit.com/r/touhou/comments/1whnev7/this_might_be_my_peak_performance/",
-          "summary": "I don't think I can do it again I think it's going to be a one-time thing   &#32; submitted by &#32;  /u/Savings-Thought-8312   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/sfdi5tlyatph1.jpeg?width=640&crop=smart&auto=webp&s=360d1b4fe1efb9cafed48d9183e1473ab725a224",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T04:50:35+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158793+00:00"
-        },
-        {
-          "id": "5e31f202bbe0",
-          "title": "Kosuzu, don't MOVE a single millimeter SIS😭",
-          "link": "https://www.reddit.com/r/touhou/comments/1whnb8u/kosuzu_dont_move_a_single_millimeter_sis/",
-          "summary": "Drawing took a total of 9 hours to make. Kosuzu’s layers: 15 Mamizou’s layers: 24 Total layers: 39 Drawing made on: September 16, 2026  &#32; submitted by &#32;  /u/TouhouMaleGuy   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/4n6s1hw1btph1.png?width=140&height=112&auto=webp&s=19711f05c9844f4c712e66d76b098a89f683cd80",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T04:45:01+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158824+00:00"
-        },
-        {
-          "id": "9a0a37b86da2",
-          "title": "Lunatic Flowers",
-          "link": "https://www.reddit.com/r/touhou/comments/1whm4gl/lunatic_flowers/",
-          "summary": "&#32; submitted by &#32;  /u/WrongdoerGlum9631   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/xssqtg390tph1.png?width=640&crop=smart&auto=webp&s=64363032262c9d05198d481526454304cdd014ab",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T03:45:00+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158926+00:00"
-        },
-        {
-          "id": "97ec241f4021",
-          "title": "Reimu Hakurei",
-          "link": "https://www.reddit.com/r/touhou/comments/1whm49i/reimu_hakurei/",
-          "summary": "Reference used: https://www.pixiv.net/en/artworks/104748870  &#32; submitted by &#32;  /u/MayorSinclair   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/jfolyxl70tph1.jpeg?width=640&crop=smart&auto=webp&s=bf5bd86045f4b3cf4f084d967e79c66aebd1d0f5",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T03:44:41+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158957+00:00"
-        },
-        {
-          "id": "f7dab7cccb76",
-          "title": "Where does the Cirno sprite in this image come from?",
-          "link": "https://www.reddit.com/r/touhou/comments/1whlwmv/where_does_the_cirno_sprite_in_this_image_come/",
-          "summary": "LoLK is my best guess, then again I have never played the games, so I'm not entirely sure.  &#32; submitted by &#32;  /u/little_gun_11037   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/xw52d9xcysph1.png?width=640&crop=smart&auto=webp&s=3d7f151780cd2fafa47494b8e292c622f8e2a4cf",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T03:33:49+00:00",
-          "fetched_at": "2026-09-16T10:57:40.158981+00:00"
-        },
-        {
-          "id": "thwiki_1343868",
-          "title": "【百科】游戏攻略/STG血量数据",
-          "link": "https://thwiki.cc/%E6%B8%B8%E6%88%8F%E6%94%BB%E7%95%A5/STG%E8%A1%80%E9%87%8F%E6%95%B0%E6%8D%AE",
-          "summary": "编者: UMZ\n备注: 无编辑摘要",
-          "image": null,
-          "source": "THWiki",
-          "source_icon": "📚",
-          "priority": 2,
-          "published": "2026-09-16T03:32:41Z",
-          "fetched_at": "2026-09-16T03:42:43.918505+00:00"
-        },
-        {
-          "id": "d40b3ae937be",
-          "title": "To Crash To Illusion (CYOA) - Chapter 7",
-          "link": "https://www.reddit.com/r/touhou/comments/1whlpmv/to_crash_to_illusion_cyoa_chapter_7/",
-          "summary": "This is a Choose Your Own Adventure Fanfic about a WW2 American bomber crew that crash lands into Gensokyo. I am live writing this in our Writing/Fanfic Discord server. https://discord.gg/ewSd5FwqmH (I’m mainly writing this for fun so forgive the less polished storytelling &amp; prose compared to my usual fics.) ------------------------------------------ This is the Gensokyo map that I'm using for this fic: https://www.reddit.com/r/touhou/comments/11s447e/gensokyos\\_map\\_v20\\_by\\_armixi/ ------------------------------------------ &quot;James, tell Miss Aiko that we trust her,&quot; Eric said. James was a little taken aback. Elizabeth, who understood his words, turned to him for a moment, staring at him with her expressionless red eyes. *Does that mean we're siding with her? Does that mean we're siding against Miss Elizabeth? Even though she gave us food and maps and took us in?* But basked in the darkness of blindness, none of those reactions fazed Eric. &quot;James?&quot; James's head sank a little, but he tried not to show it. They couldn't really have a conversation about it at the moment, and he couldn't show his disagreement with Eric visually. He had to just deal with it. He turned to Aiko and said in Japanese what Eric had asked him to say. Suddenly, Aiko started to cough. The maid immediately went to her side. &quot;Are you okay?&quot; She asked. After the coughing fit, Aiko let out a little chuckle. &quot;How many times are you going to ask me that? You know I'm fine.&quot; Then, she turned to James and Eric. Underneath the many bandages that wrapped around her face, they could see a faint, pleasant smile pierce through. &quot;Thank you, Miller-san, McConnell-san.&quot; Aiko then took a scroll from underneath the table and unfurled it on top. &quot;This is the part of the Gensokyo Chronicles that tackles yesterday's events, as well as all information relating to the murder that the guards and others have gathered so far. As you can see, I've yet to complete it as we have yet to complete this mystery, but it is a good guide for us.&quot; James and the others leaned in and read the scroll. Aiko relied on her own memory to recall. &quot;This murder is clearly peculiar, and could involve a Youkai. It could be some ancient Youkai. For that reason, Kamishirasawa-san here asked for an audience with me so we may discuss it. Conveniently, I had already planned on getting Miller-san and McConnell-san for a discussion.&quot; Keine bowed. &quot;My name is Kamishirasawa Keine. I am a half-Youkai; a were-Hakutaku specifically, and I am the guardian of this village. My own nature as part-Youkai could help in the investigation, and I *am* aware of some things that I don't believe Aiko-san is aware of, which may be related to this incident.&quot; Aiko nodded. Then, she turned her eyes to Elizabeth. &quot;Given that you're here, surely you have something to contribute? Or did you come here *just* for these two men?&quot; &quot;Well,&quot; Keine cut in, &quot;I brought her here because she said that there was something she wanted to tell you, Aiko-san. I don't think you would ever hear her out again, but I believe its worth considering.&quot; &quot;Don't tell me its the matter of information again?&quot; &quot;...At the very least give people an opportunity,&quot; she said, staring Aiko down with empty eyes, clutching her cross. &quot;Especially in this case.&quot; &quot;I will not hear it.&quot; &quot;Why... do you insist on siding with them? Aren't they your enemy? Aren't they the very purpose of your bloodline's existence?&quot; &quot;The matter of figuring out the exact nature of this murder takes precedent.&quot; &quot;...Then I shall ask you again later.&quot; &quot;Aiko,&quot; Keine said. Her and Aiko exchanged looks for a moment. Eventually, Aiko let out a sigh. &quot;Fine. But for now, lets get to business.&quot; She turned her eyes to James and Eric. &quot;So...&quot; her voice went deep, and all eyes on the rest of the room pointed straight at James and Eric. It was only James who could see it, and therefore, feel much of the pressure. He did his best to translate their words to Eric. &quot;There were no leads,&quot; Aiko said. Keine added, &quot;I have asked many of the guards. They did their best, but any clue that may have been on the body or in the surroundings simply led to dead ends.&quot; Elizabeth turned to James and Eric. &quot;James, are you certain that you saw nothing else but the body?&quot; she asked in English. *Why am *I* the one being asked that? I know just as little as all of you, can't you tell?* &quot;Yes,&quot; James replied in Japanese. &quot;The only thing I saw was the body.&quot; &quot;Everyone who had passed by that street last night hadn't mentioned anything about the body or any fire. None of them had the ability to burn the body to that degree,&quot; Keine said. Mid-way through James's translation, Eric asked, &quot;Has anyone found the head?&quot; The moment James translated his words, everyone shook their heads. Aiko spoke, &quot;The guards have yet to find any severed head anywhere in the village. I received reports from the guards that there were witnesses up until everyone went back to their homes and went to bed, which was approximately 10 minutes before James arrived on that street.&quot; &quot;I can confirm that,&quot; Elizabeth said, &quot;I had talked to the guards as well.&quot; Aiko looked at her suspiciously. Keine immediately stepped in. &quot;I asked the people on the street directly. I can confirm what the guards told you, Aiko-san.&quot; Aiko's shoulders eased a little. &quot;In other words...&quot; James said, &quot;The killer would have needed to have killed the person in under 10 minutes. Burning a body to that degree would have taken way longer.&quot; James translated it to Eric. He replied, &quot;The killer could have burned the body earlier in the day, then brought it to that part of the street.&quot; Eric bit his lips. &quot;There's still nothing in this that tells us which crewmate it was.&quot; &quot;It must be the work of a Youkai,&quot; Aiko stated as a matter of fact. She coughed a little, and James could see the struggle in her eyes as she did. But that was not the first thing on his mind. *Why bring Youkai into this?* He thought. &quot;Why would it be a Youkai?&quot; James interjected. &quot;Wouldn't it make more sense if it was a human who simply burned the guy and brought it-&quot; &quot;It doesn't make sense for it to be a human. Why would a human burn the body in that way, then place it in the middle of the street, wearing *your* clothes right as you got there?&quot; Aiko said in an intimidating voice. Were James to close his eyes, Aiko would seem a completely different person than the one coughing earlier. Keine nodded. &quot;Indeed. Although I do acknowledge the possibility that it was a human, it still makes more sense for it to be a Youkai. To kill an innocent in the darkness, to do supernatural things in such a short amount of time... not to mention, the motivation. Only a Youkai would want to do something so public.&quot; *Only a Youkai? Really?* James thought as he translated to Eric. &quot;Either way,&quot; Keine continued, &quot;The fact that it was placed on the path of Miller-san's night walk, and the fact that it wore the same clothes as James and Eric, meant that it was clearly intentional. Its clearly connected to them.&quot; &quot;The murder happened after their appearance,&quot; Aiko added, &quot;The day before that, an ominous firebird appeared streaking across the sky. It must mean something. It could be an omen, or perhaps the firebird itself is a newly arrived Youkai, and it murdered a villager after following Miller-san and McConnell-san.&quot; With every word out of Aiko's mouth, James got a bit more and more annoyed. He interjected. &quot;Well, that firebird-&quot; His mouth stopped. He wanted to explain to them that it was just their bomber plane, but where would he even begin? Explain planes? Do they even know what a plane is? What about the war? In his moment of hesitation, Elizabeth spoke. &quot;Miller-san and McConnell-san arrived here through a plane. The one I had told you about before. They seem to come from the military of one of the bigger countries I told you about, too; the United States of America.&quot; &quot;I see, the one with the towering buildings that scraped the very skies, all built solely by humans?&quot; Aiko replied with a dismissive tone. &quot;Those were rather fanciful tales indeed.&quot; &quot;So now you do not even trust even the things I had told you about in this room, in so many summers over years ago?&quot; &quot;It is not my fault that your words can no longer be trusted, Ms Kirisame.&quot; &quot;Lets get back to the topic at hand,&quot; Keine said. Elizabeth took a deep breath, and Aiko started coughing again. As soon as it passed, Aiko said, &quot;I do not recall any Youkai that fit this description of a firebird that kills its victims in this manner, so it must be from the outside world.&quot; *So we're just going to go with the firebird idea anyway, huh?* James thought, annoyed. Elizabeth's normally expressionless eyes narrowed. &quot;I know what you're doing,&quot; Elizabeth said. &quot;Indeed, but *you* do not know what you're doing,&quot; Aiko retorted. &quot;Back to topic,&quot; Keine reminded them. Everyone continued their supernatural talk. They also started questioning James and Eric more and more, about every little detail about their experience in the village as well as Gensokyo, and even about things from the outside world. And yet, they continued with their supernatural talk. The firebird idea was never fully shelved even after James and Eric had properly explained the circumstances regarding their bomber plane. It annoyed James greatly. *Why are they so insistent only this? They think so fantastically, is this why their culture had such a tendency towards war crimes* He thought with distain, seemingly forgetting, either deliberately or not, the fact that he had seen fantastical things yesterday and today, and the fact that this world, wherever they were, was a fantastical one. Eventually, the meeting ended. It had lasted hours, and James had gotten no usable information on what the identity of the body even was. Eric, though, seemed to be more satisfied. They were told that they will be invited back to the mansion again later, as they will continue their investigation. Elizabeth did not talk to them; she only asked one of the maids to tell them that since they were being held captive, she couldn't provide them any help at the moment. The real message underneath that was easy to tell: Elizabeth won't be helping them anymore. As they exited the mansion, and were then led by a guard back to the guardhouse where they were to be kept, they were greeted by a strange sight: hundreds of papers were falling down from the sky, tainted in gold by the setting sun. James was utterly bewildered by the sight. Eric, who had no sight, didn't notice and just talked. &quot;Looks like we'll be kept here for a while either way, given that we are their only clue to this mystery. Still, *we* got some new information.&quot; James caught one of the papers fluttering down. He looked at it. It was a newspaper, and on the front page was the story about the murder, a bunch of fake news about James, Eric, and the Kirisame, and also some mentions of the firebird. The paper crumpled as James's hands balled while holding it. He looked up, and the guard that was leading them seemed completely unfazed by the falling papers and were simply ignoring them. *This is just what they're like here, huh?* James thought. *These people with their fake news-* Suddenly, he remembered the time when he enlisted. He wanted to fight the Nazis. Then, he heard about the internment camps; about Hiroko's family being taken to them; and he saw all of the people he knew and didn't know celebrate all the news about Japanese people who were born and lived in the US. He remembered how angry he was. That was the past. War had changed his entire view on those things. But still, it stopped his thought. &quot;They...&quot; the word stumbled out of James's mouth. &quot;They kept talking about firebird this, firebird that. Hell, even when they weren't talking about firebirds, they kept talking about Youkai. What they hell are they thinking? Couldn't they take this more seriously? One of our crew died for fucks sake!&quot; &quot;You don't think they were taking it seriously?&quot; Eric asked, a little confused. &quot;What? Didn't you hear what they were saying?&quot; James's voice rose a little. &quot;Watch your tongue, James.&quot; James stopped. &quot;Sorry, sir.&quot; &quot;Its alright,&quot; Eric replied. &quot;I get how you feel. One of our people might have died, after all. But at the same time, I do believe they are taking this very seriously. We saw many supernatural things, right? James, do I believe your words about encountering monsters yesterday more than you do?&quot; &quot;...I understand, sir. I'm sorry, I was being stupid.&quot; James gave an excuse. In reality, he wasn't simply being stupid. In reality, he was not giving Aiko and Keine the benefit of the doubt, and was automatically interpreting everything they said in the worst possible way, simply because they were Japanese. He was also frustrated at Eric's decision to trust Aiko over Elizabeth, but he felt he was in no position to bring it up at the moment. He would have to wait until Eric brings it up later. &quot;How... could you remain so calm, sir?&quot; &quot;I have to be,&quot; Eric replied. &quot;Its the only way to survive in this darkness.&quot; James recalled all the stories Eric told the crew about his time growing up in the streets of Boston during the Great Depression; how dark it was during the night, and how much him and his family struggled just to get by. James's family lived in California, and they were post-office workers, so they weren't hit nearly as hard by the Great Depression. James looked forward. &quot;I understand,&quot; he replied. Eventually, they reach the guardhouse, and then their room. They eat some dinner, discussing some of the things that they did today, as well as the information they had gathered. It was here that Eric explained his decision to side with Aiko, and it was logical, and it was everything James expected. Aiko was the most powerful person in this village, while Elizabeth was under many people's suspicions. Aiko has a lot of knowledge about this village's history, and she also has powerful connections such as Keine. It was a no-brainer. James could've thought of it, but he didn't. His biases stopped him. After that, they decided on what they should do next. View Poll  &#32; submitted by &#32;  /u/Brick-Stonesonn   [link] &#32; [comments]",
-          "image": null,
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T03:24:14+00:00",
-          "fetched_at": "2026-09-16T10:57:40.159072+00:00"
-        },
-        {
-          "id": "e4e0d3edb797",
-          "title": "Nitori",
-          "link": "https://www.reddit.com/r/touhou/comments/1whlfym/nitori/",
-          "summary": "&#32; submitted by &#32;  /u/Gibblechen   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/6uh7dzkausph1.png?width=216&crop=smart&auto=webp&s=2e557d19ead5ad94bf67f8c1a6bfb5b3fe07e568",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T03:11:11+00:00",
-          "fetched_at": "2026-09-16T10:57:40.159093+00:00"
-        },
-        {
-          "id": "thwiki_1343866",
-          "title": "【百科】蕾蒂·霍瓦特洛克/分析考据",
-          "link": "https://thwiki.cc/%E8%95%BE%E8%92%82%C2%B7%E9%9C%8D%E7%93%A6%E7%89%B9%E6%B4%9B%E5%85%8B/%E5%88%86%E6%9E%90%E8%80%83%E6%8D%AE",
-          "summary": "编者: Salt\n备注: /* 外貌 */",
-          "image": null,
-          "source": "THWiki",
-          "source_icon": "📚",
-          "priority": 2,
-          "published": "2026-09-16T02:56:26Z",
-          "fetched_at": "2026-09-16T03:42:43.918540+00:00"
-        },
-        {
-          "id": "thwiki_1343863",
-          "title": "【百科】蕾蒂·霍瓦特洛克/分析考据",
-          "link": "https://thwiki.cc/%E8%95%BE%E8%92%82%C2%B7%E9%9C%8D%E7%93%A6%E7%89%B9%E6%B4%9B%E5%85%8B/%E5%88%86%E6%9E%90%E8%80%83%E6%8D%AE",
-          "summary": "编者: Salt\n备注: /* 角色 */",
-          "image": null,
-          "source": "THWiki",
-          "source_icon": "📚",
-          "priority": 2,
-          "published": "2026-09-16T02:52:49Z",
-          "fetched_at": "2026-09-16T03:42:43.918550+00:00"
-        },
-        {
-          "id": "3ee7fc90347b",
-          "title": "Keiki and Cake, an artpiece that basically was left unfinished for over a month",
-          "link": "https://www.reddit.com/r/touhou/comments/1whl09z/keiki_and_cake_an_artpiece_that_basically_was/",
-          "summary": "Reference Images shown on the second slide: Keiki from TH17 by ZUN, Black Forest Cake from Portal 1 by Valve So late July, I had finally gotten a good stylus for art apps like Sketchbook, and in the spur of the moment, I decided to make a TH17 themed drawing, which was a cake with toppings and the candle themed after the stage bosses, and then Keiki off to the side. As part of drawing it, I grabbed a couple reference images and did a rough trace over them for outlines, and then did all the coloring and filling in. The cake came first, which is why it looked a lot cleaner, that and the PNG I used for reference was actually clear enough to trace outlines with. Keiki on the other hand was where I ended up slowing down. The reference image was apparently small enough that trying to resize it made her all blurry, so it looks a little more rough. Eventually, halfway through the hair and headwar, I kinda just stopped drawing for a while. As a result, when I came back a couple days ago to finally finishing, that looks super awkward, but I'm just glad I'm done. Not too sure what I'll draw next, maybe something related to October First, it is pretty close after all  &#32; submitted by &#32;  /u/SilverFlight01   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/u14pjpjoqsph1.jpg?width=140&height=97&auto=webp&s=e492a7220b53e09aeee2e2a292718da068fa3405",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T02:50:49+00:00",
-          "fetched_at": "2026-09-16T10:57:40.159118+00:00"
-        },
-        {
-          "id": "f5c97e7bfc3d",
-          "title": "New Album: Gensou Distractions",
-          "link": "https://www.reddit.com/r/touhou/comments/1whk8gy/new_album_gensou_distractions/",
-          "summary": "Crossfade for another Touhou album, Gensou Distractions. When I was done with my previous album Gensou Reverie (even before it was released), I felt like riding that wave of motivation a while longer which culminated in this release. It starts off with a couple of drum and bass tracks but the tracklist expands into a variety of genres, like Gensou Reverie. I'm pretty content with both of these, as well as Hifuu 107, an EP dedicated to Hifuu Club only. These have nothing to do with the release of EoSDNC; just random timing and circumstance. If I was trying to optimize for that game's release, I would've done more arranges of EoSD! Instead, you get everything but EoSD. Thank you for checking me out. This took a lot of work and shirking other responsibilities but I'm happy with the outcomes and the wonder this series can still spark in me. It has been 16 years since I made my first Touhou arrange called Intensive Care Unit; not even worth linking, but it got me into the hobby of making music. I eventually stopped making Touhou arranges and moved to other interests but now (apparently?) I'm back. Credit to KuroNon on Twitter for the artwork here. I couldn't afford to commission another cover after Gensou Reverie, so he kindly let me use this piece. I am linking to the tweet where he directly references my album, after he retweeted my post. PS: everything except Gensou Distractions is already available on Spotify, YT Music and Apple Music, and that one will be streamable in a week or two as well, but please have a look at my Bandcamp 🙇 Due to exceptional circumstances I have to take some time off; I hope I can be back soon and produce more arranges of titles that no one cares about such as The Wolves of Nanatsuishi Dash to Seize the Clouds (this one is on Hifuu 107).  &#32; submitted by &#32;  /u/azure783   [link] &#32; [comments]",
-          "image": "https://external-preview.redd.it/Kj8tzjDO9RaqvlUAVDFt_gcGkMhYPeykNFOLw3GBxJk.jpeg?width=320&crop=smart&auto=webp&s=b4b976b0accc66791f01b206ac1453d413ed4a6a",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T02:14:57+00:00",
-          "fetched_at": "2026-09-16T03:42:43.435872+00:00"
-        },
-        {
-          "id": "thwiki_1343862",
-          "title": "【百科】蕾蒂·霍瓦特洛克/分析考据",
-          "link": "https://thwiki.cc/%E8%95%BE%E8%92%82%C2%B7%E9%9C%8D%E7%93%A6%E7%89%B9%E6%B4%9B%E5%85%8B/%E5%88%86%E6%9E%90%E8%80%83%E6%8D%AE",
-          "summary": "编者: Salt\n备注: /* 其他 */",
-          "image": null,
-          "source": "THWiki",
-          "source_icon": "📚",
-          "priority": 2,
-          "published": "2026-09-16T02:00:54Z",
-          "fetched_at": "2026-09-16T03:42:43.918558+00:00"
-        },
-        {
-          "id": "thwiki_1343861",
-          "title": "【百科】蕾蒂·霍瓦特洛克/分析考据",
-          "link": "https://thwiki.cc/%E8%95%BE%E8%92%82%C2%B7%E9%9C%8D%E7%93%A6%E7%89%B9%E6%B4%9B%E5%85%8B/%E5%88%86%E6%9E%90%E8%80%83%E6%8D%AE",
-          "summary": "编者: Salt\n备注: /* 称号 */",
-          "image": null,
-          "source": "THWiki",
-          "source_icon": "📚",
-          "priority": 2,
-          "published": "2026-09-16T01:59:29Z",
-          "fetched_at": "2026-09-16T03:42:43.918570+00:00"
-        },
-        {
-          "id": "a626b11c97cb",
-          "title": "Koishi",
-          "link": "https://www.reddit.com/r/touhou/comments/1whj8wk/koishi/",
-          "summary": "&#32; submitted by &#32;  /u/Rafkrel   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/pmwh17v4csph1.png?width=640&crop=smart&auto=webp&s=073ad42675babd8a05570cb77821e996c69d4a09",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T01:30:19+00:00",
-          "fetched_at": "2026-09-16T03:42:43.435892+00:00"
-        },
-        {
-          "id": "1b9115e5b41a",
-          "title": "junko's big sad",
-          "link": "https://www.reddit.com/r/touhou/comments/1whianj/junkos_big_sad/",
-          "summary": "today drawing are Junko big sad pixel art plus a comic. some asked u/TK_the_Onion &quot;what's next junko big sad &quot; so I decided to do that as a request and made a big sad junko and I know I couldn't just leave her like that so I made a comic were she gets help and hopefully you all like it timelapse https://youtube.com/shorts/PdP6dBUItB8?  &#32; submitted by &#32;  /u/No_Peach2145   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/phge702g4sph1.png?width=140&height=140&auto=webp&s=d733fb3327b22c723f87ea9813da1578f5ca70fd",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-16T00:48:00+00:00",
-          "fetched_at": "2026-09-16T03:42:43.435917+00:00"
-        },
-        {
-          "id": "05ccc8cb2e48",
-          "title": "Little sister unite",
-          "link": "https://www.reddit.com/r/touhou/comments/1whh5y8/little_sister_unite/",
-          "summary": "Inspired by a comic from touhou lost word where Flandre becomes friends with Koishi through an old phone in the Scarlet Devil Mansion. I thought it was cute  &#32; submitted by &#32;  /u/Kurz308   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/do085rw0wrph1.jpeg?width=640&crop=smart&auto=webp&s=02fd06e2c363e79b0277f8a30b1ba0fd36386bd5",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T23:58:58+00:00",
-          "fetched_at": "2026-09-16T03:42:43.435938+00:00"
-        },
-        {
-          "id": "9abf000f836a",
-          "title": "I just beat easy mode and...",
-          "link": "https://www.reddit.com/r/touhou/comments/1whgx4y/i_just_beat_easy_mode_and/",
-          "summary": "As said in the credits and you guys,I still have more work to do,that being normal mode. I probably won't do lunatic as i think that might be too much for me. will do some practice on normal mode to see if i can do well,and uhhhh another question,will reimu and marisa be enemies at any of the other games?  &#32; submitted by &#32;  /u/ProblemImpossible367   [link] &#32; [comments]",
-          "image": null,
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T23:48:29+00:00",
-          "fetched_at": "2026-09-16T03:42:43.435962+00:00"
-        },
-        {
-          "id": "c75fa923650e",
-          "title": "Touhou 6 New Classic music replacement tool",
-          "link": "https://www.reddit.com/r/touhou/comments/1whguix/touhou_6_new_classic_music_replacement_tool/",
-          "summary": "Hello everyone, I just wanted to share a small program I made to replace the BGM in the Windows Steam release of Touhou 6 New Classic. (Touhou Koumakyou: New Classic - the Embodiment of Scarlet Devil) This started as a personal project, but I’ve had a few requests from other players who were interested in using it as well, so I’ve decided to make the GitHub repository public. Feel free to review the source code and try the latest release. The tool now supports choosing between the New Classic OST and the Classic OST, so you can replace tracks from either soundtrack independently. It also automatically handles the game’s loop metadata. This was actually the main reason I made the tool in the first place: simply replacing the audio file can cause custom music to jump or loop at the timing of the original track. The program converts the replacement song to the format expected by the game and updates the corresponding loop information at the same time. There is an option in the UI to restore the original track. The original audio and loop information are backed up before a slot is modified. If anything unexpected happens, you can also use Steam’s Verify integrity of game files option to restore the installation to a clean state. The tool does not include any code, music, artwork, executables, data files, or other assets from Touhou 6 New Classic. The user is expected to provide the path to their own legally obtained game installation and their own replacement songs. A few other notes: - Common formats such as MP3, WAV, FLAC, OGG and Opus are accepted. - The repository is completely public, so please feel free to inspect the code before running anything. - The executable is not code-signed, so Windows SmartScreen may display an “unknown publisher” warning. - This is an unofficial fan-made utility and is not affiliated with or endorsed by ZUN / Team Shanghai Alice, Shanghai Alice Reprise, or Alliance Arts. GitHub repository: https://github.com/TheophileECE/touhou-6-nc-music-replacer If you encounter a bug or find a track that behaves strangely, feel free to open an issue on GitHub. Feedback is welcome here as well. Cheers  &#32; submitted by &#32;  /u/Theoph69   [link] &#32; [comments]",
-          "image": null,
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T23:45:19+00:00",
-          "fetched_at": "2026-09-16T03:42:43.435996+00:00"
-        },
-        {
-          "id": "80498d8d8db9",
-          "title": "Fancy Happy meal box (Video by Cirno's funny and cool channel | Fumolandfill)",
-          "link": "https://www.reddit.com/r/touhou/comments/1whgm58/fancy_happy_meal_box_video_by_cirnos_funny_and/",
-          "summary": "&#32; submitted by &#32;  /u/marcopion   [link] &#32; [comments]",
-          "image": "https://external-preview.redd.it/M7-1OUrCTzVeDcRcJcBEb8GIieDOT1OmLQclX-W3kEA.jpeg?width=320&crop=smart&auto=webp&s=ea3033f0f7d4fb5d63ae665bb8296050e552f1ea",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T23:35:14+00:00",
-          "fetched_at": "2026-09-16T03:42:43.436019+00:00"
-        },
-        {
-          "id": "b444a108d39f",
-          "title": "Beef Soup Combo",
-          "link": "https://www.reddit.com/r/touhou/comments/1whfi5e/beef_soup_combo/",
-          "summary": "&#32; submitted by &#32;  /u/RemiliasRifleman   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/c9fs702ijrph1.jpeg?width=640&crop=smart&auto=webp&s=11df0815f3b5be414c6e9520ac85a7b17bcedefe",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T22:48:47+00:00",
-          "fetched_at": "2026-09-16T03:42:43.436039+00:00"
-        },
-        {
-          "id": "8881bff51725",
-          "title": "Marisa sketch",
-          "link": "https://www.reddit.com/r/touhou/comments/1whf73f/marisa_sketch/",
-          "summary": "Tried drawing Marisa today! I’m still pretty new to drawing, but I had a lot of fun with this pose. The hand and foreshortening were definitely the hardest parts 😅 Feedback is welcome! Reference: https://pin.it/7j3BjLrQj  &#32; submitted by &#32;  /u/nomercy235   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/37vu2kzxgrph1.png?width=640&crop=smart&auto=webp&s=01a084da32a54022468c4a09b01076dfc77fc897",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T22:36:03+00:00",
-          "fetched_at": "2026-09-16T03:42:43.436063+00:00"
-        },
-        {
-          "id": "d7fbb3752c4e",
-          "title": "Where did I go wrong, mods?",
-          "link": "https://www.reddit.com/r/touhou/comments/1wher7p/where_did_i_go_wrong_mods/",
-          "summary": "So, my post got taken down due to supposed AI generated art. The thing is, the user is an actual artist and flat put said &quot;no AI&quot;, and the artist also have his own distinctive art style. Not only that, the picture is not a single picture. So, where did I go wrong? Like genuinely.   &#32; submitted by &#32;  /u/CypherBrittainne   [link] &#32; [comments]",
-          "image": "https://preview.redd.it/xyimcm92erph1.jpg?width=140&height=116&auto=webp&s=39cf42b73af4db6f954b7e6bd2f1afa8ffa9bd21",
-          "source": "Reddit r/touhou",
-          "source_icon": "💬",
-          "priority": 2,
-          "published": "2026-09-15T22:18:21+00:00",
-          "fetched_at": "2026-09-16T03:42:43.436085+00:00"
         }
       ],
       "count": 50
@@ -804,6 +804,486 @@
     "art": {
       "label": "艺术·副刊",
       "items": [
+        {
+          "id": "7150675",
+          "title": "Safebooru: 7150675",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150675",
+          "summary": "Tags: 1girl :&lt; all_fours animal_ears black_hairband b...",
+          "image": "https://safebooru.org/images/847/fce3390fe5da7fd8bb0a248e5a323f85e5d089cc.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T16:00:31+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043563+00:00"
+        },
+        {
+          "id": "7150668",
+          "title": "Safebooru: 7150668",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150668",
+          "summary": "Tags: 2girls asymmetrical_sidelocks black_hat black_skir...",
+          "image": "https://safebooru.org/images/847/bb983f1bc10f0b5ab19a6c192fa8f5fd203dbf83.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T16:00:28+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043573+00:00"
+        },
+        {
+          "id": "7150626",
+          "title": "Safebooru: 7150626",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150626",
+          "summary": "Tags: 2girls absurdres black_shirt blonde_hair chain com...",
+          "image": "https://safebooru.org/images/847/d0089bf97e33b57c44960b48f726009f958da041.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T16:00:07+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043579+00:00"
+        },
+        {
+          "id": "7150622",
+          "title": "Safebooru: 7150622",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150622",
+          "summary": "Tags: bourbunbun bowl bowl_hat hat highres japanese_clot...",
+          "image": "https://safebooru.org/images/847/d61235313c33408cca7f13614e52972e40a91deb.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T16:00:06+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043584+00:00"
+        },
+        {
+          "id": "7150619",
+          "title": "Safebooru: 7150619",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150619",
+          "summary": "Tags: 1girl absurdres blonde_hair book bow commentary_re...",
+          "image": "https://safebooru.org/images/847/7cfa5f8d9878df7438936dbc6fcc1937019ade4c.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T16:00:05+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043589+00:00"
+        },
+        {
+          "id": "7150613",
+          "title": "Safebooru: 7150613",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150613",
+          "summary": "Tags: 1girl animal animal_collar animalization ascot bat...",
+          "image": "https://safebooru.org/images/847/12ad85209d59220b4805afd7718a4a6a41dca299.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T15:31:01+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043594+00:00"
+        },
+        {
+          "id": "7150601",
+          "title": "Safebooru: 7150601",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150601",
+          "summary": "Tags: 1girl ascot bat_wings blue_hair blush clenched_han...",
+          "image": "https://safebooru.org/images/847/79c78e7ec141931bbdb882a4fe52a82038f3adf6.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T15:30:51+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043598+00:00"
+        },
+        {
+          "id": "7150511",
+          "title": "Safebooru: 7150511",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150511",
+          "summary": "Tags: 2girls contrast crackers1237 crowd definition dise...",
+          "image": "https://safebooru.org/images/847/3561d971a74dc6717963d2e7da0d6f68ff064df4.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T15:30:09+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043607+00:00"
+        },
+        {
+          "id": "7150494",
+          "title": "Safebooru: 7150494",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150494",
+          "summary": "Tags: 1girl ascot black_skirt black_vest blonde_hair clo...",
+          "image": "https://safebooru.org/images/847/c6ae936c468337701795c0dfa52353d3850f84d0.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T15:00:58+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043612+00:00"
+        },
+        {
+          "id": "7150477",
+          "title": "Safebooru: 7150477",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150477",
+          "summary": "Tags: 1girl animal animal_collar animalization ascot bat...",
+          "image": "https://safebooru.org/images/847/1d73b84ecb5bbccb6be2b6a0c1f249c06958a045.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T15:00:44+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043617+00:00"
+        },
+        {
+          "id": "7150417",
+          "title": "Safebooru: 7150417",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150417",
+          "summary": "Tags: 1girl alternate_costume bat_wings black_thighhighs...",
+          "image": "https://safebooru.org/images/847/2d92353d6e2ef435bad68e8708e6887d05c78af7.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:41+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043625+00:00"
+        },
+        {
+          "id": "7150412",
+          "title": "Safebooru: 7150412",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150412",
+          "summary": "Tags: 1girl alternate_costume bag belt_collar black_coll...",
+          "image": "https://safebooru.org/images/847/cc9b1e7f57a89ef7f0c6189fd24aee62aa77dc38.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:39+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043633+00:00"
+        },
+        {
+          "id": "7150409",
+          "title": "Safebooru: 7150409",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150409",
+          "summary": "Tags: 1girl :t absurdres amatukimahoro apron black_bow b...",
+          "image": "https://safebooru.org/images/847/d1f1bda0ac517b3979564b092a26a6e7f8c94d04.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:38+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043638+00:00"
+        },
+        {
+          "id": "7150402",
+          "title": "Safebooru: 7150402",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150402",
+          "summary": "Tags: &gt;_o +_+ 6+girls ^_^ apron ascot bat_wings beret...",
+          "image": "https://safebooru.org/images/847/94d0aa1d763b66af70eaa54e7e902f102063affb.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:34+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043643+00:00"
+        },
+        {
+          "id": "7150395",
+          "title": "Safebooru: 7150395",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150395",
+          "summary": "Tags: 2girls ascot blonde_hair blush bow closed_mouth co...",
+          "image": "https://safebooru.org/images/847/efe5da6e3ac62091a4ae25a471fde6b84e7368c9.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:28+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043647+00:00"
+        },
+        {
+          "id": "7150387",
+          "title": "Safebooru: 7150387",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150387",
+          "summary": "Tags: 1girl album_cover album_name collared_shirt commen...",
+          "image": "https://safebooru.org/images/847/80b44cfdc3d6deeec4c9862a5ad7e355c1e24c71.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:24+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043652+00:00"
+        },
+        {
+          "id": "7150383",
+          "title": "Safebooru: 7150383",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150383",
+          "summary": "Tags: 1girl animated animated_gif black_dress blinking b...",
+          "image": "https://safebooru.org/images/847/d71a6bebcaa7b3420e97775ef1279456d8745c55.gif",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:22+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043657+00:00"
+        },
+        {
+          "id": "7150382",
+          "title": "Safebooru: 7150382",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150382",
+          "summary": "Tags: 1girl animated animated_gif black_dress blinking b...",
+          "image": "https://safebooru.org/images/847/bb08dfef4f78833a7e1e5f558e9cec5db1df8b88.gif",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:21+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043665+00:00"
+        },
+        {
+          "id": "7150376",
+          "title": "Safebooru: 7150376",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150376",
+          "summary": "Tags: 1girl absurdres against_railing alternate_costume ...",
+          "image": "https://safebooru.org/images/847/bba61ea81956d72e578ad8ff74bb78201dd68589.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:30:17+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043670+00:00"
+        },
+        {
+          "id": "7150320",
+          "title": "Safebooru: 7150320",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150320",
+          "summary": "Tags: 1girl absurdres black_vest blonde_hair blush bow c...",
+          "image": "https://safebooru.org/images/847/05e09be101c42eb6fb3c42f6a87fe9063f93c369.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:00:22+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043675+00:00"
+        },
+        {
+          "id": "7150317",
+          "title": "Safebooru: 7150317",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150317",
+          "summary": "Tags: 1girl bow commentary_request doll dress frilled_bo...",
+          "image": "https://safebooru.org/images/847/0bc55231aa7cd2ba120ba90fce920b3a7c12a589.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:00:20+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043682+00:00"
+        },
+        {
+          "id": "7150307",
+          "title": "Safebooru: 7150307",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150307",
+          "summary": "Tags: 1girl alternate_color ascot black_sandals blue_bow...",
+          "image": "https://safebooru.org/images/847/a6413fb00f352872f1ce7b32dc58ffd75e4e10d7.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:00:15+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043686+00:00"
+        },
+        {
+          "id": "7150298",
+          "title": "Safebooru: 7150298",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150298",
+          "summary": "Tags: 1girl absurdres amatukimahoro apron black_pantyhos...",
+          "image": "https://safebooru.org/images/847/bfb4ee3483fba88cc3280ba9f8441aea5843fc43.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:00:10+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043693+00:00"
+        },
+        {
+          "id": "7150294",
+          "title": "Safebooru: 7150294",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150294",
+          "summary": "Tags: 1girl alternate_costume antennae black_dress bowl ...",
+          "image": "https://safebooru.org/images/847/a7eeaf9aa8c6ff33d1de7d94de7c136574e3dadc.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T14:00:09+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043697+00:00"
+        },
+        {
+          "id": "7150252",
+          "title": "Safebooru: 7150252",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150252",
+          "summary": "Tags: 1girl :q ;q black_hat bow cherry chibi chibi_only ...",
+          "image": "https://safebooru.org/images/847/661db613992555a106c4727f760054846d777f00.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T13:30:21+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043701+00:00"
+        },
+        {
+          "id": "7150226",
+          "title": "Safebooru: 7150226",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150226",
+          "summary": "Tags: 1girl absurdres alternate_costume apron back_bow b...",
+          "image": "https://safebooru.org/images/847/88e84b59787449ed30132496a061155a42e19e46.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T13:00:21+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043705+00:00"
+        },
+        {
+          "id": "7150212",
+          "title": "Safebooru: 7150212",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150212",
+          "summary": "Tags: 1girl apron arm_strap black_background blue_hair b...",
+          "image": "https://safebooru.org/images/847/b293fbf81f47acd68eb4dd29d88865863caec6d2.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T13:00:16+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043710+00:00"
+        },
+        {
+          "id": "7150157",
+          "title": "Safebooru: 7150157",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150157",
+          "summary": "Tags: 1girl absurdres blue_boots blue_hair blue_shirt bl...",
+          "image": "https://safebooru.org/images/847/374b2a6e0375524fcffd3580bc1013bd44b0d889.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:30:12+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043714+00:00"
+        },
+        {
+          "id": "7150134",
+          "title": "Safebooru: 7150134",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150134",
+          "summary": "Tags: 1girl :d blue_bow blue_dress blue_eyes blue_hair b...",
+          "image": "https://safebooru.org/images/847/c6d0bc13a1e1c4608c175296c5ec66fff38ecc34.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:45+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043720+00:00"
+        },
+        {
+          "id": "7150133",
+          "title": "Safebooru: 7150133",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150133",
+          "summary": "Tags: 1girl album_cover ascot blonde_hair blurry bow cak...",
+          "image": "https://safebooru.org/images/847/8b8570d6fd0ff66d2d1f1108bb0b6fc7d3141144.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:44+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043725+00:00"
+        },
+        {
+          "id": "7150132",
+          "title": "Safebooru: 7150132",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150132",
+          "summary": "Tags: 1girl ascot blonde_hair blush bow collared_shirt c...",
+          "image": "https://safebooru.org/images/847/1c3b93bc746cb2d99c6b080a499a271dd23dfc45.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:44+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043728+00:00"
+        },
+        {
+          "id": "7150130",
+          "title": "Safebooru: 7150130",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150130",
+          "summary": "Tags: 1girl album_cover ascot back_bow bat_(animal) bat_...",
+          "image": "https://safebooru.org/images/847/8e34df81549b65369a2e2f3ce2d559f05a9a055e.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:43+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043733+00:00"
+        },
+        {
+          "id": "7150129",
+          "title": "Safebooru: 7150129",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150129",
+          "summary": "Tags: 1girl ascot back_bow bat_wings blood blood_on_face...",
+          "image": "https://safebooru.org/images/847/79001eab066946eec6443ed275d32230f9967459.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:43+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043737+00:00"
+        },
+        {
+          "id": "7150128",
+          "title": "Safebooru: 7150128",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150128",
+          "summary": "Tags: 1girl ascot back_bow bat_wings blue_hair bow close...",
+          "image": "https://safebooru.org/images/847/87b1c87062a69ddca0fbbb736be5b383456c1a5c.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:42+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043741+00:00"
+        },
+        {
+          "id": "7150127",
+          "title": "Safebooru: 7150127",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150127",
+          "summary": "Tags: 1girl album_cover blue_skirt breasts collared_shir...",
+          "image": "https://safebooru.org/images/847/d2d49fd37e2552ef1849e6146932ce8d04c65dbd.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:42+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043746+00:00"
+        },
+        {
+          "id": "7150126",
+          "title": "Safebooru: 7150126",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150126",
+          "summary": "Tags: 1girl blue_skirt breasts brown_shoes closed_eyes c...",
+          "image": "https://safebooru.org/images/847/2e6f017028337571e6797f8d38e392040e54abcc.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:41+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043750+00:00"
+        },
+        {
+          "id": "7150125",
+          "title": "Safebooru: 7150125",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150125",
+          "summary": "Tags: 1girl album_cover black_hat bow breasts buttons co...",
+          "image": "https://safebooru.org/images/847/4426e1dd10842016c00453134222db7044015abc.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:41+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043754+00:00"
+        },
+        {
+          "id": "7150124",
+          "title": "Safebooru: 7150124",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150124",
+          "summary": "Tags: 1girl black_hat black_shoes bow breasts buttons co...",
+          "image": "https://safebooru.org/images/847/4f4b39900a94d54eab4176c47072ec66c3e2e6ca.png",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:41+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043758+00:00"
+        },
+        {
+          "id": "7150123",
+          "title": "Safebooru: 7150123",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150123",
+          "summary": "Tags: 1girl analog_clock apron back_bow between_fingers ...",
+          "image": "https://safebooru.org/images/847/10dd4e59ca722cb79295afb3a25d096aa1d906a0.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:40+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043763+00:00"
+        },
+        {
+          "id": "7150121",
+          "title": "Safebooru: 7150121",
+          "link": "https://safebooru.org/index.php?page=post&s=view&id=7150121",
+          "summary": "Tags: &gt;_&lt; 2girls animal animal_on_lap apron back_b...",
+          "image": "https://safebooru.org/images/847/c059359bcf55f0a2f5d6200dbcbe21d48168564d.jpg",
+          "source": "Safebooru",
+          "source_icon": "🎨",
+          "priority": 2,
+          "published": "2026-09-16T12:00:39+00:00",
+          "fetched_at": "2026-09-16T16:17:16.043768+00:00"
+        },
         {
           "id": "7149979",
           "title": "Safebooru: 7149979",
@@ -923,549 +1403,69 @@
           "priority": 2,
           "published": "2026-09-16T10:30:06+00:00",
           "fetched_at": "2026-09-16T10:57:41.161983+00:00"
-        },
-        {
-          "id": "7149938",
-          "title": "Safebooru: 7149938",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149938",
-          "summary": "Tags: 1girl :d animal_print artist_name blonde_hair blue...",
-          "image": "https://safebooru.org/images/847/8b61c2e1fb59e251adba2f362b01f6fb2c3e63d5.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:21+00:00",
-          "fetched_at": "2026-09-16T10:57:41.161988+00:00"
-        },
-        {
-          "id": "7149935",
-          "title": "Safebooru: 7149935",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149935",
-          "summary": "Tags: 1girl absurdres black_vest blonde_hair bow braid c...",
-          "image": "https://safebooru.org/images/847/991f2e6d3c54ac52375ed679732aaf45a6c61ef3.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:20+00:00",
-          "fetched_at": "2026-09-16T10:57:41.161993+00:00"
-        },
-        {
-          "id": "7149932",
-          "title": "Safebooru: 7149932",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149932",
-          "summary": "Tags: 1girl ascot blue_sky breasts closed_mouth clouds c...",
-          "image": "https://safebooru.org/images/847/42383e0d6e53f0f7edeeee9562bfd78555162404.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:18+00:00",
-          "fetched_at": "2026-09-16T10:57:41.161998+00:00"
-        },
-        {
-          "id": "7149931",
-          "title": "Safebooru: 7149931",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149931",
-          "summary": "Tags: 1girl ascot blush bow brown_hair brown_shoes chibi...",
-          "image": "https://safebooru.org/images/847/7946c226bc5767cce0144f2983e59229c832dfdf.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:18+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162003+00:00"
-        },
-        {
-          "id": "7149930",
-          "title": "Safebooru: 7149930",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149930",
-          "summary": "Tags: 1girl ascot black_skirt black_vest blonde_hair col...",
-          "image": "https://safebooru.org/images/847/d968f7eac87db9603737daaab3cdc30661368093.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:18+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162007+00:00"
-        },
-        {
-          "id": "7149929",
-          "title": "Safebooru: 7149929",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149929",
-          "summary": "Tags: 1girl black_hat bow buttons chromatic_aberration c...",
-          "image": "https://safebooru.org/images/847/b8d35e2338916ce8789990abaad76fb3cae575ee.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:17+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162012+00:00"
-        },
-        {
-          "id": "7149927",
-          "title": "Safebooru: 7149927",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149927",
-          "summary": "Tags: 1girl bat_wings blue_hair brooch collared_shirt co...",
-          "image": "https://safebooru.org/images/847/7b52ba19bc575ab06d07ecd0a2aada956a2f8806.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:16+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162016+00:00"
-        },
-        {
-          "id": "7149926",
-          "title": "Safebooru: 7149926",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149926",
-          "summary": "Tags: 1girl absurdres apron back_bow between_fingers blu...",
-          "image": "https://safebooru.org/images/847/bdf22f67061fb822e772e31dbd976b2447a65f45.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:16+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162021+00:00"
-        },
-        {
-          "id": "7149924",
-          "title": "Safebooru: 7149924",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149924",
-          "summary": "Tags: 1girl bat_wings caramel_umashi closed_mouth collar...",
-          "image": "https://safebooru.org/images/847/eb606e83b77a470a627372dd57ade268688a70fa.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:14+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162026+00:00"
-        },
-        {
-          "id": "7149918",
-          "title": "Safebooru: 7149918",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149918",
-          "summary": "Tags: 1girl apron arm_ribbon blue_hair blue_ribbon comme...",
-          "image": "https://safebooru.org/images/847/670ca1b63634803d4433cf210830d790f83ccdb8.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:11+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162031+00:00"
-        },
-        {
-          "id": "7149909",
-          "title": "Safebooru: 7149909",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149909",
-          "summary": "Tags: 1girl alternate_costume black_shirt blonde_hair bl...",
-          "image": "https://safebooru.org/images/847/42326fdc70a2026053b75133658017d291f227c6.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:06+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162035+00:00"
-        },
-        {
-          "id": "7149908",
-          "title": "Safebooru: 7149908",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149908",
-          "summary": "Tags: 2girls alternate_costume black_jacket black_pants ...",
-          "image": "https://safebooru.org/images/847/c2e22fab292ea7f2e563f97a596f6aa841de311f.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:05+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162042+00:00"
-        },
-        {
-          "id": "7149907",
-          "title": "Safebooru: 7149907",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149907",
-          "summary": "Tags: 1girl absurdres beret black_bow black_ribbon blue_...",
-          "image": "https://safebooru.org/images/847/4a882e88004cc2f99a4d013b1ce261aa3cf29efb.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T10:00:05+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162046+00:00"
-        },
-        {
-          "id": "7149887",
-          "title": "Safebooru: 7149887",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149887",
-          "summary": "Tags: 1girl :3 alternate_costume animal_ear_fluff animal...",
-          "image": "https://safebooru.org/images/847/c576c4c80d4bd695941010d41542fb179f18f7ac.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T09:30:09+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162050+00:00"
-        },
-        {
-          "id": "7149880",
-          "title": "Safebooru: 7149880",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149880",
-          "summary": "Tags: 1girl alternate_costume blush bow bowtie brown_hai...",
-          "image": "https://safebooru.org/images/847/cae6093baa5e68ab7008b48ac84858680bed0664.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T09:30:07+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162057+00:00"
-        },
-        {
-          "id": "7149877",
-          "title": "Safebooru: 7149877",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149877",
-          "summary": "Tags: 1girl alternate_costume apple ascot blonde_hair bl...",
-          "image": "https://safebooru.org/images/847/0f9d12b1d6f4059481938a1f1fb151d9173eddc5.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T09:30:05+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162062+00:00"
-        },
-        {
-          "id": "7149875",
-          "title": "Safebooru: 7149875",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149875",
-          "summary": "Tags: 1girl alternate_costume bow closed_mouth commentar...",
-          "image": "https://safebooru.org/images/847/a03519d2538e1cf28d1b2c0932891f4dc0ce94a7.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T09:30:04+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162066+00:00"
-        },
-        {
-          "id": "7149874",
-          "title": "Safebooru: 7149874",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149874",
-          "summary": "Tags: 1girl black_hat bow buttons collared_shirt comment...",
-          "image": "https://safebooru.org/images/847/02eb412b90d97575f0efe5ddcf3f5deae95b7f10.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T09:30:04+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162071+00:00"
-        },
-        {
-          "id": "7149804",
-          "title": "Safebooru: 7149804",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149804",
-          "summary": "Tags: 5girls :d ^_^ absurdres architecture banner black_...",
-          "image": "https://safebooru.org/images/847/8cafb7b65ef795444dff9cded9385ef3011f6705.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T09:00:08+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162075+00:00"
-        },
-        {
-          "id": "7149761",
-          "title": "Safebooru: 7149761",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149761",
-          "summary": "Tags: 1girl blonde_hair highres holding holding_umbrella...",
-          "image": "https://safebooru.org/images/847/3327e16a798a791bfb2023354f857776f349fc1d.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T08:00:39+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162079+00:00"
-        },
-        {
-          "id": "7149758",
-          "title": "Safebooru: 7149758",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149758",
-          "summary": "Tags: blonde_hair highres long_hair palulap touhou yakum...",
-          "image": "https://safebooru.org/images/847/abf9ed76be69bf5fda8898a5e9ddd7c877404e10.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T08:00:37+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162084+00:00"
-        },
-        {
-          "id": "7149757",
-          "title": "Safebooru: 7149757",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149757",
-          "summary": "Tags: blonde_hair highres long_hair palulap touhou yakum...",
-          "image": "https://safebooru.org/images/847/ddeb01baefea0cbaa13cd78159070501afae4a6d.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T08:00:37+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162088+00:00"
-        },
-        {
-          "id": "7149728",
-          "title": "Safebooru: 7149728",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149728",
-          "summary": "Tags: 2girls animal_ears apron black_hair black_hat blac...",
-          "image": "https://safebooru.org/images/847/f92ed0282ce0c3d6119d19163abc96c81b1a8d99.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T08:00:14+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162092+00:00"
-        },
-        {
-          "id": "7149711",
-          "title": "Safebooru: 7149711",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149711",
-          "summary": "Tags: 1girl animal_ears bird_ears bird_girl bird_wings b...",
-          "image": "https://safebooru.org/images/847/2ffd6a7dc665bc215d6d129e3ad47794f2a0d4a2.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T07:31:10+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162097+00:00"
-        },
-        {
-          "id": "7149675",
-          "title": "Safebooru: 7149675",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149675",
-          "summary": "Tags: 1girl arm_ribbon bat_wings black_skirt black_vest ...",
-          "image": "https://safebooru.org/images/847/0dcc817cbabb6da926628acaa28973115f1d559f.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T07:30:17+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162102+00:00"
-        },
-        {
-          "id": "7149607",
-          "title": "Safebooru: 7149607",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149607",
-          "summary": "Tags: 1girl :/ animal_ears ascot black_hair bow cat_ears...",
-          "image": "https://safebooru.org/images/847/fb4eb8b4e02f812837adbea904c75a75cc3a417e.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T06:30:32+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162107+00:00"
-        },
-        {
-          "id": "7149605",
-          "title": "Safebooru: 7149605",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149605",
-          "summary": "Tags: 2girls animal_ears black_hair blonde_hair blush bo...",
-          "image": "https://safebooru.org/images/847/9391f383142990bb476f52cbe83191292efa2bc0.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T06:30:31+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162111+00:00"
-        },
-        {
-          "id": "7149590",
-          "title": "Safebooru: 7149590",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149590",
-          "summary": "Tags: 1girl animal_ears battle_rifle black_jacket blazer...",
-          "image": "https://safebooru.org/images/847/d36a0d08dbaff62dd826320a76ce421575d0dacc.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T06:30:24+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162115+00:00"
-        },
-        {
-          "id": "7149581",
-          "title": "Safebooru: 7149581",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149581",
-          "summary": "Tags: 1girl animal_ears assault_rifle black_background b...",
-          "image": "https://safebooru.org/images/847/449c22fbb281e35fd380a747e805af9f2ab3cde2.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T06:30:20+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162120+00:00"
-        },
-        {
-          "id": "7149418",
-          "title": "Safebooru: 7149418",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149418",
-          "summary": "Tags: 1girl absurdres blue_hat blue_kimono closed_mouth ...",
-          "image": "https://safebooru.org/images/847/1c30ba27bf51c2144a53c76a66003461a99fe680.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T05:00:31+00:00",
-          "fetched_at": "2026-09-16T10:57:41.162124+00:00"
-        },
-        {
-          "id": "7149247",
-          "title": "Safebooru: 7149247",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149247",
-          "summary": "Tags: :d black_boots black_hat blonde_hair blue_kimono b...",
-          "image": "https://safebooru.org/images/847/d421bacda92a570f7c2c1ae3b3fa68d23b1bcca4.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T03:30:15+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329477+00:00"
-        },
-        {
-          "id": "7149228",
-          "title": "Safebooru: 7149228",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149228",
-          "summary": "Tags: 2girls black_hair blonde_hair bow commentary_reque...",
-          "image": "https://safebooru.org/images/847/0e8bdfd5c98f3e6a75522ed4f4c5314508dbf424.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T03:00:29+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329486+00:00"
-        },
-        {
-          "id": "7149224",
-          "title": "Safebooru: 7149224",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149224",
-          "summary": "Tags: 2girls ascot black_hair black_vest blonde_hair blo...",
-          "image": "https://safebooru.org/images/847/8869b66bfae5339e10a4b6fba528550810a55b58.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T03:00:28+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329494+00:00"
-        },
-        {
-          "id": "7149213",
-          "title": "Safebooru: 7149213",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149213",
-          "summary": "Tags: 1girl :d black_hat black_shoes blush buttons chibi...",
-          "image": "https://safebooru.org/images/847/f11475fa3d0f17b6624b230647dd560015f294bf.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T03:00:26+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329500+00:00"
-        },
-        {
-          "id": "7149209",
-          "title": "Safebooru: 7149209",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149209",
-          "summary": "Tags: 1girl :d artist_name blonde_hair blush bow bowtie ...",
-          "image": "https://safebooru.org/images/847/faf5d99e66a624f87fb137c97d328b31ff4a219f.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T03:00:23+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329507+00:00"
-        },
-        {
-          "id": "7149206",
-          "title": "Safebooru: 7149206",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149206",
-          "summary": "Tags: 1girl animal_print belt bishamonten&#039;s_pagoda ...",
-          "image": "https://safebooru.org/images/847/deac011e85ecbca38f4d37b97d9cc29390712623.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T03:00:23+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329512+00:00"
-        },
-        {
-          "id": "7149161",
-          "title": "Safebooru: 7149161",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149161",
-          "summary": "Tags: 2girls black_skirt black_vest bow braid brown_hair...",
-          "image": "https://safebooru.org/images/847/7f11973d4109680eaa54f4a6f92ba730834dc20e.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T02:30:42+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329518+00:00"
-        },
-        {
-          "id": "7149157",
-          "title": "Safebooru: 7149157",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149157",
-          "summary": "Tags: 2girls :d apron ascot black_hat black_skirt black_...",
-          "image": "https://safebooru.org/images/847/496ce4968bdb6d3125f91d3b1eda6c76605ea249.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T02:30:41+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329528+00:00"
-        },
-        {
-          "id": "7149153",
-          "title": "Safebooru: 7149153",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149153",
-          "summary": "Tags: 2girls :d ascot black_hair black_hat black_vest bl...",
-          "image": "https://safebooru.org/images/847/3b9ad145ffa63f09d2b3353c4cb5afb6cfced0e2.png",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T02:30:39+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329535+00:00"
-        },
-        {
-          "id": "7149149",
-          "title": "Safebooru: 7149149",
-          "link": "https://safebooru.org/index.php?page=post&s=view&id=7149149",
-          "summary": "Tags: 1girl apron bag black_skirt blonde_hair bow commen...",
-          "image": "https://safebooru.org/images/847/68ce951bdee32ea60353b2cea715774f8631bcd5.jpg",
-          "source": "Safebooru",
-          "source_icon": "🎨",
-          "priority": 2,
-          "published": "2026-09-16T02:30:37+00:00",
-          "fetched_at": "2026-09-16T03:42:44.329541+00:00"
         }
       ],
       "count": 50
     }
   },
   "weather": {
-    "updated": "2026-09-16T10:57:41.164598+00:00",
+    "updated": "2026-09-16T16:17:16.046547+00:00",
     "forecasts": [
       {
         "location": "博丽神社",
         "location_jp": "博麗神社",
-        "condition": "花粉",
-        "icon": "🌸",
-        "temperature": 26
+        "condition": "多云",
+        "icon": "⛅",
+        "temperature": 31
       },
       {
         "location": "人间之里",
         "location_jp": "人間の里",
-        "condition": "花粉",
-        "icon": "🌸",
-        "temperature": -4
+        "condition": "晴",
+        "icon": "☀️",
+        "temperature": -3
       },
       {
         "location": "红魔馆",
         "location_jp": "紅魔館",
-        "condition": "晴",
-        "icon": "☀️",
-        "temperature": 14
+        "condition": "红雾",
+        "icon": "🌅",
+        "temperature": 19
       },
       {
         "location": "白玉楼",
         "location_jp": "白玉楼",
-        "condition": "樱吹雪",
-        "icon": "🌸",
-        "temperature": 3
+        "condition": "雪",
+        "icon": "❄️",
+        "temperature": -2
       },
       {
         "location": "永远亭",
         "location_jp": "永遠亭",
-        "condition": "雷阵雨",
-        "icon": "⛈️",
-        "temperature": 9
+        "condition": "晴",
+        "icon": "☀️",
+        "temperature": 3
       },
       {
         "location": "守矢神社",
         "location_jp": "守矢神社",
-        "condition": "多云",
-        "icon": "⛅",
+        "condition": "晴",
+        "icon": "☀️",
         "temperature": 4
       },
       {
         "location": "地灵殿",
         "location_jp": "地霊殿",
-        "condition": "异变中",
-        "icon": "⚡",
-        "temperature": 13
+        "condition": "红雾",
+        "icon": "🌅",
+        "temperature": 25
       },
       {
         "location": "命莲寺",
         "location_jp": "命蓮寺",
-        "condition": "异变中",
-        "icon": "⚡",
-        "temperature": 6
+        "condition": "弹幕暴风",
+        "icon": "🌀",
+        "temperature": 26
       }
     ]
   },

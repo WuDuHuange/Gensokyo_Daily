@@ -129,6 +129,14 @@
       <path d="M12 7.2C10.5 5.7 8 5.1 5 5.1v12.4c3 0 5.5.6 7 2.1 1.5-1.5 4-2.1 7-2.1V5.1c-3 0-5.5.6-7 2.1Z" />
       <path d="M12 7.2v12.4" />
     </symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24">
+      <circle cx="5.5" cy="12" r="1.1" />
+      <circle cx="12" cy="12" r="1.1" />
+      <circle cx="18.5" cy="12" r="1.1" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />
+    </symbol>
     <symbol id="i-beer" viewBox="0 0 24 24">
       <path d="M5 5.5h9.5v13a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 18.5v-13Z" />
       <path d="M14.5 9h2.2a1.8 1.8 0 0 1 1.8 1.8v4.4a1.8 1.8 0 0 1-1.8 1.8h-2.2" />
@@ -161,11 +169,14 @@
       <!-- 刊头装饰墨线，从中间向两端展开 -->
       <div class="flex items-center gap-3 md:gap-6 mb-2">
         <span class="masthead-ornament__line" style="--d:200ms"></span>
-        <span class="text-ink-2 text-xs md:text-sm tracking-[0.35em] whitespace-nowrap">文 々 新 聞</span>
+        <span class="font-title text-ink-2 text-xs md:text-sm tracking-[0.35em] whitespace-nowrap">文 々 新 聞</span>
         <span class="masthead-ornament__line" style="--d:200ms"></span>
       </div>
 
-      <h1 class="font-title text-[2.4rem] md:text-7xl font-black leading-[1.2] text-ink my-4 masthead-title ink-in ink-in--masthead" style="--d:80ms">
+      <!-- 报头刊名：宋体特粗，不是毛笔行书。
+           真报纸的刊头是宋体/黑体特粗压出来的，毛笔行书更像店铺招牌；
+           而且手写体的笔画外扩会和上方注音打架。手写体保留给副标与首字下沉。 -->
+      <h1 class="font-heading text-[2.4rem] md:text-7xl font-black leading-[1.2] text-ink my-4 masthead-title ink-in ink-in--masthead" style="--d:80ms">
         <ruby>幻想乡日报<rp>(</rp><rt class="text-[0.3em] tracking-[0.2em] text-ink-2">げんそうきょうにっぽう</rt><rp>)</rp></ruby>
       </h1>
 
@@ -257,23 +268,37 @@
     </footer>
   </div>
 
-  <!-- ============ 工具坞 ============ -->
+  <!-- ============ 工具坞 ============
+       旧版是 4 个圆钮常驻右下角，压在正文上，且没有「收起」的概念 ——
+       读者在阅读时始终被 4 个控件占着视线。现在收成一个圆钮，
+       点开才展开菜单。默认收起。
+
+       ⚠️ #btn-to-top 的滚动显隐（motion.js 的 .is-visible）保持原样，
+       它只是恰好被放进了菜单里：页面顶部时「回到报头」本就无意义，
+       跟着菜单一起隐没反而更合理。 -->
   <div class="tool-dock" id="tool-dock">
-    <button class="tool-btn" id="btn-ambient-toggle" type="button" aria-label="环境白噪音" style="display:none;">
-      <span class="tool-btn__icon"><svg class="icon"><use href="#i-music" /></svg></span>
-      <span class="tool-btn__tip">环境白噪音</span>
-    </button>
-    <button class="tool-btn" id="btn-sound-toggle" type="button" aria-label="音效开关">
-      <span class="tool-btn__icon"><svg class="icon"><use href="#i-sound-off" /></svg></span>
-      <span class="tool-btn__tip">开启音效</span>
-    </button>
-    <button class="tool-btn" id="btn-theme-toggle" type="button" aria-label="切换夜间模式">
-      <span class="tool-btn__icon"><svg class="icon"><use href="#i-moon" /></svg></span>
-      <span class="tool-btn__tip">夜读模式</span>
-    </button>
-    <button class="tool-btn to-top" id="btn-to-top" type="button" aria-label="回到报头">
-      <span class="tool-btn__icon"><svg class="icon"><use href="#i-arrow-up" /></svg></span>
-      <span class="tool-btn__tip">回到报头</span>
+    <div class="tool-dock__menu" id="tool-dock-menu">
+      <button class="tool-btn" id="btn-ambient-toggle" type="button" aria-label="环境白噪音" style="display:none;">
+        <span class="tool-btn__icon"><svg class="icon"><use href="#i-music" /></svg></span>
+        <span class="tool-btn__tip">环境白噪音</span>
+      </button>
+      <button class="tool-btn" id="btn-sound-toggle" type="button" aria-label="音效开关">
+        <span class="tool-btn__icon"><svg class="icon"><use href="#i-sound-off" /></svg></span>
+        <span class="tool-btn__tip">开启音效</span>
+      </button>
+      <button class="tool-btn" id="btn-theme-toggle" type="button" aria-label="切换夜间模式">
+        <span class="tool-btn__icon"><svg class="icon"><use href="#i-moon" /></svg></span>
+        <span class="tool-btn__tip">夜读模式</span>
+      </button>
+      <button class="tool-btn to-top" id="btn-to-top" type="button" aria-label="回到报头">
+        <span class="tool-btn__icon"><svg class="icon"><use href="#i-arrow-up" /></svg></span>
+        <span class="tool-btn__tip">回到报头</span>
+      </button>
+    </div>
+
+    <button class="tool-fab" id="btn-tool-toggle" type="button" aria-label="工具" aria-expanded="false" aria-controls="tool-dock-menu">
+      <svg class="icon tool-fab__icon--open"><use href="#i-dots" /></svg>
+      <svg class="icon tool-fab__icon--close"><use href="#i-close" /></svg>
     </button>
   </div>
 

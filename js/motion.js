@@ -287,12 +287,60 @@
   }
 
   // ============================================================
+  // L3 · 工具坞展开 / 收起
+  // ============================================================
+  //
+  // 默认只显示一个圆钮，点开才露出音效 / 夜读 / 回到报头。
+  // 这里只管「开合」这一件事，各按钮自己的行为仍归 Theme / Scroll / app.js 管，
+  // 所以本模块只做类名切换，不去碰它们的点击处理。
+  const Dock = {
+    init() {
+      const dock = $('#tool-dock');
+      const fab = $('#btn-tool-toggle');
+      const menu = $('#tool-dock-menu');
+      if (!dock || !fab || !menu) return;
+
+      const setOpen = (open) => {
+        dock.classList.toggle('tool-dock--open', open);
+        fab.setAttribute('aria-expanded', open ? 'true' : 'false');
+        fab.setAttribute('aria-label', open ? '收起工具' : '工具');
+      };
+
+      const isOpen = () => dock.classList.contains('tool-dock--open');
+
+      fab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOpen(!isOpen());
+      });
+
+      // 点菜单里的任何一项后收起：这些动作（切主题 / 回顶部 / 开关音效）
+      // 都会立刻改变页面状态，菜单继续杵在那儿只会挡视线。
+      menu.addEventListener('click', (e) => {
+        if (e.target.closest('.tool-btn')) setOpen(false);
+      });
+
+      // 点空白处 / 按 Esc 收起 —— 浮层的基本礼节
+      document.addEventListener('click', (e) => {
+        if (isOpen() && !e.target.closest('#tool-dock')) setOpen(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isOpen()) {
+          setOpen(false);
+          fab.focus();
+        }
+      });
+    },
+  };
+
+  // ============================================================
   // 启动
   // ============================================================
 
   function boot() {
     Theme.init();
     Scroll.init();
+    Dock.init();
   }
 
   if (document.readyState === 'loading') {

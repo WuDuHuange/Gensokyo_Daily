@@ -741,8 +741,10 @@
       .map(
         (ad) => `
       <div class="ad-card">
-        <div class="ad-card__icon">${emojiIcon(ad.icon, 'icon icon--lg')}</div>
-        <h3 class="ad-card__title">${escapeHtml(ad.title)}</h3>
+        <div class="ad-card__head">
+          <span class="ad-card__icon">${emojiIcon(ad.icon)}</span>
+          <h3 class="ad-card__title">${escapeHtml(ad.title)}</h3>
+        </div>
         <p class="ad-card__subtitle">${escapeHtml(ad.subtitle)}</p>
         <p class="ad-card__description">${escapeHtml(ad.description)}</p>
         <p class="ad-card__contact">${iconSvg('map-pin')} ${escapeHtml(ad.contact)}</p>

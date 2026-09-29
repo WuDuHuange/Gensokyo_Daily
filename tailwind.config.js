@@ -22,10 +22,27 @@ module.exports = {
         seal: token('--c-seal'),        // 朱印：标记 / 链接 / 强调（全站唯一强调色）
       },
       fontFamily: {
+        // 手写体：只留给报头副标「文々。新聞」与首字下沉，不承担主视觉。
+        // 报头刊名已改用 font-heading（宋体特粗）—— 真报纸的刊头是宋体/黑体压出来的，
+        // 毛笔行书更像店铺招牌，且笔画外扩会和上方注音打架。
         title: ['"Ma Shan Zheng"', '"STSong"', '"SimSun"', 'serif'],
         heading: ['"Noto Serif SC"', '"STSong"', '"SimSun"', 'serif'],
         body: ['"Noto Serif SC"', '"STSong"', '"SimSun"', 'Georgia', 'serif'],
-        mono: ['"Courier New"', 'monospace'],
+        // mono 只在**纯 ASCII** 上生效，靠的是逐字符 fallback：
+        // 前面几个等宽字体都没有 CJK 字形，汉字会自动落到后面的 Noto Serif SC，
+        // 于是「第 20260928 期」里的数字等宽对齐、汉字仍是正文宋体，
+        // 不需要在每个调用点区分「这段是 ASCII 还是中文」。
+        // 旧版栈尾是裸 monospace：CJK 会落到系统默认的无衬线等宽字体，
+        // 与正文宋体混排时字重、字面都不一致。
+        mono: [
+          'ui-monospace',
+          '"Cascadia Mono"',
+          'Consolas',
+          '"Courier New"',
+          '"Noto Serif SC"',
+          '"STSong"',
+          'serif',
+        ],
       },
       // 经典大报的字号阶梯。
       // 关键点：层级之间的差距要拉得足够开——旧版头条 2xl(24px) 到正文 base(16px)

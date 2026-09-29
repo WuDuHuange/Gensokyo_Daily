@@ -10,6 +10,7 @@ import os
 import re
 import time
 import hashlib
+import html
 import uuid
 import random
 import functools
@@ -309,46 +310,25 @@ def is_important_zun_tweet(text: str) -> bool:
 
 
 def clean_html(raw_html: str) -> str:
-    """移除 HTML 标签，保留纯文本"""
+    """
+    移除 HTML 标签并解码实体，保留纯文本。
+
+    ⚠️ 两步顺序不可颠倒：**先剥标签，后解码实体**。
+    若先解码，`&lt;script&gt;` 会先变成真标签、再被正则剥掉，等于删掉了本该显示的正文；
+    反过来则只剥掉真正的标签，被转义的尖括号安全地留作文字。
+
+    实体解码是必需的：RSS 源里普遍带 `&#160;` `&#8220;` `&#8230;` 这类实体，
+    不解码就会原样写进 news_data.json，前端 escapeHtml() 再转义一次，
+    最终在页面上显示成可见的 `&#160;` 字面量（2026-09-29 实测 115 条里中 51 条）。
+    """
     if not raw_html:
         return ""
     clean = re.sub(r"<[^>]+>", "", raw_html)
+    clean = html.unescape(clean)
+    # NBSP(U+00A0) 也会被 \s 折叠 —— Python3 的 \s 覆盖 Unicode 空白，
+    # 所以 &#160; 解码出的不换行空格会被下面这行一并清掉
     clean = re.sub(r"\s+", " ", clean).strip()
     return clean[:300]  # 摘要截断
-
-
-def extract_image(entry) -> Optional[str]:
-    """从 RSS 条目中尽力提取一张图片 URL"""
-    # 尝试 media:content
-    if hasattr(entry, "media_content") and entry.media_content:
-        for media in entry.media_content:
-            if "image" in media.get("type", "") or media.get("url", "").endswith(
-                (".jpg", ".png", ".webp", ".gif")
-            ):
-                return media["url"]
-
-    # 尝试 media:thumbnail
-    if hasattr(entry, "media_thumbnail") and entry.media_thumbnail:
-        return entry.media_thumbnail[0].get("url")
-
-    # 尝试 enclosure
-    if hasattr(entry, "enclosures") and entry.enclosures:
-        for enc in entry.enclosures:
-            if "image" in enc.get("type", ""):
-                return enc.get("href") or enc.get("url")
-
-    # 尝试从 description/content 中提取 <img>
-    content = ""
-    if hasattr(entry, "content") and entry.content:
-        content = entry.content[0].get("value", "")
-    elif hasattr(entry, "summary"):
-        content = entry.summary or ""
-
-    img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', content)
-    if img_match:
-        return img_match.group(1)
-
-    return None
 
 
 def fetch_bilibili_rank_api(rid: int, label: str) -> list:
@@ -530,15 +510,6 @@ def fetch_feed(url: str, timeout: int = REQUEST_TIMEOUT) -> Optional[feedparser.
     except Exception as e:
         print(f"  ⚠ 解析失败: {url} — {e}")
         return None
-
-
-def clean_html(raw_html: str) -> str:
-    """去除 HTML 标签"""
-    if not raw_html:
-        return ""
-    cleanr = re.compile("<.*?>")
-    text = re.sub(cleanr, "", raw_html)
-    return text.strip()
 
 
 def extract_image(entry) -> Optional[str]:

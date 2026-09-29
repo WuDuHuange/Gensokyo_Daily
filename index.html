@@ -107,7 +107,7 @@
         <span class="text-lg">📌</span> 简讯
         <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">IN BRIEF</span>
       </div>
-      <div class="brief-grid" id="container-brief"></div>
+      <div class="brief-grid brief-grid--dense" id="container-brief"></div>
     </section>
 
     <!-- ============ 社会·民生 ============ -->
@@ -116,7 +116,9 @@
         <span class="text-lg">💬</span> 社会·民生
         <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">COMMUNITY</span>
       </div>
-      <div class="brief-grid" id="container-community"></div>
+      <!-- 容器本身不再带 .brief-grid：这个分类改由 app.js 输出
+           「3 条带图卡 + 其余标题流」两段结构，多栏由内层元素自己声明。 -->
+      <div id="container-community"></div>
     </section>
 
     <!-- ============ 副刊·剪报 ============ -->

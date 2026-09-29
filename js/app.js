@@ -165,14 +165,61 @@
     }
   }
 
+  /** 常见命名实体表 —— 只列数据源里真实出现过的，不做全量 HTML5 实体表 */
+  const NAMED_ENTITIES = {
+    nbsp: ' ', amp: '&', lt: '<', gt: '>', quot: '"', apos: "'",
+    hellip: '…', ldquo: '“', rdquo: '”', lsquo: '‘', rsquo: '’',
+    mdash: '—', ndash: '–', middot: '·', bull: '•', times: '×',
+    copy: '©', reg: '®', trade: '™', deg: '°', laquo: '«', raquo: '»',
+  };
+
+  /**
+   * 解码 HTML 实体
+   *
+   * 抓取侧（fetch_news.py 的 clean_html）已于 2026-09-29 补上 html.unescape()，
+   * 但**已经生成的 news_data.json 里仍留有旧实体**，要等下一轮 Actions 覆盖才会消失。
+   * 这里做一次幂等兜底：已解码的文本再解一次不会有任何变化。
+   *
+   * 实测（2026-09-29）：115 条里 51 条（44%）的 title/summary 含 `&#160;`
+   * `&#8220;` `&#8230;`，不解码就会以字面量显示在版面上。
+   */
+  function decodeEntities(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&#x([0-9a-fA-F]+);/g, (m, hex) => {
+        const cp = parseInt(hex, 16);
+        return cp > 0 && cp <= 0x10FFFF ? String.fromCodePoint(cp) : m;
+      })
+      .replace(/&#(\d+);/g, (m, dec) => {
+        const cp = parseInt(dec, 10);
+        return cp > 0 && cp <= 0x10FFFF ? String.fromCodePoint(cp) : m;
+      })
+      .replace(/&([a-zA-Z]+);/g, (m, name) => {
+        const key = name.toLowerCase();
+        return Object.prototype.hasOwnProperty.call(NAMED_ENTITIES, key)
+          ? NAMED_ENTITIES[key]
+          : m;
+      })
+      // &#160; 解出的 U+00A0 在中文行内会表现为"吞掉空格"，统一成普通空格
+      .replace(/\u00a0/g, ' ');
+  }
+
   /**
    * 转义 HTML
+   *
+   * 先解码再转义：数据源里的实体是"源文本的编码"，不是"要显示的文字"。
+   * 转义改用正则而非 div.textContent/innerHTML —— 后者只处理 & < >，
+   * 不会转义引号，而本函数的结果大量用在 `href="${...}"` / `alt="${...}"`
+   * 这类属性上下文里，引号不转义就有截断属性的风险。
    */
   function escapeHtml(str) {
     if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+    return decodeEntities(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   /**
@@ -182,6 +229,82 @@
     if (!str) return '';
     if (str.length <= maxLen) return str;
     return str.slice(0, maxLen) + '…';
+  }
+
+  // ============ 副刊图片的 tag 工具 ============
+
+  /**
+   * 通用 tag —— 几乎每张图上都有，对「区分两张图是不是同一个角色/同一个画师」
+   * 没有任何信息量。展示和去重都跳过。
+   */
+  const GENERIC_TAGS = new Set([
+    '1girl', '2girls', '3girls', '4girls', '1other',
+    'absurdres', 'highres', 'commentary_request', 'translated',
+    'artist_name', 'chibi', 'chibi_only',
+  ]);
+
+  /**
+   * 从 Safebooru 的 summary 里解析 tag 列表。
+   *
+   * ⚠️ 这里踩过两个坑：
+   *
+   * 1. tag 之间是**空格**分隔，不是逗号。旧代码写的是 `split(',')`，于是
+   *    「仅取前 3 个 tag」从来没生效过 —— tagList 永远只有 1 个元素（整条字符串），
+   *    `slice(0, 3)` 等于没切。卡片下面那一长串 tag 实际是被 CSS 的
+   *    `line-clamp-2` 截的，不是被这段 JS 截的。
+   *
+   * 2. 抓取侧（fetch_news.py）把 tag 截到 50 字符再加 "..."，所以**最后一个
+   *    tag 一定是半截词**（如 `comm...` ← commentary_request）。判到结尾的 "..."
+   *    就把最后一项丢掉，否则会显示出残缺的 tag。
+   */
+  function parseArtTags(summary) {
+    const raw = String(summary || '').replace(/^Tags:\s*/, '').trim();
+    if (!raw) return [];
+    const cutOff = raw.endsWith('...');
+    const list = raw.replace(/\.\.\.$/, '').split(/[\s,]+/).filter(Boolean);
+    if (cutOff && list.length) list.pop();
+    return list.filter((t) => !GENERIC_TAGS.has(t.toLowerCase()));
+  }
+
+  /** 集合的 Jaccard 相似度（交集 / 并集） */
+  function jaccard(a, b) {
+    if (!a.size || !b.size) return 0;
+    let inter = 0;
+    for (const t of a) {
+      if (b.has(t)) inter++;
+    }
+    return inter / (a.size + b.size - inter);
+  }
+
+  /**
+   * 相似度阈值。两个条目的 tag 集合 Jaccard ≥ 此值即视为「同一张图」。
+   *
+   * ⚠️ 0.45 是针对**当前 tag 长度**调的：抓取侧截到 50 字符 → 每条约 6~8 个 tag。
+   *    实测该数据下 0.40 / 0.45 / 0.50 结果一致，0.55 起会漏掉重复项，所以取中间偏保守的 0.45。
+   *    若以后放宽抓取侧的截断长度，tag 集合变长会**稀释** Jaccard，这个阈值必须重调 ——
+   *    否则去重会静默失效（实测 tag 数从 ~7 涨到 ~25 时，同一对近似图的 Jaccard
+   *    会从 0.57 掉到 0.2 以下，等于完全不生效）。
+   */
+  const ART_SIMILARITY_THRESHOLD = 0.45;
+
+  /**
+   * 从候选里挑出视觉上不重复的 n 张图。
+   *
+   * 背景：Safebooru 按 `tags=touhou` 抓，返回的是**同一批画师、同一角色的连号图**。
+   * 直接取前 12 条会得到好几张同角色的近亲裁切 ——
+   * 2026-09-29 实测 No.7184980 / 7185025 / 7185026 三张都是同一个蓝发角色，
+   * 12 格里视觉上像「单一角色图库」，而不是副刊剪报。
+   */
+  function pickDiverseArt(items, count) {
+    const kept = [];
+    for (const item of items) {
+      if (!item.image) continue;
+      const tags = new Set(parseArtTags(item.summary));
+      const dup = kept.some((k) => jaccard(tags, k.tags) >= ART_SIMILARITY_THRESHOLD);
+      if (!dup) kept.push({ item, tags });
+      if (kept.length >= count) break;
+    }
+    return kept.map((k) => k.item);
   }
 
   // ============ 渲染函数 ============
@@ -274,7 +397,7 @@
    * official 类目的数据源（ZUN 推文、官方站）本身不出图，15 条里 0 张图，
    * 如果一律套两栏布局，左列会整块空着。
    */
-  function createNewsCard(item, variant = 'feature') {
+  function createNewsCard(item, variant = 'feature', opts = {}) {
     const hasImage = !!item.image;
     const title = escapeHtml(item.title);
     const source = escapeHtml(item.source);
@@ -312,11 +435,18 @@
 
     // ---------- 简讯：一行式，只有标题 + 来源 ----------
     if (variant === 'brief') {
+      // 来源标签只在「与上一条不同」时输出。同源条目会连着出现十几次
+      // （实测「东方官方资讯站」重复 11 次），每条都挂一遍纯属噪声；
+      // 连续同源共用一个标签，也是报纸简讯栏的常见做法。
+      const sourceHtml =
+        opts.showSource === false
+          ? ''
+          : `<span class="brief-item__source font-mono">${source}</span>`;
       return `
       <div class="brief-item" data-reveal>
         <span class="brief-item__mark" aria-hidden="true"></span>
         <a class="brief-item__title text-brief text-ink-black news-title-link" href="${href}" target="_blank" rel="noopener noreferrer" data-news-link>${title}</a>
-        <span class="brief-item__source font-mono">${source}</span>
+        ${sourceHtml}
       </div>`;
     }
 
@@ -357,14 +487,13 @@
       displayTitle = displayTitle.replace('Safebooru:', 'No.');
     }
 
-    // 标签优化: 仅取前3个
-    let tags = item.summary || '';
-    if (tags.startsWith('Tags:')) {
-      const tagList = tags.replace('Tags:', '').split(',').map(t => t.trim()).filter(Boolean);
-      tags = tagList.slice(0, 3).join(', ');
-    } else {
-      tags = truncate(tags, 20);
-    }
+    // 标签：解析出真正的前 3 个 tag。
+    // 旧代码用 `split(',')` 去切**空格分隔**的 tag 串，tagList 恒为 1 个元素，
+    // 「仅取前 3 个」从来没生效过 —— 详见 parseArtTags 的注释。
+    const parsedTags = parseArtTags(item.summary);
+    const tags = parsedTags.length
+      ? parsedTags.slice(0, 3).join(', ')
+      : truncate(item.summary, 20);
 
     return `
       <div class="art-card p-3 pb-8 shadow-polaroid border border-gray-200 relative" data-reveal>
@@ -406,6 +535,25 @@
   }
 
   /**
+   * 渲染一组简讯条目。
+   *
+   * 来源标签只在「与上一条不同」时输出：同源条目会连着出现十几次
+   * （实测「东方官方资讯站」连出 11 条），每条都挂一遍纯属噪声。
+   * 判据取文档顺序上的前一条，与多栏排版无关。
+   */
+  function renderBriefList(items, limit) {
+    const list = typeof limit === 'number' ? items.slice(0, limit) : items;
+    let prevSource = null;
+    return list
+      .map((it) => {
+        const showSource = it.source !== prevSource;
+        prevSource = it.source;
+        return createNewsCard(it, 'brief', { showSource });
+      })
+      .join('');
+  }
+
+  /**
    * 渲染一个新闻分类
    */
   function renderCategory(categoryKey, categoryData, containerId) {
@@ -432,7 +580,9 @@
     // 形成剪贴簿的错落感。
     if (categoryKey === 'art') {
       const CLIPPING_COUNT = 12;
-      const picks = items.filter((i) => i.image).slice(0, CLIPPING_COUNT);
+      // 走「视觉去重」挑选，而不是直接取前 12 条 ——
+      // Safebooru 返回的是同批画师同角色的连号图，前 12 条里会有好几张近似图。
+      const picks = pickDiverseArt(items, CLIPPING_COUNT);
       if (picks.length === 0) {
         container.innerHTML = renderEmptyState('暂无画作');
         return;
@@ -461,16 +611,18 @@
       return;
     }
 
-    // ---------- 头版要闻：1 条头条 + 3 条要闻，其余转简讯 ----------
+    // ---------- 头版要闻：1 条头条 + 3 条要闻，其余全部转简讯 ----------
     // 这是「分层」的关键：只有前 4 条配得上大版面，剩下的压成一行式。
     if (categoryKey === 'official') {
       const LEAD = 1;
       const FEATURE = 3;
-      const BRIEF = 6;
 
       const lead = items.slice(0, LEAD);
       const features = items.slice(LEAD, LEAD + FEATURE);
-      const briefs = items.slice(LEAD + FEATURE, LEAD + FEATURE + BRIEF);
+      // 剩余条目**全部**落到「简讯」。旧版这里写死 BRIEF = 6，
+      // 15 条数据只喂出 6 条，三栏密排占不到半屏 ——
+      // 简讯栏存在的理由（信息密度）没兑现，还白扔了 5 条。
+      const briefs = items.slice(LEAD + FEATURE);
 
       let html = lead.map((it) => createNewsCard(it, 'lead')).join('');
       if (features.length) {
@@ -484,16 +636,41 @@
       // 剩余条目落到「简讯」板块（容器在 index.html 里，独立于本 section）
       const briefBox = $('#container-brief');
       if (briefBox) {
-        briefBox.innerHTML = briefs.map((it) => createNewsCard(it, 'brief')).join('');
+        briefBox.innerHTML = renderBriefList(briefs);
         const sec = $('#section-brief');
         if (sec) sec.style.display = briefs.length ? '' : 'none';
       }
       return;
     }
 
+    // ---------- 社会·民生：3 条带图卡 + 其余标题流 ----------
+    // 旧版整个分类都走 brief（一行式），而 community 有 32/50 条带图，
+    // 一张都没用上 —— 这是整页最平的一块，也是数据利用率最低的地方。
+    if (categoryKey === 'community') {
+      const CARD_COUNT = 3;
+      const REST_COUNT = 18;
+
+      const cards = items.filter((i) => i.image).slice(0, CARD_COUNT);
+      const cardIds = new Set(cards.map((c) => c.id));
+      const rest = items
+        .filter((i) => !cardIds.has(i.id))
+        .slice(0, REST_COUNT);
+
+      let html = '';
+      if (cards.length) {
+        // feature-row--flush：去掉上边框与外边距，因为它现在位于容器顶部
+        html +=
+          '<div class="feature-row feature-row--flush">' +
+          cards.map((it) => createNewsCard(it, 'feature')).join('') +
+          '</div>';
+      }
+      html += '<div class="brief-grid">' + renderBriefList(rest) + '</div>';
+      container.innerHTML = html;
+      return;
+    }
+
     // ---------- 其余分类：简讯栏（一行式，无摘要） ----------
-    const briefs = items.slice(0, 15);
-    container.innerHTML = briefs.map((it) => createNewsCard(it, 'brief')).join('');
+    container.innerHTML = renderBriefList(items, 15);
   }
 
   /**

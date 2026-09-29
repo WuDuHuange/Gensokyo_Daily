@@ -171,10 +171,18 @@ body.night {
   /* ---------- 4. 天气带 ----------
      旧版是 8 个带 border 的格子（border-l-2 border-t-2），远看像后台数据表格——
      整页最不像报纸的地方。现在改成一条横向天气带：细竖线分隔、无外框，
-     像报纸页脚的气象栏。 */
+     像报纸页脚的气象栏。
+
+     ⚠️ 2026-09-29 修正：从 flex-wrap 改为 grid。
+     flex-wrap 只是"让内容流到下一行"，**两行之间没有共享的列**：
+     每个 item 的宽度由自身内容决定，于是 1280px 下 8 个地点折成 5+3，
+     上下两行的竖线完全对不齐，远看像表格溢出。
+     另外第二行的首项不再是 :first-child，仍带着 padding-left + border-left，
+     行首缩进也和第一行不一致。
+     grid 的列数由断点显式给出，行首位置可预测，逐个重置即可。 */
   .weather-strip {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: baseline;
     padding: 0.75rem 0;
     border-top: 1px solid rgb(var(--c-rule-light));
@@ -186,17 +194,47 @@ body.night {
     overflow: hidden;
     display: flex;
     align-items: baseline;
-    gap: 0.45rem;
-    padding: 0.1rem 1.5rem;
+    gap: 0.4rem;
+    padding: 0.1rem 0.9rem;
   }
-
-  .weather-strip__item:first-child { padding-left: 0; }
-  .weather-strip__item:last-child { padding-right: 0; }
 
   /* 地点之间的细竖线用 border-left，不用伪元素：
      带雨/暴动画的项需要 overflow: hidden，伪元素画在右侧外部会被裁掉。 */
   .weather-strip__item + .weather-strip__item {
     border-left: 1px solid rgb(var(--c-rule-light));
+  }
+
+  /* 行首项：去掉竖线与左内边距，让每行都从版心左边缘起排。
+     列数一变行首位置就变，所以每个断点都要重列一次。
+     4 列 × 2 行 → 行首是第 1、5 项。 */
+  .weather-strip__item:nth-child(4n + 1) {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  /* 2 列 × 4 行 → 行首是第 1、3、5、7 项 */
+  @media (max-width: 1023px) {
+    .weather-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .weather-strip__item:nth-child(2n + 1) {
+      border-left: none;
+      padding-left: 0;
+    }
+  }
+
+  /* 单列时每一项都是行首，竖线全部取消 */
+  @media (max-width: 479px) {
+    .weather-strip {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .weather-strip__item,
+    .weather-strip__item + .weather-strip__item {
+      border-left: none;
+      padding-left: 0;
+    }
   }
 
   .weather-strip__item .weather-location {
@@ -409,6 +447,14 @@ body.night {
     }
   }
 
+  /* 位于容器顶部的 feature-row：去掉上边框与外边距。
+     否则容器顶部会多出一条悬空的横线，看着像上一个区块的残留。 */
+  .feature-row--flush {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
   .feature-story {
     break-inside: avoid;
   }
@@ -463,6 +509,17 @@ body.night {
     .brief-grid {
       columns: 3;
       column-gap: 3rem;
+    }
+  }
+
+  /* 简讯栏专用：4 栏密排。
+     简讯只有标题、没有摘要，条目短，所以能比默认 3 栏更密 ——
+     这正是它把摘要总量压下来的手段（见 .brief-grid 上方的注释）。
+     只有 #container-brief 用它；社会·民生的标题流仍走默认 3 栏。 */
+  @media (min-width: 1024px) {
+    .brief-grid--dense {
+      columns: 4;
+      column-gap: 2.5rem;
     }
   }
 

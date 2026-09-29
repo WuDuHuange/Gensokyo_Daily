@@ -231,6 +231,44 @@
     return str.slice(0, maxLen) + '…';
   }
 
+  // ============ 图标 ============
+  // 图标定义在 index.html 顶部的 SVG 精灵里（<svg class="icon-sprite">），
+  // 静态标记与这里引用的是同一批 <symbol>，不重复维护。
+  //
+  // 为什么要在渲染时做映射：数据里的 source_icon / ad.icon 是 emoji，
+  // 由抓取侧写死、每小时被 Actions 覆盖 —— 改数据没有意义（下次就被冲掉）。
+  // 未收录的 emoji 原样回退（走 escapeHtml），不会变成空白或豆腐块。
+  const EMOJI_ICON = {
+    '📰': 'newspaper',
+    '📌': 'pin',
+    '💬': 'chat',
+    '🎨': 'art',
+    '📋': 'clipboard',
+    '📺': 'tv',
+    '📚': 'book',
+    '🔧': 'wrench',
+    '💊': 'pill',
+    '🏪': 'store',
+    '⛩️': 'torii',
+    '⛩': 'torii', // 有些数据源不带 U+FE0F 变体选择符
+    '🍺': 'beer',
+    '📍': 'map-pin',
+    '📭': 'inbox',
+  };
+
+  /** 取图标名对应的内联 SVG */
+  function iconSvg(name, cls = 'icon') {
+    return `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}" /></svg>`;
+  }
+
+  /** 把 emoji 渲染成线性图标；未收录的原样输出（已转义） */
+  function emojiIcon(ch, cls = 'icon') {
+    const raw = String(ch == null ? '' : ch).trim();
+    if (!raw) return '';
+    const name = EMOJI_ICON[raw];
+    return name ? iconSvg(name, cls) : escapeHtml(raw);
+  }
+
   // ============ 副刊图片的 tag 工具 ============
 
   /**
@@ -401,7 +439,8 @@
     const hasImage = !!item.image;
     const title = escapeHtml(item.title);
     const source = escapeHtml(item.source);
-    const icon = escapeHtml(item.source_icon);
+    // 来源图标：数据里是 emoji，渲染时换成线性图标（未收录的原样回退）
+    const icon = emojiIcon(item.source_icon);
     const href = escapeHtml(item.link);
     const time = timeAgo(item.published);
     const imgAttrs = `loading="lazy" decoding="async" data-img-fade referrerpolicy="no-referrer"`;
@@ -525,7 +564,7 @@
   function renderEmptyState(message = '暂无新闻') {
     return `
       <div class="empty-state">
-        <span class="empty-state__icon">📭</span>
+        <span class="empty-state__icon">${iconSvg('inbox')}</span>
         <p>${escapeHtml(message)}</p>
         <p style="font-size:0.75rem; margin-top:0.5rem;">
           射命丸文正在取材中，请稍后再来…
@@ -702,11 +741,11 @@
       .map(
         (ad) => `
       <div class="ad-card">
-        <div class="ad-card__icon">${escapeHtml(ad.icon)}</div>
+        <div class="ad-card__icon">${emojiIcon(ad.icon, 'icon icon--lg')}</div>
         <h3 class="ad-card__title">${escapeHtml(ad.title)}</h3>
         <p class="ad-card__subtitle">${escapeHtml(ad.subtitle)}</p>
         <p class="ad-card__description">${escapeHtml(ad.description)}</p>
-        <p class="ad-card__contact">📍 ${escapeHtml(ad.contact)}</p>
+        <p class="ad-card__contact">${iconSvg('map-pin')} ${escapeHtml(ad.contact)}</p>
       </div>
     `
       )
@@ -941,7 +980,7 @@
 
         // 图标和提示文字都在子节点里，不能用 textContent 整体替换，否则会抹掉 tooltip
         const icon = btnToggle.querySelector('.tool-btn__icon');
-        if (icon) icon.textContent = SoundManager.enabled ? '🔊' : '🔇';
+        if (icon) icon.innerHTML = iconSvg(SoundManager.enabled ? 'sound-on' : 'sound-off');
 
         const tip = btnToggle.querySelector('.tool-btn__tip');
         if (tip) tip.textContent = SoundManager.enabled ? '关闭音效' : '开启音效';

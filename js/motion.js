@@ -28,6 +28,15 @@
 
   // ============ 工具 ============
   const $ = (sel) => document.querySelector(sel);
+
+  /**
+   * 工具坞图标：引用 index.html 顶部 SVG 精灵里的 <symbol>。
+   *
+   * 这里没有复用 app.js 的 iconSvg()，因为 motion.js 先于 app.js 加载，
+   * 主题在初始化时就要定一次图标（apply(mode, false)），那一刻 app.js 还没执行。
+   * 两行代码，不值得为它引入加载顺序耦合。
+   */
+  const spriteIcon = (name) => `<svg class="icon" aria-hidden="true"><use href="#i-${name}" /></svg>`;
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
   const raf = (fn) => window.requestAnimationFrame(fn);
 
@@ -220,7 +229,7 @@
       raf(() => {
         body.classList.toggle('night', night);
         const icon = $('#btn-theme-toggle .tool-btn__icon');
-        if (icon) icon.textContent = night ? '☀️' : '🌙';
+        if (icon) icon.innerHTML = spriteIcon(night ? 'sun' : 'moon');
         const tip = $('#btn-theme-toggle .tool-btn__tip');
         if (tip) tip.textContent = night ? '日间模式' : '夜读模式';
         const btn = $('#btn-theme-toggle');

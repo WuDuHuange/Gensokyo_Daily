@@ -89,6 +89,44 @@ body.night {
    ============================================================ */
 @layer components {
 
+  /* ---------- 0. 线性图标 ----------
+     图标定义在 index.html 顶部的 <svg class="icon-sprite"> 里（<symbol> 精灵），
+     HTML 与 JS 都用 <use href="#i-xxx"> 引用同一批，不重复维护。
+
+     描边色走 currentColor：日间是墨色、夜间是米白，深浅主题自动跟随，
+     不需要为夜间单独调色 —— 这是换掉彩色 emoji 换来的最大好处。
+     尺寸用 em 而不是 px，图标会跟着所在文字的字号走。 */
+  .icon-sprite {
+    display: none;
+  }
+
+  .icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* 区块头：图标要比正文略大，才压得住旁边 1.6rem 的栏目名 */
+  .icon--lg {
+    width: 1.15em;
+    height: 1.15em;
+    vertical-align: -0.18em;
+  }
+
+  /* 工具坞圆钮：图标本身不参与文字排版，去掉基线偏移 */
+  .tool-btn__icon .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    vertical-align: middle;
+  }
+
   /* ---------- 1. 纸张容器与纤维噪声 ---------- */
   .newspaper {
     /* 纸张外沿：不再写死颜色，用墨色透明度派生 ——

@@ -8,19 +8,18 @@ module.exports = {
   content: ["./index.html", "./js/**/*.js"],
   theme: {
     extend: {
+      // 2026-09-29 收敛：13 个色键 → 7 个，只剩「墨」「朱」两个色相。
+      // 命名与 css/input.css 的 :root 令牌一一对应，中间不再有「名字对不上」的映射层。
+      // 分割线不再占独立色键：直接写 border-ink/12、border-ink/25 这类透明度派生，
+      // 日间墨深 → 压出浅褐线，夜间墨浅 → 自动变亮线，无需两套值。
       colors: {
-        'page-bg': token('--c-page-bg'),           // 桌面/页面底色
-        'paper-bg': token('--c-paper-bg'),         // 核心纸张底色
-        'paper-bg-dark': token('--c-paper-bg-dark'), // 较深纸张色
-        'ink-black': token('--c-ink-black'),       // 深黑油墨
-        'ink-dark': token('--c-ink-dark'),         // 偏黑油墨
-        'ink-gray': token('--c-ink-gray'),         // 灰色油墨
-        'ink-light': token('--c-ink-light'),       // 浅灰油墨
-        'rule-color': token('--c-rule-color'),     // 分割线深色
-        'rule-light': token('--c-rule-light'),     // 分割线浅色
-        'accent-red': token('--c-accent-red'),     // 强调红
-        'accent-red-light': token('--c-accent-red-light'), // 浅红
-        'link-color': token('--c-link-color'),     // 链接蓝
+        page: token('--c-page'),        // 桌面 / 页面底色
+        paper: token('--c-paper'),      // 核心纸张底色
+        'paper-2': token('--c-paper-2'),// 次级纸面（天气带、卡片底）
+        ink: token('--c-ink'),          // 主墨：标题 / 正文
+        'ink-2': token('--c-ink-2'),    // 次级墨：摘要 / 次要正文
+        'ink-3': token('--c-ink-3'),    // 三级墨：元信息 / 来源（AA 正文线 4.96:1）
+        seal: token('--c-seal'),        // 朱印：标记 / 链接 / 强调（全站唯一强调色）
       },
       fontFamily: {
         title: ['"Ma Shan Zheng"', '"STSong"', '"SimSun"', 'serif'],
@@ -40,7 +39,7 @@ module.exports = {
       },
       backgroundImage: {
         // 纸张纤维纹理：颜色也走变量，否则夜读模式下会看不见
-        'paper-texture': "repeating-linear-gradient(0deg, transparent, transparent 3px, rgb(var(--c-fiber) / 0.03) 3px, rgb(var(--c-fiber) / 0.03) 4px), repeating-linear-gradient(90deg, transparent, transparent 5px, rgb(var(--c-fiber) / 0.02) 5px, rgb(var(--c-fiber) / 0.02) 6px)",
+        'paper-texture': "repeating-linear-gradient(0deg, transparent, transparent 3px, rgb(var(--c-ink-3) / 0.03) 3px, rgb(var(--c-ink-3) / 0.03) 4px), repeating-linear-gradient(90deg, transparent, transparent 5px, rgb(var(--c-ink-3) / 0.02) 5px, rgb(var(--c-ink-3) / 0.02) 6px)",
       },
       boxShadow: {
         // 阴影同样走变量：夜间纸张的投影要更重才立得住

@@ -7,24 +7,27 @@
    ------------------------------------------------------------
    所有颜色以「R G B」三元组形式存放，供 tailwind.config.js 里的
    rgb(var(--x) / <alpha-value>) 消费。切换 body.night 即换主题。
+
+   2026-09-29 收敛：13 个令牌 → 7 个，只剩「墨」「朱」两个色相。
+   - 分割线不再单独定义，直接写 rgb(var(--c-ink) / α)，随主题自动反向
+   - 链接取消独立蓝色（#1A3A5C），正文内直接用朱
+   - accent-red-light / link-color 本来就是死令牌（定义了从未使用）
+   - ink-gray 与 ink-dark 合并为 ink-2：两级次级墨本来就没分工
+   - ink-light → ink-3，对比度 3.11:1 → 4.96:1，首次达到 WCAG AA 正文线
    ============================================================ */
 :root {
   /* 日刊 · 纸张 */
-  --c-page-bg: 213 203 174;
-  --c-paper-bg: 245 240 225;
-  --c-paper-bg-dark: 232 224 204;
-  --c-ink-black: 26 26 26;
-  --c-ink-dark: 44 44 44;
-  --c-ink-gray: 85 85 85;
-  --c-ink-light: 136 136 136;
-  --c-rule-color: 51 51 51;
-  --c-rule-light: 170 170 170;
-  --c-accent-red: 139 0 0;
-  --c-accent-red-light: 165 42 42;
-  --c-link-color: 26 58 92;
-  --c-fiber: 139 119 80;          /* 纸张纤维颗粒色 */
+  --c-page: 196 186 161;     /* #C4BAA1 桌面（桌/纸分离度 1.80:1，旧版 1.42:1） */
+  --c-paper: 250 247 239;    /* #FAF7EF 纸张 */
+  --c-paper-2: 239 233 220;  /* #EFE9DC 次级面 */
 
-  --shadow-paper: 0 1px 4px rgba(0, 0, 0, .15), 0 4px 16px rgba(0, 0, 0, .1), inset 0 0 80px rgba(139, 119, 80, .08);
+  --c-ink: 22 20 14;         /* #16140E 标题 / 正文      17.20:1 */
+  --c-ink-2: 85 81 70;       /* #555146 摘要 / 次要正文   7.40:1 */
+  --c-ink-3: 112 107 95;     /* #706B5F 元信息 / 来源     4.96:1 */
+
+  --c-seal: 178 58 46;       /* #B23A2E 朱：标记 / 链接   5.54:1 */
+
+  --shadow-paper: 0 1px 4px rgba(0, 0, 0, .15), 0 4px 16px rgba(0, 0, 0, .1), inset 0 0 80px rgba(112, 107, 95, .08);
   --shadow-polaroid: 2px 2px 5px rgba(0, 0, 0, .1);
   --shadow-polaroid-hover: 0 6px 18px rgba(0, 0, 0, .22);
   --noise-opacity: .03;
@@ -34,23 +37,22 @@
   --ease-press: cubic-bezier(.34, 1.56, .64, 1);
 }
 
-/* 夜读 · 灯笼（深褐纸 + 米黄油墨，避免纯黑纯白造成眩光） */
+/* 夜读 · 灯笼（深褐纸 + 米黄油墨，避免纯黑纯白造成眩光）
+   ⚠️ 夜间**不再用外阴影**塑造「纸浮在桌上」的错觉：深色下纸/桌的明度差
+   物理上限只有约 1.2:1，那层 0.55 黑在近黑底上根本看不见，属于无效装饰。
+   层次改由 .newspaper 的 1px 描边划分。 */
 body.night {
-  --c-page-bg: 18 16 14;
-  --c-paper-bg: 30 27 23;
-  --c-paper-bg-dark: 38 34 30;
-  --c-ink-black: 237 228 211;
-  --c-ink-dark: 222 211 191;
-  --c-ink-gray: 169 155 132;
-  --c-ink-light: 125 114 99;
-  --c-rule-color: 107 97 82;
-  --c-rule-light: 74 68 56;
-  --c-accent-red: 212 130 106;
-  --c-accent-red-light: 224 160 140;
-  --c-link-color: 143 184 216;
-  --c-fiber: 255 230 190;
+  --c-page: 10 9 8;          /* #0A0908 */
+  --c-paper: 30 27 22;       /* #1E1B16 */
+  --c-paper-2: 38 34 25;     /* #262219 */
 
-  --shadow-paper: 0 1px 4px rgba(0, 0, 0, .55), 0 4px 18px rgba(0, 0, 0, .45), inset 0 0 80px rgba(0, 0, 0, .28);
+  --c-ink: 237 230 213;      /* #EDE6D5  13.80:1 */
+  --c-ink-2: 188 180 160;    /* #BCB4A0   8.32:1 */
+  --c-ink-3: 140 133 117;    /* #8C8575   4.68:1 */
+
+  --c-seal: 214 96 72;       /* #D66048   4.60:1（旧版是肉粉 rgb(212 130 106)） */
+
+  --shadow-paper: none;
   --shadow-polaroid: 2px 2px 6px rgba(0, 0, 0, .5);
   --shadow-polaroid-hover: 0 6px 20px rgba(0, 0, 0, .65);
   --noise-opacity: .05;
@@ -66,17 +68,17 @@ body.night {
   }
 
   body {
-    background-color: rgb(var(--c-page-bg));
+    background-color: rgb(var(--c-page));
     transition: background-color .45s ease, color .45s ease;
   }
 
   ::selection {
-    background: rgb(var(--c-accent-red) / .18);
+    background: rgb(var(--c-seal) / .18);
   }
 
   /* 全站链接默认去掉下划线，键盘用户必须能看见焦点在哪 */
   :focus-visible {
-    outline: 2px solid rgb(var(--c-accent-red));
+    outline: 2px solid rgb(var(--c-seal));
     outline-offset: 2px;
     border-radius: 1px;
   }
@@ -89,16 +91,14 @@ body.night {
 
   /* ---------- 1. 纸张容器与纤维噪声 ---------- */
   .newspaper {
-    /* 纸张外沿：日间是浅褐，夜里要压暗，否则深色底上会浮出一圈亮边 */
-    border-color: #c4b898;
+    /* 纸张外沿：不再写死颜色，用墨色透明度派生 ——
+       日间墨是深色 → 压出一条浅褐边；夜间墨是浅色 → 自动变成亮边。
+       旧版写死 #c4b898 / #3a342c 两套，改主题时容易漏掉一套。 */
+    border-color: rgb(var(--c-ink) / .18);
     background-image:
-      radial-gradient(ellipse at 20% 50%, rgb(var(--c-fiber) / .06) 0%, transparent 70%),
-      radial-gradient(ellipse at 80% 50%, rgb(var(--c-fiber) / .04) 0%, transparent 70%);
+      radial-gradient(ellipse at 20% 50%, rgb(var(--c-ink-3) / .06) 0%, transparent 70%),
+      radial-gradient(ellipse at 80% 50%, rgb(var(--c-ink-3) / .04) 0%, transparent 70%);
     transition: background-color .45s ease, border-color .45s ease, box-shadow .45s ease;
-  }
-
-  body.night .newspaper {
-    border-color: #3a342c;
   }
 
   /* 原先这里带 mix-blend-mode: multiply，会让 .newspaper 成为混合上下文，
@@ -125,7 +125,7 @@ body.night {
   /* 字距走变量：入场动画要从「收紧」过渡到「落定」，而窄屏容不下 0.5em，
      所以两个值都必须能在断点处整体替换。 */
   .masthead-title {
-    text-shadow: 1px 1px 0 rgb(var(--c-ink-black) / .1);
+    text-shadow: 1px 1px 0 rgb(var(--c-ink) / .1);
     letter-spacing: var(--masthead-ls, .2em);
   }
 
@@ -135,8 +135,8 @@ body.night {
     height: 1px;
     background: linear-gradient(to right,
         transparent,
-        rgb(var(--c-ink-black) / .45) 22%,
-        rgb(var(--c-ink-black) / .45) 78%,
+        rgb(var(--c-ink) / .45) 22%,
+        rgb(var(--c-ink) / .45) 78%,
         transparent);
     transform: scaleX(0);
   }
@@ -161,9 +161,9 @@ body.night {
     left: 50%;
     bottom: -0.65em;
     transform: translateX(-50%);
-    background: rgb(var(--c-paper-bg));
+    background: rgb(var(--c-paper));
     padding: 0 0.6rem;
-    color: rgb(var(--c-ink-gray));
+    color: rgb(var(--c-ink-2));
     font-size: 0.7rem;
     line-height: 1;
   }
@@ -185,8 +185,8 @@ body.night {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: baseline;
     padding: 0.75rem 0;
-    border-top: 1px solid rgb(var(--c-rule-light));
-    border-bottom: 3px double rgb(var(--c-rule-color));
+    border-top: 1px solid rgb(var(--c-ink) / .12);
+    border-bottom: 3px double rgb(var(--c-ink) / .28);
   }
 
   .weather-strip__item {
@@ -201,7 +201,7 @@ body.night {
   /* 地点之间的细竖线用 border-left，不用伪元素：
      带雨/暴动画的项需要 overflow: hidden，伪元素画在右侧外部会被裁掉。 */
   .weather-strip__item + .weather-strip__item {
-    border-left: 1px solid rgb(var(--c-rule-light));
+    border-left: 1px solid rgb(var(--c-ink) / .12);
   }
 
   /* 行首项：去掉竖线与左内边距，让每行都从版心左边缘起排。
@@ -340,7 +340,7 @@ body.night {
     position: relative;
     display: inline;
     text-decoration: none !important;
-    background-image: linear-gradient(transparent 60%, rgb(var(--c-accent-red) / .14) 60%);
+    background-image: linear-gradient(transparent 60%, rgb(var(--c-seal) / .14) 60%);
     background-size: 0% 100%;
     background-repeat: no-repeat;
     background-position: left bottom;
@@ -349,7 +349,7 @@ body.night {
 
   .news-title-link:hover {
     background-size: 100% 100%;
-    color: rgb(var(--c-accent-red)) !important;
+    color: rgb(var(--c-seal)) !important;
     text-decoration: none !important;
   }
 
@@ -360,7 +360,7 @@ body.night {
   /* 头条：跨 8 栏，标题字号约是简讯的 3.5 倍 */
   .lead-story {
     padding-bottom: 2.5rem;
-    border-bottom: 3px double rgb(var(--c-rule-color));
+    border-bottom: 3px double rgb(var(--c-ink) / .28);
   }
 
   .lead-story--with-image {
@@ -388,7 +388,7 @@ body.night {
     font-size: 1.0625rem;
     line-height: 1.85;
     text-align: justify;
-    color: rgb(var(--c-ink-dark));
+    color: rgb(var(--c-ink-2));
     margin-bottom: 1.25rem;
   }
 
@@ -399,7 +399,7 @@ body.night {
     font-size: 3.4em;
     line-height: .82;
     padding: .06em .12em 0 0;
-    color: rgb(var(--c-accent-red));
+    color: rgb(var(--c-seal));
   }
 
   .lead-story__meta {
@@ -408,15 +408,15 @@ body.night {
     align-items: center;
     gap: 1rem;
     padding-top: .75rem;
-    border-top: 1px solid rgb(var(--c-rule-light));
+    border-top: 1px solid rgb(var(--c-ink) / .12);
     font-size: .75rem;
-    color: rgb(var(--c-ink-gray));
+    color: rgb(var(--c-ink-2));
   }
 
   .lead-story__figure {
     position: relative;
     overflow: hidden;
-    border: 1px solid rgb(var(--c-rule-color));
+    border: 1px solid rgb(var(--c-ink) / .28);
     aspect-ratio: 4 / 3;
     max-height: 420px;
   }
@@ -425,8 +425,8 @@ body.night {
     position: absolute;
     left: 0;
     bottom: 0;
-    background: rgb(var(--c-ink-dark) / .9);
-    color: rgb(var(--c-paper-bg));
+    background: rgb(var(--c-ink-2) / .9);
+    color: rgb(var(--c-paper));
     font-size: .65rem;
     padding: .3rem .6rem;
   }
@@ -438,7 +438,7 @@ body.night {
     gap: 2rem 2.5rem;
     margin-top: 2.5rem;
     padding-top: 2.25rem;
-    border-top: 1px solid rgb(var(--c-rule-light));
+    border-top: 1px solid rgb(var(--c-ink) / .12);
   }
 
   @media (min-width: 768px) {
@@ -461,7 +461,7 @@ body.night {
 
   .feature-story__figure {
     overflow: hidden;
-    border: 1px solid rgb(var(--c-rule-light));
+    border: 1px solid rgb(var(--c-ink) / .12);
     aspect-ratio: 16 / 10;
     margin-bottom: .9rem;
   }
@@ -476,7 +476,7 @@ body.night {
   .feature-story__summary {
     font-size: .8125rem;
     line-height: 1.7;
-    color: rgb(var(--c-ink-gray));
+    color: rgb(var(--c-ink-2));
     margin-bottom: .6rem;
   }
 
@@ -485,7 +485,7 @@ body.night {
     justify-content: space-between;
     gap: .75rem;
     font-size: .65rem;
-    color: rgb(var(--c-ink-light));
+    color: rgb(var(--c-ink-3));
   }
 
   /* ---------- 8. 简讯栏 ----------
@@ -528,7 +528,7 @@ body.night {
     align-items: baseline;
     gap: 0.55rem;
     padding: 0.5rem 0;
-    border-bottom: 1px dotted rgb(var(--c-rule-light));
+    border-bottom: 1px dotted rgb(var(--c-ink) / .12);
     break-inside: avoid;
   }
 
@@ -541,7 +541,7 @@ body.night {
     flex: none;
     width: 0.3rem;
     height: 0.3rem;
-    background: rgb(var(--c-accent-red));
+    background: rgb(var(--c-seal));
     transform: translateY(-0.2em) rotate(45deg);
   }
 
@@ -553,7 +553,7 @@ body.night {
   .brief-item__source {
     flex: none;
     font-size: 0.65rem;
-    color: rgb(var(--c-ink-light));
+    color: rgb(var(--c-ink-3));
   }
 
   /* ---------- 9. 宝丽来卡片 ---------- */
@@ -561,9 +561,9 @@ body.night {
      导致「随手贴的照片」错落感完全丢失（style.css 里本有 transform: rotate）。 */
   .art-card {
     /* 相纸是实体白纸，不跟着主题变暗；这里就地覆盖文字色变量，
-       否则夜读模式下 text-ink-dark 会解析成浅米色，落在白相纸上等于隐形。 */
-    --c-ink-dark: 44 44 44;
-    --c-ink-light: 136 136 136;
+       否则夜读模式下 text-ink-2 会解析成浅米色，落在白相纸上等于隐形。 */
+    --c-ink-2: 44 44 44;
+    --c-ink-3: 136 136 136;
     --card-paper: #fff;
     background: var(--card-paper);
     transform: rotate(var(--rot, 0deg));
@@ -574,8 +574,8 @@ body.night {
   body.night .art-card {
     /* 夜里把相纸压暗一档，纯白在深褐底上过于刺眼 */
     --card-paper: #e6dfd1;
-    --c-ink-dark: 51 46 38;
-    --c-ink-light: 122 112 96;
+    --c-ink-2: 51 46 38;
+    --c-ink-3: 122 112 96;
   }
 
   .art-card:hover {
@@ -597,7 +597,7 @@ body.night {
   }
 
   .ad-card {
-    border: 2px solid rgb(var(--c-ink-black));
+    border: 2px solid rgb(var(--c-ink));
     padding: 1.35rem 1rem 1rem;
     text-align: center;
     position: relative;
@@ -610,10 +610,10 @@ body.night {
     top: -.62rem;
     left: 50%;
     transform: translateX(-50%);
-    background: rgb(var(--c-paper-bg));
+    background: rgb(var(--c-paper));
     padding: 0 .55rem;
     font-size: .6rem;
-    color: rgb(var(--c-ink-light));
+    color: rgb(var(--c-ink-3));
     letter-spacing: .3rem;
   }
 
@@ -631,20 +631,20 @@ body.night {
     font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
     font-size: 1.1rem;
     font-weight: 700;
-    color: rgb(var(--c-ink-black));
+    color: rgb(var(--c-ink));
     margin-bottom: .1rem;
   }
 
   .ad-card__subtitle {
     font-size: .75rem;
-    color: rgb(var(--c-accent-red));
+    color: rgb(var(--c-seal));
     font-weight: 700;
     margin-bottom: .45rem;
   }
 
   .ad-card__description {
     font-size: .8rem;
-    color: rgb(var(--c-ink-dark));
+    color: rgb(var(--c-ink-2));
     line-height: 1.65;
     /* 这里刻意不用 justify：卡片只有 270px 宽，中文两端对齐会把字距撑得很散 */
     text-align: left;
@@ -653,9 +653,9 @@ body.night {
 
   .ad-card__contact {
     font-size: .7rem;
-    color: rgb(var(--c-ink-light));
+    color: rgb(var(--c-ink-3));
     font-style: italic;
-    border-top: 1px dashed rgb(var(--c-rule-light));
+    border-top: 1px dashed rgb(var(--c-ink) / .12);
     padding-top: .35rem;
   }
 
@@ -665,9 +665,9 @@ body.night {
   .empty-state {
     text-align: center;
     padding: 2.5rem 2rem;
-    color: rgb(var(--c-ink-light));
+    color: rgb(var(--c-ink-3));
     font-size: .9rem;
-    border: 1px dashed rgb(var(--c-rule-light));
+    border: 1px dashed rgb(var(--c-ink) / .12);
   }
 
   .empty-state__icon {
@@ -680,7 +680,7 @@ body.night {
   .loading-overlay {
     position: fixed;
     inset: 0;
-    background: rgb(var(--c-paper-bg) / .96);
+    background: rgb(var(--c-paper) / .96);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -704,9 +704,9 @@ body.night {
     max-width: 1200px;
     margin: 1rem auto;
     padding: .75rem 1rem;
-    border: 2px solid rgb(var(--c-accent-red));
-    background: rgb(var(--c-paper-bg));
-    color: rgb(var(--c-accent-red));
+    border: 2px solid rgb(var(--c-seal));
+    background: rgb(var(--c-paper));
+    color: rgb(var(--c-seal));
     font-size: .85rem;
     line-height: 1.6;
     text-align: center;
@@ -715,8 +715,8 @@ body.night {
   .loading-sheet {
     width: 168px;
     height: 224px;
-    background: rgb(var(--c-paper-bg));
-    border: 1px solid rgb(var(--c-rule-color) / .5);
+    background: rgb(var(--c-paper));
+    border: 1px solid rgb(rgb(var(--c-ink) / .28) / .5);
     box-shadow: var(--shadow-polaroid);
     position: relative;
     transform-origin: center;
@@ -731,14 +731,14 @@ body.night {
     right: 0;
     top: 50%;
     height: 1px;
-    background: rgb(var(--c-rule-light) / .7);
+    background: rgb(rgb(var(--c-ink) / .12) / .7);
   }
 
   .loading-caption {
     margin-top: 1.75rem;
     font-size: .95rem;
     letter-spacing: .35em;
-    color: rgb(var(--c-ink-dark));
+    color: rgb(var(--c-ink-2));
     font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
   }
 
@@ -758,9 +758,9 @@ body.night {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 2px solid rgb(var(--c-ink-black));
-    background: rgb(var(--c-paper-bg));
-    color: rgb(var(--c-ink-black));
+    border: 2px solid rgb(var(--c-ink));
+    background: rgb(var(--c-paper));
+    color: rgb(var(--c-ink));
     cursor: pointer;
     font-size: 1.3rem;
     display: flex;
@@ -775,7 +775,7 @@ body.night {
   .tool-btn:hover {
     transform: scale(1.09);
     box-shadow: var(--shadow-polaroid-hover);
-    background: rgb(var(--c-paper-bg-dark));
+    background: rgb(var(--c-paper-2));
   }
 
   .tool-btn:active {
@@ -783,8 +783,8 @@ body.night {
   }
 
   .tool-btn.active {
-    background: rgb(var(--c-ink-black));
-    color: rgb(var(--c-paper-bg));
+    background: rgb(var(--c-ink));
+    color: rgb(var(--c-paper));
   }
 
   .tool-btn__tip {
@@ -792,8 +792,8 @@ body.night {
     right: calc(100% + 10px);
     top: 50%;
     transform: translateY(-50%);
-    background: rgb(var(--c-ink-black));
-    color: rgb(var(--c-paper-bg));
+    background: rgb(var(--c-ink));
+    color: rgb(var(--c-paper));
     font-size: .7rem;
     padding: .3rem .6rem;
     border-radius: 4px;
@@ -851,7 +851,7 @@ body.night {
 
   .scroll-progress__bar {
     height: 100%;
-    background: rgb(var(--c-accent-red));
+    background: rgb(var(--c-seal));
     transform: scaleX(0);
     transform-origin: left center;
   }

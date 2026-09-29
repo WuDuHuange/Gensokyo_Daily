@@ -31,7 +31,7 @@
   </noscript>
 </head>
 
-<body class="font-body text-ink-black antialiased bg-paper-texture leading-relaxed">
+<body class="font-body text-ink antialiased bg-paper-texture leading-relaxed">
 
   <!-- 无脚本时说明为什么版面是空的，避免用户对着骨架发懵 -->
   <noscript>
@@ -46,11 +46,11 @@
   </div>
 
   <!-- ============ 纸张容器 ============ -->
-  <div class="newspaper max-w-[1280px] mx-auto my-8 bg-paper-bg px-6 py-8 md:px-12 md:py-10 shadow-paper border relative">
+  <div class="newspaper max-w-[1280px] mx-auto my-8 bg-paper px-6 py-8 md:px-12 md:py-10 shadow-paper border relative">
 
     <!-- ============ 报头 ============ -->
     <header class="text-center pb-4 relative mb-8">
-      <div class="flex justify-between items-center text-sm text-ink-gray font-body mb-3 border-b border-rule-color pb-1.5">
+      <div class="flex justify-between items-center text-sm text-ink-2 font-body mb-3 border-b border-ink/25 pb-1.5">
         <span id="edition-date" class="font-bold">第 00000000 期</span>
         <span id="header-weather">博丽神社 ☀️ 25°C</span>
       </div>
@@ -58,28 +58,28 @@
       <!-- 刊头装饰墨线，从中间向两端展开 -->
       <div class="flex items-center gap-3 md:gap-6 mb-2">
         <span class="masthead-ornament__line" style="--d:200ms"></span>
-        <span class="text-ink-gray text-xs md:text-sm tracking-[0.35em] whitespace-nowrap">文 々 新 聞</span>
+        <span class="text-ink-2 text-xs md:text-sm tracking-[0.35em] whitespace-nowrap">文 々 新 聞</span>
         <span class="masthead-ornament__line" style="--d:200ms"></span>
       </div>
 
-      <h1 class="font-title text-[2.4rem] md:text-7xl font-black leading-[1.2] text-ink-black my-4 masthead-title ink-in ink-in--masthead" style="--d:80ms">
-        <ruby>幻想乡日报<rp>(</rp><rt class="text-[0.3em] tracking-[0.2em] text-ink-gray">げんそうきょうにっぽう</rt><rp>)</rp></ruby>
+      <h1 class="font-title text-[2.4rem] md:text-7xl font-black leading-[1.2] text-ink my-4 masthead-title ink-in ink-in--masthead" style="--d:80ms">
+        <ruby>幻想乡日报<rp>(</rp><rt class="text-[0.3em] tracking-[0.2em] text-ink-2">げんそうきょうにっぽう</rt><rp>)</rp></ruby>
       </h1>
 
-      <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline text-xs md:text-sm text-ink-gray mb-2 gap-2 md:gap-0 ink-in" style="--d:300ms">
-        <span class="font-mono text-base tracking-[0.3em] uppercase text-ink-dark">GENSOKYO DAILY</span>
-        <span class="text-ink-light text-xs">主编：射命丸 文 ｜ 排版：鸦天狗印刷所</span>
+      <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline text-xs md:text-sm text-ink-2 mb-2 gap-2 md:gap-0 ink-in" style="--d:300ms">
+        <span class="font-mono text-base tracking-[0.3em] uppercase text-ink-2">GENSOKYO DAILY</span>
+        <span class="text-ink-3 text-xs">主编：射命丸 文 ｜ 排版：鸦天狗印刷所</span>
       </div>
 
-      <div class="h-1 bg-ink-black border-b border-ink-black mt-1 w-full"></div>
+      <div class="h-1 bg-ink border-b border-ink mt-1 w-full"></div>
     </header>
 
     <!-- ============ 天气带 ============
          旧版是 8 个带 border 的格子，远看像后台数据表格。现在是一条横向带。 -->
     <section class="mb-10" id="weather-bar">
       <div class="flex items-baseline gap-2 mb-2">
-        <span class="font-heading text-xs font-bold tracking-widest text-ink-gray">气象</span>
-        <span class="font-mono text-[0.6rem] text-ink-light tracking-widest">WEATHER</span>
+        <span class="font-heading text-xs font-bold tracking-widest text-ink-2">气象</span>
+        <span class="font-mono text-[0.6rem] text-ink-3 tracking-widest">WEATHER</span>
       </div>
       <div class="weather-strip" id="weather-grid">
         <!-- JS 动态填充 -->
@@ -88,13 +88,13 @@
 
     <!-- ============ 头版要闻 ============ -->
     <section class="mb-14" id="section-official">
-      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
         <span class="text-lg">📰</span> 头版要闻
-        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">HEADLINES</span>
+        <span class="font-mono text-meta text-ink-3 tracking-widest uppercase ml-auto">HEADLINES</span>
       </div>
       <div id="container-official">
         <!-- JS 动态填充 -->
-        <div class="p-8 text-center text-ink-gray animate-pulse">
+        <div class="p-8 text-center text-ink-2 animate-pulse">
           正在通过天狗急件获取最新资讯...
         </div>
       </div>
@@ -103,18 +103,18 @@
     <!-- ============ 简讯 ============
          报纸的简讯栏只给标题、不给摘要。头版要闻之外的条目都落在这里。 -->
     <section class="mb-14" id="section-brief">
-      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
         <span class="text-lg">📌</span> 简讯
-        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">IN BRIEF</span>
+        <span class="font-mono text-meta text-ink-3 tracking-widest uppercase ml-auto">IN BRIEF</span>
       </div>
       <div class="brief-grid brief-grid--dense" id="container-brief"></div>
     </section>
 
     <!-- ============ 社会·民生 ============ -->
     <section class="mb-14" id="section-community">
-      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
         <span class="text-lg">💬</span> 社会·民生
-        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">COMMUNITY</span>
+        <span class="font-mono text-meta text-ink-3 tracking-widest uppercase ml-auto">COMMUNITY</span>
       </div>
       <!-- 容器本身不再带 .brief-grid：这个分类改由 app.js 输出
            「3 条带图卡 + 其余标题流」两段结构，多栏由内层元素自己声明。 -->
@@ -123,9 +123,9 @@
 
     <!-- ============ 副刊·剪报 ============ -->
     <section class="mb-14" id="section-art">
-      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
         <span class="text-lg">🎨</span> 副刊·剪报
-        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">ART &amp; CULTURE</span>
+        <span class="font-mono text-meta text-ink-3 tracking-widest uppercase ml-auto">ART &amp; CULTURE</span>
       </div>
       <div id="container-art"></div>
     </section>
@@ -134,9 +134,9 @@
     <!-- 这个板块此前完全不存在：app.js 的 renderAds() 一直在找 #ads-grid，
          取不到就 return，4 条广告数据从没被渲染过。 -->
     <section class="mt-12 mb-4" id="section-ads">
-      <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-8 flex items-baseline gap-2 section-divider-ornament">
+      <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink pb-1 mb-8 flex items-baseline gap-2 section-divider-ornament">
         <span class="text-xl">📋</span> 分类广告
-        <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">CLASSIFIEDS</span>
+        <span class="font-mono text-[0.65rem] text-ink-3 tracking-widest uppercase ml-auto">CLASSIFIEDS</span>
       </div>
       <div class="ads-grid" id="ads-grid">
         <!-- JS 动态填充 -->
@@ -144,13 +144,13 @@
     </section>
 
     <!-- ============ 页脚 ============ -->
-    <footer class="text-center pt-8 border-t border-rule-light mt-12 text-sm text-ink-gray font-body pb-4">
+    <footer class="text-center pt-8 border-t border-ink/12 mt-12 text-sm text-ink-2 font-body pb-4">
       <p class="mb-4">
         本报由 GitHub Actions 自动生成 ·
-        <a href="https://github.com/WuDuHuange/Gensokyo_Daily" target="_blank" rel="noopener noreferrer" class="hover:text-accent-red underline transition-colors">项目源码</a>
+        <a href="https://github.com/WuDuHuange/Gensokyo_Daily" target="_blank" rel="noopener noreferrer" class="hover:text-seal underline transition-colors">项目源码</a>
       </p>
-      <div class="font-title text-4xl text-ink-light mt-2 tracking-[0.3em] opacity-40">文 々。新聞</div>
-      <div id="last-updated" class="text-xs text-ink-light mt-4 font-mono"></div>
+      <div class="font-title text-4xl text-ink-3 mt-2 tracking-[0.3em] opacity-40">文 々。新聞</div>
+      <div id="last-updated" class="text-xs text-ink-3 mt-4 font-mono"></div>
     </footer>
   </div>
 

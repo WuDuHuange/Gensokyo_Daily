@@ -373,9 +373,9 @@
         (w) => `
       <div class="weather-strip__item ${getWeatherAnimClass(w.condition)}">
         <span class="weather-icon text-xl">${escapeHtml(w.icon)}</span>
-        <span class="weather-location text-sm text-ink-black">${escapeHtml(w.location)}</span>
-        <span class="weather-temp font-mono text-sm font-bold text-accent-red">${w.temperature}°C</span>
-        <span class="weather-cond text-xs text-ink-gray">${escapeHtml(w.condition)}</span>
+        <span class="weather-location text-sm text-ink">${escapeHtml(w.location)}</span>
+        <span class="weather-temp font-mono text-sm font-bold text-seal">${w.temperature}°C</span>
+        <span class="weather-cond text-xs text-ink-2">${escapeHtml(w.condition)}</span>
       </div>
     `
       )
@@ -445,7 +445,7 @@
       return `
       <div class="brief-item" data-reveal>
         <span class="brief-item__mark" aria-hidden="true"></span>
-        <a class="brief-item__title text-brief text-ink-black news-title-link" href="${href}" target="_blank" rel="noopener noreferrer" data-news-link>${title}</a>
+        <a class="brief-item__title text-brief text-ink news-title-link" href="${href}" target="_blank" rel="noopener noreferrer" data-news-link>${title}</a>
         ${sourceHtml}
       </div>`;
     }
@@ -512,8 +512,8 @@
           </div>
         </a>
         <div class="text-center font-mono">
-          <span class="block font-bold text-ink-dark text-xs mb-0.5">${escapeHtml(displayTitle)}</span>
-          <span class="block text-[0.6rem] text-ink-light italic line-clamp-2 leading-tight">${escapeHtml(tags)}</span>
+          <span class="block font-bold text-ink-2 text-xs mb-0.5">${escapeHtml(displayTitle)}</span>
+          <span class="block text-[0.6rem] text-ink-3 italic line-clamp-2 leading-tight">${escapeHtml(tags)}</span>
         </div>
       </div>
     `;

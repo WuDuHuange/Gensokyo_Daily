@@ -431,6 +431,86 @@ body.night {
     padding: .3rem .6rem;
   }
 
+  /* ---------- 报版网格：头条 + 右栏 ----------
+     把「栏」从区块内部提到页面层：头条跨 7/12，右栏 5/12 装要闻与简讯竖排。
+     旧版是「头条占满整行 → 下面再铺一行要闻」，本质仍是两个全宽区块竖摞，
+     右半屏从报头一路空到页脚。
+
+     两栏之间那条竖线是报纸的「栏线」，由墨色透明度派生而非独立令牌 ——
+     日间墨深压出浅褐线，夜间墨浅自动变亮线。
+
+     窄屏**不**把 12 栏硬压成 1 栏，直接退化为单栏线性阅读流：
+     报纸的栏咬合在手机上只会制造一堆难读的短行。 */
+  .front-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .front-grid__lead,
+  .front-grid__rail {
+    min-width: 0; /* 不加的话长标题会把 grid 轨道撑破 */
+  }
+
+  @media (min-width: 1024px) {
+    .front-grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 0; /* 栏间距改由两栏各自的内边距提供，好让栏线贴在正中 */
+    }
+
+    .front-grid__lead {
+      grid-column: span 7;
+      padding-right: 2.5rem;
+    }
+
+    .front-grid__rail {
+      grid-column: span 5;
+      padding-left: 2.5rem;
+      border-left: 1px solid rgb(var(--c-ink) / .12);
+    }
+
+    /* 头条不再占满整行，标题要跟着收一档，否则 600px 宽的栏里
+       52px 的 CJK 标题一行只放得下 11 个字，会拉成 5 行的高塔。 */
+    .front-grid__lead .lead-story__title {
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+    }
+
+    /* 左栏拉满整行高，把头条的收尾双线压到与右栏同一条水平线上。
+       不做这一步，左栏会比右栏矮 56px，凭空多出一段空档，看着像漏排。
+       做法：左栏 flex 纵向 + 头条撑满 + 元信息 margin-top:auto 沉底。 */
+    .front-grid__lead {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .front-grid__lead > .lead-story {
+      flex: 1 1 auto;
+    }
+
+    /* 头条有配图时是 grid 两栏，不能改成 flex，否则图文分栏会被压平 */
+    .front-grid__lead > .lead-story:not(.lead-story--with-image) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .front-grid__lead .lead-story__meta {
+      margin-top: auto;
+    }
+  }
+
+  /* 右栏内部：要闻之间用细线分隔，最后一条用与头条同款的双线收尾，
+     让两栏看起来是「各自闭合的一块」，而不是右边那条线跑到底没个交代。 */
+  .front-grid__rail .feature-story + .feature-story {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(var(--c-ink) / .12);
+  }
+
+  .front-grid__rail .feature-story:last-child {
+    padding-bottom: 1.5rem;
+    border-bottom: 3px double rgb(var(--c-ink) / .28);
+  }
+
   /* 次要要闻：3 列，中标题 + 一行摘要 */
   .feature-row {
     display: grid;

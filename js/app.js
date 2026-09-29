@@ -611,27 +611,35 @@
       return;
     }
 
-    // ---------- 头版要闻：1 条头条 + 3 条要闻，其余全部转简讯 ----------
-    // 这是「分层」的关键：只有前 4 条配得上大版面，剩下的压成一行式。
+    // ---------- 头版要闻：报版网格（头条 + 右栏要闻） ----------
+    // 这是「分层」的关键：只有前 3 条配得上大版面，剩下的压成一行式。
+    //
+    // 旧版是「头条占满一整行 → 下面再铺一行 3 张要闻」，本质仍是两个全宽区块竖摞，
+    // 右半屏从报头到页脚一路空着。现在把栏提到页面层：头条跨 7/12，右栏 5/12。
+    //
+    // ⚠️ 右栏只放 2 条要闻，**不放简讯竖排** —— 这一条是实测推翻设计草图的：
+    //    方案 §3.1 原本在右栏画了「简讯竖排 3 条」，但量下来右栏 588px、左栏 342px，
+    //    差 246px，其中 193px 全是那三条简讯。去掉后两栏差 29px，基本收齐；
+    //    而那 3 条退回「简讯」板块，板块从 9 条涨到 12 条（四栏各 3 条），
+    //    反而兑现了简讯栏「补满 12~16 条」的密度意图。两头都更好。
     if (categoryKey === 'official') {
       const LEAD = 1;
-      const FEATURE = 3;
+      const FEATURE = 2; // 右栏要闻
 
       const lead = items.slice(0, LEAD);
       const features = items.slice(LEAD, LEAD + FEATURE);
-      // 剩余条目**全部**落到「简讯」。旧版这里写死 BRIEF = 6，
+      // 剩余条目**全部**落到页脚的「简讯」板块。旧版这里写死 BRIEF = 6，
       // 15 条数据只喂出 6 条，三栏密排占不到半屏 ——
       // 简讯栏存在的理由（信息密度）没兑现，还白扔了 5 条。
       const briefs = items.slice(LEAD + FEATURE);
 
-      let html = lead.map((it) => createNewsCard(it, 'lead')).join('');
-      if (features.length) {
-        html +=
-          '<div class="feature-row">' +
-          features.map((it) => createNewsCard(it, 'feature')).join('') +
-          '</div>';
-      }
-      container.innerHTML = html;
+      container.innerHTML =
+        '<div class="front-grid">' +
+        `<div class="front-grid__lead">${lead.map((it) => createNewsCard(it, 'lead')).join('')}</div>` +
+        (features.length
+          ? `<aside class="front-grid__rail">${features.map((it) => createNewsCard(it, 'feature')).join('')}</aside>`
+          : '') +
+        '</div>';
 
       // 剩余条目落到「简讯」板块（容器在 index.html 里，独立于本 section）
       const briefBox = $('#container-brief');

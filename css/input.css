@@ -285,6 +285,13 @@ body.night {
   .weather-icon {
     font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', sans-serif;
     line-height: 1;
+    /* 12 个天气字形里有 3 个是无色系（☁️ 阴 / 🌫️ 妖雾 / ❄️ 雪），本身近乎纯白，
+       压在米白纸面上等于隐形（实测 🌫️ 只剩一块看不出内容的白色圆角块）。
+       给一圈极淡的墨边把它从纸面拎出来。彩色字形上这圈边几乎不可见，
+       所以不必按图标逐个判断；深色底上黑边自然融掉，不会发光。
+       用 drop-shadow 而非 text-shadow：前者作用于渲染结果，
+       不依赖浏览器对彩色字形 text-shadow 的支持。 */
+    filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.45));
   }
 
   /* ---------- 5. 天气微动效 ---------- */

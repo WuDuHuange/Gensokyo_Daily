@@ -22,3 +22,8 @@ desktop.ini
 # 环境变量
 .env
 .env.local
+
+# WorkBuddy 工作数据：agent 内部笔记与临时产物（无头浏览器 profile、验证截图），
+# 不进公开仓库。若希望团队共享 .workbuddy-ai/memory/，把下面一行换成
+# .workbuddy-ai/tmp/ 即可。
+.workbuddy-ai/

@@ -8,6 +8,9 @@
   <meta name="description" content="幻想乡日报 — 射命丸文主编，聚合东方 Project 官方消息与社区热点的新闻日报。" />
   <meta name="keywords" content="东方Project, Touhou, 幻想乡, Gensokyo, 日报, 射命丸文" />
 
+  <!-- 尽早打上 js 标记：入场动效只在脚本可用时启用，否则内容直接可见 -->
+  <script>document.documentElement.classList.add('js');</script>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,104 +20,165 @@
 
   <!-- Tailwind Output -->
   <link rel="stylesheet" href="css/output.css" />
+
+  <!-- JS 被完全禁用时立即摘掉遮罩（CSS 里另有 3 秒兜底，覆盖 JS 报错的情况） -->
+  <noscript>
+    <style>
+      #loading-overlay {
+        display: none !important;
+      }
+    </style>
+  </noscript>
 </head>
 
-<body class="bg-[#d5cbae] font-body text-ink-black antialiased bg-paper-texture leading-relaxed">
+<body class="font-body text-ink-black antialiased bg-paper-texture leading-relaxed">
+
+  <!-- 无脚本时说明为什么版面是空的，避免用户对着骨架发懵 -->
+  <noscript>
+    <div class="noscript-banner">
+      本报需要启用 JavaScript 才能取回当日新闻，当前显示的是空白版面。
+    </div>
+  </noscript>
+
+  <!-- ============ 滚动进度 · 一根墨线 ============ -->
+  <div class="scroll-progress" aria-hidden="true">
+    <div class="scroll-progress__bar" id="scroll-progress-bar"></div>
+  </div>
+
   <!-- ============ 纸张容器 ============ -->
-  <div class="newspaper max-w-[1200px] mx-auto my-8 bg-paper-bg px-6 py-8 md:px-12 md:py-10 shadow-paper border border-[#c4b898] relative">
+  <div class="newspaper max-w-[1280px] mx-auto my-8 bg-paper-bg px-6 py-8 md:px-12 md:py-10 shadow-paper border relative">
 
     <!-- ============ 报头 ============ -->
     <header class="text-center pb-4 relative mb-8">
-      <div class="flex justify-between items-center text-sm text-ink-gray font-body mb-2 border-b border-rule-color pb-1.5">
+      <div class="flex justify-between items-center text-sm text-ink-gray font-body mb-3 border-b border-rule-color pb-1.5">
         <span id="edition-date" class="font-bold">第 00000000 期</span>
         <span id="header-weather">博丽神社 ☀️ 25°C</span>
       </div>
-      <h1 class="font-title text-5xl md:text-7xl font-black tracking-[0.2em] md:tracking-[0.5em] leading-[1.2] text-ink-black my-4 masthead-title">
+
+      <!-- 刊头装饰墨线，从中间向两端展开 -->
+      <div class="flex items-center gap-3 md:gap-6 mb-2">
+        <span class="masthead-ornament__line" style="--d:200ms"></span>
+        <span class="text-ink-gray text-xs md:text-sm tracking-[0.35em] whitespace-nowrap">文 々 新 聞</span>
+        <span class="masthead-ornament__line" style="--d:200ms"></span>
+      </div>
+
+      <h1 class="font-title text-[2.4rem] md:text-7xl font-black leading-[1.2] text-ink-black my-4 masthead-title ink-in ink-in--masthead" style="--d:80ms">
         <ruby>幻想乡日报<rp>(</rp><rt class="text-[0.3em] tracking-[0.2em] text-ink-gray">げんそうきょうにっぽう</rt><rp>)</rp></ruby>
       </h1>
-      <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline text-xs md:text-sm text-ink-gray mb-2 gap-2 md:gap-0">
+
+      <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline text-xs md:text-sm text-ink-gray mb-2 gap-2 md:gap-0 ink-in" style="--d:300ms">
         <span class="font-mono text-base tracking-[0.3em] uppercase text-ink-dark">GENSOKYO DAILY</span>
         <span class="text-ink-light text-xs">主编：射命丸 文 ｜ 排版：鸦天狗印刷所</span>
       </div>
+
       <div class="h-1 bg-ink-black border-b border-ink-black mt-1 w-full"></div>
     </header>
 
-    <!-- ============ 天气栏 ============ -->
-    <section class="py-4 border-b-4 border-double border-rule-color mb-8" id="weather-bar">
-      <h3 class="font-heading text-sm font-bold mb-3 text-ink-dark flex items-center gap-2 tracking-wider">
-        <span class="text-lg">🌤️</span> 幻想乡天气预报
-        <span class="font-mono text-[0.6rem] text-ink-light tracking-widest uppercase ml-auto">WEATHER</span>
-      </h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border-l-2 border-t-2 border-ink-dark" id="weather-grid">
+    <!-- ============ 天气带 ============
+         旧版是 8 个带 border 的格子，远看像后台数据表格。现在是一条横向带。 -->
+    <section class="mb-10" id="weather-bar">
+      <div class="flex items-baseline gap-2 mb-2">
+        <span class="font-heading text-xs font-bold tracking-widest text-ink-gray">气象</span>
+        <span class="font-mono text-[0.6rem] text-ink-light tracking-widest">WEATHER</span>
+      </div>
+      <div class="weather-strip" id="weather-grid">
         <!-- JS 动态填充 -->
       </div>
     </section>
 
-    <!-- ============ 头版头条 ============ -->
-    <section class="mb-12" id="section-official">
-      <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-6 flex items-baseline gap-2 section-divider-ornament">
-        <span class="text-xl">📰</span> 头版头条
-        <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">HEADLINES</span>
+    <!-- ============ 头版要闻 ============ -->
+    <section class="mb-14" id="section-official">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+        <span class="text-lg">📰</span> 头版要闻
+        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">HEADLINES</span>
       </div>
       <div id="container-official">
         <!-- JS 动态填充 -->
         <div class="p-8 text-center text-ink-gray animate-pulse">
-            正在通过天狗急件获取最新资讯...
+          正在通过天狗急件获取最新资讯...
         </div>
       </div>
     </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <!-- ============ 社会·民生 ============ -->
-      <section class="mb-8 md:border-r-2 md:border-rule-light md:pr-6" id="section-community">
-        <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-6 flex items-baseline gap-2 section-divider-ornament">
-          <span class="text-xl">💬</span> 社会·民生
-          <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">COMMUNITY</span>
-        </div>
-        <div id="container-community"></div>
-      </section>
+    <!-- ============ 简讯 ============
+         报纸的简讯栏只给标题、不给摘要。头版要闻之外的条目都落在这里。 -->
+    <section class="mb-14" id="section-brief">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+        <span class="text-lg">📌</span> 简讯
+        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">IN BRIEF</span>
+      </div>
+      <div class="brief-grid" id="container-brief"></div>
+    </section>
 
-      <!-- ============ 艺术·副刊 ============ -->
-      <section class="mb-8 md:pl-6" id="section-art">
-        <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-6 flex items-baseline gap-2 section-divider-ornament">
-           <span class="text-xl">🎨</span> 艺术·副刊
-           <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">ART & CULTURE</span>
-        </div>
-        <div id="container-art"></div>
-      </section>
-    </div>
+    <!-- ============ 社会·民生 ============ -->
+    <section class="mb-14" id="section-community">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+        <span class="text-lg">💬</span> 社会·民生
+        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">COMMUNITY</span>
+      </div>
+      <div class="brief-grid" id="container-community"></div>
+    </section>
+
+    <!-- ============ 副刊·剪报 ============ -->
+    <section class="mb-14" id="section-art">
+      <div class="font-heading text-section font-black border-b-[4px] border-double border-ink-black pb-1.5 mb-7 flex items-baseline gap-2.5 section-divider-ornament">
+        <span class="text-lg">🎨</span> 副刊·剪报
+        <span class="font-mono text-meta text-ink-light tracking-widest uppercase ml-auto">ART &amp; CULTURE</span>
+      </div>
+      <div id="container-art"></div>
+    </section>
+
+    <!-- ============ 分类广告 ============ -->
+    <!-- 这个板块此前完全不存在：app.js 的 renderAds() 一直在找 #ads-grid，
+         取不到就 return，4 条广告数据从没被渲染过。 -->
+    <section class="mt-12 mb-4" id="section-ads">
+      <div class="font-heading text-2xl font-black border-b-[4px] border-double border-ink-black pb-1 mb-8 flex items-baseline gap-2 section-divider-ornament">
+        <span class="text-xl">📋</span> 分类广告
+        <span class="font-mono text-[0.65rem] text-ink-light tracking-widest uppercase ml-auto">CLASSIFIEDS</span>
+      </div>
+      <div class="ads-grid" id="ads-grid">
+        <!-- JS 动态填充 -->
+      </div>
+    </section>
 
     <!-- ============ 页脚 ============ -->
     <footer class="text-center pt-8 border-t border-rule-light mt-12 text-sm text-ink-gray font-body pb-4">
       <p class="mb-4">
         本报由 GitHub Actions 自动生成 ·
-        <a href="https://github.com/WuDuHuange/Gensokyo_Daily" target="_blank" class="hover:text-accent-red underline transition-colors">项目源码</a>
+        <a href="https://github.com/WuDuHuange/Gensokyo_Daily" target="_blank" rel="noopener noreferrer" class="hover:text-accent-red underline transition-colors">项目源码</a>
       </p>
       <div class="font-title text-4xl text-ink-light mt-2 tracking-[0.3em] opacity-40">文 々。新聞</div>
       <div id="last-updated" class="text-xs text-ink-light mt-4 font-mono"></div>
     </footer>
   </div>
 
-  <!-- ============ Audio Control FAB ============ -->
-  <div class="audio-fab" id="audio-fab">
-    <button class="audio-fab-btn" id="btn-sound-toggle" title="音效开关">
-      🔇
-      <span class="audio-fab-tooltip">开启音效</span>
+  <!-- ============ 工具坞 ============ -->
+  <div class="tool-dock" id="tool-dock">
+    <button class="tool-btn" id="btn-ambient-toggle" type="button" aria-label="环境白噪音" style="display:none;">
+      <span class="tool-btn__icon">🎵</span>
+      <span class="tool-btn__tip">环境白噪音</span>
     </button>
-    <button class="audio-fab-btn" id="btn-ambient-toggle" title="环境音" style="display:none;">
-      🎵
-      <span class="audio-fab-tooltip">环境白噪音</span>
+    <button class="tool-btn" id="btn-sound-toggle" type="button" aria-label="音效开关">
+      <span class="tool-btn__icon">🔇</span>
+      <span class="tool-btn__tip">开启音效</span>
+    </button>
+    <button class="tool-btn" id="btn-theme-toggle" type="button" aria-label="切换夜间模式">
+      <span class="tool-btn__icon">🌙</span>
+      <span class="tool-btn__tip">夜读模式</span>
+    </button>
+    <button class="tool-btn to-top" id="btn-to-top" type="button" aria-label="回到报头">
+      <span class="tool-btn__icon">↑</span>
+      <span class="tool-btn__tip">回到报头</span>
     </button>
   </div>
 
-  <!-- ============ Loading Overlay ============ -->
-  <div id="loading-overlay" class="fixed inset-0 bg-[#f5f0e1]/95 flex items-center justify-center z-[9999] transition-opacity duration-500">
-    <div class="text-center font-heading">
-        <div class="text-5xl mb-4 animate-bounce">📨</div>
-        <div class="text-xl tracking-widest text-ink-dark">正在取信...</div>
-    </div>
+  <!-- ============ 加载遮罩 · 报纸拆封 ============ -->
+  <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite">
+    <div class="loading-sheet" aria-hidden="true"></div>
+    <p class="loading-caption">正在取信</p>
   </div>
 
+  <script src="js/motion.js"></script>
   <script src="js/app.js"></script>
 </body>
 

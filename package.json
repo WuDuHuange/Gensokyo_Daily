@@ -4,6 +4,8 @@
   "description": "> **射命丸文主编** — 聚合东方 Project 官方消息与社区热点的自动化新闻日报。",
   "main": "index.js",
   "scripts": {
+    "build": "tailwindcss -i css/input.css -o css/output.css --minify",
+    "watch": "tailwindcss -i css/input.css -o css/output.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

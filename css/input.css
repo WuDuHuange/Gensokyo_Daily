@@ -2,291 +2,1024 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   主题令牌
+   ------------------------------------------------------------
+   所有颜色以「R G B」三元组形式存放，供 tailwind.config.js 里的
+   rgb(var(--x) / <alpha-value>) 消费。切换 body.night 即换主题。
+   ============================================================ */
+:root {
+  /* 日刊 · 纸张 */
+  --c-page-bg: 213 203 174;
+  --c-paper-bg: 245 240 225;
+  --c-paper-bg-dark: 232 224 204;
+  --c-ink-black: 26 26 26;
+  --c-ink-dark: 44 44 44;
+  --c-ink-gray: 85 85 85;
+  --c-ink-light: 136 136 136;
+  --c-rule-color: 51 51 51;
+  --c-rule-light: 170 170 170;
+  --c-accent-red: 139 0 0;
+  --c-accent-red-light: 165 42 42;
+  --c-link-color: 26 58 92;
+  --c-fiber: 139 119 80;          /* 纸张纤维颗粒色 */
+
+  --shadow-paper: 0 1px 4px rgba(0, 0, 0, .15), 0 4px 16px rgba(0, 0, 0, .1), inset 0 0 80px rgba(139, 119, 80, .08);
+  --shadow-polaroid: 2px 2px 5px rgba(0, 0, 0, .1);
+  --shadow-polaroid-hover: 0 6px 18px rgba(0, 0, 0, .22);
+  --noise-opacity: .03;
+
+  /* 缓动：首屏用 press 带轻微过冲，正文一律用 ink */
+  --ease-ink: cubic-bezier(.16, 1, .3, 1);
+  --ease-press: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* 夜读 · 灯笼（深褐纸 + 米黄油墨，避免纯黑纯白造成眩光） */
+body.night {
+  --c-page-bg: 18 16 14;
+  --c-paper-bg: 30 27 23;
+  --c-paper-bg-dark: 38 34 30;
+  --c-ink-black: 237 228 211;
+  --c-ink-dark: 222 211 191;
+  --c-ink-gray: 169 155 132;
+  --c-ink-light: 125 114 99;
+  --c-rule-color: 107 97 82;
+  --c-rule-light: 74 68 56;
+  --c-accent-red: 212 130 106;
+  --c-accent-red-light: 224 160 140;
+  --c-link-color: 143 184 216;
+  --c-fiber: 255 230 190;
+
+  --shadow-paper: 0 1px 4px rgba(0, 0, 0, .55), 0 4px 18px rgba(0, 0, 0, .45), inset 0 0 80px rgba(0, 0, 0, .28);
+  --shadow-polaroid: 2px 2px 6px rgba(0, 0, 0, .5);
+  --shadow-polaroid-hover: 0 6px 20px rgba(0, 0, 0, .65);
+  --noise-opacity: .05;
+}
+
+/* ============================================================
+   基础层
+   ============================================================ */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    background-color: #d5cbae;
+    background-color: rgb(var(--c-page-bg));
+    transition: background-color .45s ease, color .45s ease;
+  }
+
+  ::selection {
+    background: rgb(var(--c-accent-red) / .18);
+  }
+
+  /* 全站链接默认去掉下划线，键盘用户必须能看见焦点在哪 */
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-accent-red));
+    outline-offset: 2px;
+    border-radius: 1px;
   }
 }
 
+/* ============================================================
+   组件层
+   ============================================================ */
 @layer components {
-    /* ===== Polaroid Style Rotation ===== */
-    .art-card:nth-child(3n+1) { --rot: -2deg; }
-    .art-card:nth-child(3n+2) { --rot: 1.5deg; }
-    .art-card:nth-child(4n)   { --rot: 3deg; }
-    .art-card:nth-child(5n)   { --rot: -1deg; }
 
-    /* ===== 1. Paper Texture Noise Overlay ===== */
-    .newspaper::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        opacity: 0.038;
-        pointer-events: none;
-        z-index: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        background-repeat: repeat;
-        background-size: 256px 256px;
-        mix-blend-mode: multiply;
+  /* ---------- 1. 纸张容器与纤维噪声 ---------- */
+  .newspaper {
+    /* 纸张外沿：日间是浅褐，夜里要压暗，否则深色底上会浮出一圈亮边 */
+    border-color: #c4b898;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgb(var(--c-fiber) / .06) 0%, transparent 70%),
+      radial-gradient(ellipse at 80% 50%, rgb(var(--c-fiber) / .04) 0%, transparent 70%);
+    transition: background-color .45s ease, border-color .45s ease, box-shadow .45s ease;
+  }
+
+  body.night .newspaper {
+    border-color: #3a342c;
+  }
+
+  /* 原先这里带 mix-blend-mode: multiply，会让 .newspaper 成为混合上下文，
+     整页滚动时每帧都要重新合成。噪声本身是灰度的，去掉混合模式后
+     在 3% 不透明度下肉眼无差别，但滚动开销明显下降。 */
+  .newspaper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+  .newspaper > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- 2. 报头 ---------- */
+  /* 字距走变量：入场动画要从「收紧」过渡到「落定」，而窄屏容不下 0.5em，
+     所以两个值都必须能在断点处整体替换。 */
+  .masthead-title {
+    text-shadow: 1px 1px 0 rgb(var(--c-ink-black) / .1);
+    letter-spacing: var(--masthead-ls, .2em);
+  }
+
+  /* 刊头两侧的装饰墨线，从中间向两端展开 */
+  .masthead-ornament__line {
+    flex: 1 1 0%;
+    height: 1px;
+    background: linear-gradient(to right,
+        transparent,
+        rgb(var(--c-ink-black) / .45) 22%,
+        rgb(var(--c-ink-black) / .45) 78%,
+        transparent);
+    transform: scaleX(0);
+  }
+
+  .js .masthead-ornament__line {
+    transition: transform .9s var(--ease-ink);
+    transition-delay: var(--d, 0ms);
+  }
+
+  .js .is-ready .masthead-ornament__line {
+    transform: scaleX(1);
+  }
+
+  /* ---------- 3. 版面分割装饰 ---------- */
+  .section-divider-ornament {
+    position: relative;
+  }
+
+  .section-divider-ornament::after {
+    content: '◆';
+    position: absolute;
+    left: 50%;
+    bottom: -0.65em;
+    transform: translateX(-50%);
+    background: rgb(var(--c-paper-bg));
+    padding: 0 0.6rem;
+    color: rgb(var(--c-ink-gray));
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+
+  /* ---------- 4. 天气带 ----------
+     旧版是 8 个带 border 的格子（border-l-2 border-t-2），远看像后台数据表格——
+     整页最不像报纸的地方。现在改成一条横向天气带：细竖线分隔、无外框，
+     像报纸页脚的气象栏。 */
+  .weather-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgb(var(--c-rule-light));
+    border-bottom: 3px double rgb(var(--c-rule-color));
+  }
+
+  .weather-strip__item {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.1rem 1.5rem;
+  }
+
+  .weather-strip__item:first-child { padding-left: 0; }
+  .weather-strip__item:last-child { padding-right: 0; }
+
+  /* 地点之间的细竖线用 border-left，不用伪元素：
+     带雨/暴动画的项需要 overflow: hidden，伪元素画在右侧外部会被裁掉。 */
+  .weather-strip__item + .weather-strip__item {
+    border-left: 1px solid rgb(var(--c-rule-light));
+  }
+
+  .weather-strip__item .weather-location {
+    font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  /* 显式指定 emoji 字体栈：不指定时深色主题下个别字形会退化成豆腐块 */
+  .weather-icon {
+    font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', sans-serif;
+    line-height: 1;
+  }
+
+  /* ---------- 5. 天气微动效 ---------- */
+  .weather-anim-sunny .weather-icon {
+    display: inline-block;
+    animation: sun-spin 24s linear infinite;
+  }
+
+  /* 雨：原先动画的是 background-position，属于重绘；
+     现在改成整层 translate3d 位移，走合成层。
+     三层的 tile 高度统一为 20px，位移 20px 才能无缝循环。 */
+  .weather-anim-rain::before,
+  .weather-anim-storm::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -20px;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-size: 4px 20px, 6px 20px, 5px 20px;
+    will-change: transform;
+  }
+
+  .weather-anim-rain::before {
+    background-image:
+      linear-gradient(170deg, transparent 90%, rgb(100 140 190 / .25) 90%, transparent 90.5%),
+      linear-gradient(168deg, transparent 92%, rgb(100 140 190 / .18) 92%, transparent 92.4%),
+      linear-gradient(172deg, transparent 88%, rgb(100 140 190 / .2) 88%, transparent 88.3%);
+    animation: rain-drift .8s linear infinite;
+  }
+
+  .weather-anim-storm::before {
+    background-image:
+      linear-gradient(170deg, transparent 90%, rgb(100 140 190 / .3) 90%, transparent 90.5%),
+      linear-gradient(168deg, transparent 91%, rgb(100 140 190 / .22) 91%, transparent 91.4%),
+      linear-gradient(172deg, transparent 88%, rgb(100 140 190 / .26) 88%, transparent 88.3%);
+    animation: rain-drift .55s linear infinite;
+  }
+
+  .weather-anim-rain > *,
+  .weather-anim-storm > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .weather-anim-storm::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: rgb(255 255 200 / .15);
+    animation: lightning-flash 4s ease-in-out infinite;
+  }
+
+  .weather-anim-snow .weather-icon {
+    display: inline-block;
+    animation: snow-sway 3s ease-in-out infinite;
+  }
+
+  .weather-anim-cloudy .weather-icon {
+    display: inline-block;
+    animation: cloud-breathe 3.5s ease-in-out infinite;
+  }
+
+  /* 异变中：原先动画 filter: brightness()，会触发重绘；改为纯 transform + opacity */
+  .weather-anim-anomaly .weather-icon {
+    display: inline-block;
+    animation: anomaly-pulse 1.6s ease-in-out infinite;
+  }
+
+  .weather-anim-anomaly::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: rgb(180 120 255 / .07);
+    animation: anomaly-bg 2s ease-in-out infinite;
+  }
+
+  .weather-anim-anomaly > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- 6. 新闻标题 — 记号笔下划线 ---------- */
+  .news-title-link {
+    position: relative;
+    display: inline;
+    text-decoration: none !important;
+    background-image: linear-gradient(transparent 60%, rgb(var(--c-accent-red) / .14) 60%);
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    transition: background-size .45s var(--ease-ink), color .3s ease;
+  }
+
+  .news-title-link:hover {
+    background-size: 100% 100%;
+    color: rgb(var(--c-accent-red)) !important;
+    text-decoration: none !important;
+  }
+
+  /* ---------- 7. 要闻区（经典大报的分层） ----------
+     旧版所有新闻共用一个 .news-card：头条 3xl、普通 xl，只差 1.5 倍，
+     65 条堆在一起等于没有重点。现在拆成 lead / feature / brief 三级。 */
+
+  /* 头条：跨 8 栏，标题字号约是简讯的 3.5 倍 */
+  .lead-story {
+    padding-bottom: 2.5rem;
+    border-bottom: 3px double rgb(var(--c-rule-color));
+  }
+
+  .lead-story--with-image {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 900px) {
+    .lead-story--with-image {
+      grid-template-columns: 1.05fr .95fr;
+      align-items: start;
+    }
+  }
+
+  .lead-story__title {
+    font-size: clamp(2rem, 4.2vw, 3.25rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin-bottom: 1.25rem;
+  }
+
+  .lead-story__summary {
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    text-align: justify;
+    color: rgb(var(--c-ink-dark));
+    margin-bottom: 1.25rem;
+  }
+
+  /* 首字下沉：报纸头版的经典处理，靠它撑住版心 */
+  .lead-story__summary::first-letter {
+    float: left;
+    font-family: 'Ma Shan Zheng', 'STSong', 'SimSun', serif;
+    font-size: 3.4em;
+    line-height: .82;
+    padding: .06em .12em 0 0;
+    color: rgb(var(--c-accent-red));
+  }
+
+  .lead-story__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-top: .75rem;
+    border-top: 1px solid rgb(var(--c-rule-light));
+    font-size: .75rem;
+    color: rgb(var(--c-ink-gray));
+  }
+
+  .lead-story__figure {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgb(var(--c-rule-color));
+    aspect-ratio: 4 / 3;
+    max-height: 420px;
+  }
+
+  .lead-story__caption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: rgb(var(--c-ink-dark) / .9);
+    color: rgb(var(--c-paper-bg));
+    font-size: .65rem;
+    padding: .3rem .6rem;
+  }
+
+  /* 次要要闻：3 列，中标题 + 一行摘要 */
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 2.25rem;
+    border-top: 1px solid rgb(var(--c-rule-light));
+  }
+
+  @media (min-width: 768px) {
+    .feature-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .feature-story {
+    break-inside: avoid;
+  }
+
+  .feature-story__figure {
+    overflow: hidden;
+    border: 1px solid rgb(var(--c-rule-light));
+    aspect-ratio: 16 / 10;
+    margin-bottom: .9rem;
+  }
+
+  .feature-story__title {
+    font-size: 1.0625rem;
+    font-weight: 900;
+    line-height: 1.42;
+    margin-bottom: .5rem;
+  }
+
+  .feature-story__summary {
+    font-size: .8125rem;
+    line-height: 1.7;
+    color: rgb(var(--c-ink-gray));
+    margin-bottom: .6rem;
+  }
+
+  .feature-story__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: .75rem;
+    font-size: .65rem;
+    color: rgb(var(--c-ink-light));
+  }
+
+  /* ---------- 8. 简讯栏 ----------
+     报纸的简讯栏只给标题、不给摘要——这是把 12100 字摘要压下来的关键。
+     三栏密排，每条一行，点线分隔。 */
+  /* 三栏密排用 multi-column 而不是 grid：
+     grid 会让同一行的卡片等高，标题长短不一时行高参差；
+     multi-column 让内容自然平衡，也天然适合「简讯流」这种等长条目。 */
+  .brief-grid {
+    columns: 1;
+  }
+
+  @media (min-width: 768px) {
+    .brief-grid {
+      columns: 2;
+      column-gap: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .brief-grid {
+      columns: 3;
+      column-gap: 3rem;
+    }
+  }
+
+  .brief-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dotted rgb(var(--c-rule-light));
+    break-inside: avoid;
+  }
+
+  .brief-item:last-child {
+    border-bottom: none;
+  }
+
+  /* 行首的小菱形标记：红色，报纸「要闻提要」的常见处理 */
+  .brief-item__mark {
+    flex: none;
+    width: 0.3rem;
+    height: 0.3rem;
+    background: rgb(var(--c-accent-red));
+    transform: translateY(-0.2em) rotate(45deg);
+  }
+
+  .brief-item__title {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .brief-item__source {
+    flex: none;
+    font-size: 0.65rem;
+    color: rgb(var(--c-ink-light));
+  }
+
+  /* ---------- 9. 宝丽来卡片 ---------- */
+  /* 原先 --rot 变量在 input.css 里定义了却没有任何地方消费，
+     导致「随手贴的照片」错落感完全丢失（style.css 里本有 transform: rotate）。 */
+  .art-card {
+    /* 相纸是实体白纸，不跟着主题变暗；这里就地覆盖文字色变量，
+       否则夜读模式下 text-ink-dark 会解析成浅米色，落在白相纸上等于隐形。 */
+    --c-ink-dark: 44 44 44;
+    --c-ink-light: 136 136 136;
+    --card-paper: #fff;
+    background: var(--card-paper);
+    transform: rotate(var(--rot, 0deg));
+    transition: transform .38s var(--ease-ink), box-shadow .38s ease,
+      background-color .45s ease;
+  }
+
+  body.night .art-card {
+    /* 夜里把相纸压暗一档，纯白在深褐底上过于刺眼 */
+    --card-paper: #e6dfd1;
+    --c-ink-dark: 51 46 38;
+    --c-ink-light: 122 112 96;
+  }
+
+  .art-card:hover {
+    transform: rotate(0deg) scale(1.045) translateY(-4px);
+    box-shadow: var(--shadow-polaroid-hover);
+    z-index: 10;
+  }
+
+  .art-card:nth-child(4n + 1) { --rot: -2deg; }
+  .art-card:nth-child(4n + 2) { --rot: 1.6deg; }
+  .art-card:nth-child(4n + 3) { --rot: -1.1deg; }
+  .art-card:nth-child(4n)     { --rot: 2.4deg; }
+
+  /* ---------- 9. 广告 ---------- */
+  .ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .ad-card {
+    border: 2px solid rgb(var(--c-ink-black));
+    padding: 1.35rem 1rem 1rem;
+    text-align: center;
+    position: relative;
+    transition: transform .3s var(--ease-ink), box-shadow .3s ease;
+  }
+
+  .ad-card::before {
+    content: '广 告';
+    position: absolute;
+    top: -.62rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgb(var(--c-paper-bg));
+    padding: 0 .55rem;
+    font-size: .6rem;
+    color: rgb(var(--c-ink-light));
+    letter-spacing: .3rem;
+  }
+
+  .ad-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-polaroid-hover);
+  }
+
+  .ad-card__icon {
+    font-size: 2rem;
+    margin-bottom: .35rem;
+  }
+
+  .ad-card__title {
+    font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgb(var(--c-ink-black));
+    margin-bottom: .1rem;
+  }
+
+  .ad-card__subtitle {
+    font-size: .75rem;
+    color: rgb(var(--c-accent-red));
+    font-weight: 700;
+    margin-bottom: .45rem;
+  }
+
+  .ad-card__description {
+    font-size: .8rem;
+    color: rgb(var(--c-ink-dark));
+    line-height: 1.65;
+    /* 这里刻意不用 justify：卡片只有 270px 宽，中文两端对齐会把字距撑得很散 */
+    text-align: left;
+    margin-bottom: .45rem;
+  }
+
+  .ad-card__contact {
+    font-size: .7rem;
+    color: rgb(var(--c-ink-light));
+    font-style: italic;
+    border-top: 1px dashed rgb(var(--c-rule-light));
+    padding-top: .35rem;
+  }
+
+  /* ---------- 10. 空状态 ---------- */
+  /* 这些类原先只存在于未被引用的 css/style.css 里，
+     所以 app.js 的 renderEmptyState() 一直在输出无样式的裸文本。 */
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    color: rgb(var(--c-ink-light));
+    font-size: .9rem;
+    border: 1px dashed rgb(var(--c-rule-light));
+  }
+
+  .empty-state__icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: .5rem;
+  }
+
+  /* ---------- 11. 加载遮罩 — 报纸拆封 ---------- */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgb(var(--c-paper-bg) / .96);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity .5s ease, visibility .5s;
+    /* 纯 CSS 兜底：JS 一旦失效，遮罩没人来摘，会永久盖住整页
+       （实测：禁用脚本后报头 opacity 是 1，却被这层实心遮罩压在底下）。
+       3 秒后自动退场，正常流程下元素早在这之前就被 JS 移除了。 */
+    animation: overlay-failsafe .5s ease 3s forwards;
+  }
+
+  .loading-overlay.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* JS 被完全禁用时的提示条（由 <noscript> 承载） */
+  .noscript-banner {
+    max-width: 1200px;
+    margin: 1rem auto;
+    padding: .75rem 1rem;
+    border: 2px solid rgb(var(--c-accent-red));
+    background: rgb(var(--c-paper-bg));
+    color: rgb(var(--c-accent-red));
+    font-size: .85rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .loading-sheet {
+    width: 168px;
+    height: 224px;
+    background: rgb(var(--c-paper-bg));
+    border: 1px solid rgb(var(--c-rule-color) / .5);
+    box-shadow: var(--shadow-polaroid);
+    position: relative;
+    transform-origin: center;
+    animation: sheet-unfold 1.05s var(--ease-ink) both;
+  }
+
+  /* 折痕 */
+  .loading-sheet::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: rgb(var(--c-rule-light) / .7);
+  }
+
+  .loading-caption {
+    margin-top: 1.75rem;
+    font-size: .95rem;
+    letter-spacing: .35em;
+    color: rgb(var(--c-ink-dark));
+    font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  }
+
+  /* ---------- 12. 工具坞（音效 / 环境音 / 夜间模式 / 回到报头） ---------- */
+  .tool-dock {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9990;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .5rem;
+  }
+
+  .tool-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgb(var(--c-ink-black));
+    background: rgb(var(--c-paper-bg));
+    color: rgb(var(--c-ink-black));
+    cursor: pointer;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-polaroid);
+    transition: transform .22s var(--ease-press), box-shadow .22s ease,
+      background-color .22s ease, color .22s ease, border-color .22s ease;
+    position: relative;
+  }
+
+  .tool-btn:hover {
+    transform: scale(1.09);
+    box-shadow: var(--shadow-polaroid-hover);
+    background: rgb(var(--c-paper-bg-dark));
+  }
+
+  .tool-btn:active {
+    transform: scale(.94);
+  }
+
+  .tool-btn.active {
+    background: rgb(var(--c-ink-black));
+    color: rgb(var(--c-paper-bg));
+  }
+
+  .tool-btn__tip {
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgb(var(--c-ink-black));
+    color: rgb(var(--c-paper-bg));
+    font-size: .7rem;
+    padding: .3rem .6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .2s ease;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .tool-btn:hover .tool-btn__tip,
+  .tool-btn:focus-visible .tool-btn__tip {
+    opacity: 1;
+  }
+
+  /* 回到报头：默认收起，滚过一屏后才现身 */
+  .to-top {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(.86);
+    transition: opacity .3s ease, transform .35s var(--ease-press), visibility .3s;
+  }
+
+  .to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  /* 小屏下把工具坞收小，否则 3 个 48px 按钮会压住正文 */
+  @media (max-width: 640px) {
+    .tool-dock {
+      bottom: 1rem;
+      right: 1rem;
+      gap: .4rem;
     }
 
-    .newspaper > * {
-        position: relative;
-        z-index: 1;
+    .tool-btn {
+      width: 42px;
+      height: 42px;
+      font-size: 1.1rem;
     }
+  }
 
-    /* ===== 2. Enhanced Section Dividers ===== */
-    .section-divider-double {
-        border-bottom-style: double;
-        border-bottom-width: 4px;
-        border-color: #333;
-    }
+  /* ---------- 13. 滚动进度 — 一根墨线 ---------- */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 9996;
+    pointer-events: none;
+  }
 
-    .section-divider-ornament {
-        position: relative;
-    }
-    .section-divider-ornament::after {
-        content: '◆';
-        position: absolute;
-        left: 50%;
-        bottom: -0.65em;
-        transform: translateX(-50%);
-        background: #f5f0e1;
-        padding: 0 0.6rem;
-        color: #555;
-        font-size: 0.7rem;
-        line-height: 1;
-    }
-
-    /* ===== 3. Weather Card Visual Enhancements ===== */
-    .weather-item {
-        transition: background-color 0.2s ease, box-shadow 0.2s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    .weather-item:hover {
-        background-color: rgba(139, 119, 80, 0.06);
-        box-shadow: inset 0 0 12px rgba(139, 119, 80, 0.08);
-    }
-    .weather-item .weather-location {
-        font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
-        font-weight: 900;
-        letter-spacing: 0.08em;
-    }
-
-    /* ===== 4. Weather Micro-Animations ===== */
-    /* 晴 — sun slow rotation */
-    .weather-anim-sunny .weather-icon {
-        display: inline-block;
-        animation: sun-spin 20s linear infinite;
-    }
-    /* 小雨 — rain drops behind icon */
-    .weather-anim-rain {
-        overflow: hidden;
-    }
-    .weather-anim-rain::before {
-        content: '';
-        position: absolute;
-        inset: -10px 0 0 0;
-        pointer-events: none;
-        z-index: 0;
-        background-image:
-            linear-gradient(170deg, transparent 90%, rgba(100, 140, 190, 0.25) 90%, transparent 90.5%),
-            linear-gradient(168deg, transparent 92%, rgba(100, 140, 190, 0.18) 92%, transparent 92.4%),
-            linear-gradient(172deg, transparent 88%, rgba(100, 140, 190, 0.2) 88%, transparent 88.3%);
-        background-size: 4px 18px, 6px 22px, 5px 16px;
-        animation: rain-fall 0.7s linear infinite;
-    }
-    .weather-anim-rain > * { position: relative; z-index: 1; }
-
-    /* 雷阵雨 — rain + flash */
-    .weather-anim-storm {
-        overflow: hidden;
-    }
-    .weather-anim-storm::before {
-        content: '';
-        position: absolute;
-        inset: -10px 0 0 0;
-        pointer-events: none;
-        z-index: 0;
-        background-image:
-            linear-gradient(170deg, transparent 90%, rgba(100, 140, 190, 0.3) 90%, transparent 90.5%),
-            linear-gradient(168deg, transparent 91%, rgba(100, 140, 190, 0.22) 91%, transparent 91.4%);
-        background-size: 4px 16px, 6px 20px;
-        animation: rain-fall 0.5s linear infinite;
-    }
-    .weather-anim-storm::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 0;
-        background: rgba(255, 255, 200, 0.15);
-        animation: lightning-flash 4s ease-in-out infinite;
-    }
-    .weather-anim-storm > * { position: relative; z-index: 1; }
-
-    /* 雪 — snow gentle sway */
-    .weather-anim-snow .weather-icon {
-        display: inline-block;
-        animation: snow-sway 3s ease-in-out infinite;
-    }
-
-    /* 阴/花粉/红雾 — gentle breathing */
-    .weather-anim-cloudy .weather-icon {
-        display: inline-block;
-        animation: cloud-breathe 3.5s ease-in-out infinite;
-    }
-
-    /* 异变中 — pulsing glow */
-    .weather-anim-anomaly .weather-icon {
-        display: inline-block;
-        animation: anomaly-pulse 1.5s ease-in-out infinite;
-    }
-    .weather-anim-anomaly {
-        overflow: hidden;
-    }
-    .weather-anim-anomaly::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 0;
-        background: rgba(180, 120, 255, 0.06);
-        animation: anomaly-bg 2s ease-in-out infinite;
-    }
-    .weather-anim-anomaly > * { position: relative; z-index: 1; }
-
-    /* ===== 5. Article Title Hover — Marker Underline ===== */
-    .news-title-link {
-        position: relative;
-        display: inline;
-        text-decoration: none !important;
-        background-image: linear-gradient(transparent 60%, rgba(139, 0, 0, 0.12) 60%);
-        background-size: 0% 100%;
-        background-repeat: no-repeat;
-        background-position: left bottom;
-        transition: background-size 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.3s ease;
-    }
-    .news-title-link:hover {
-        background-size: 100% 100%;
-        color: #8b0000 !important;
-        text-decoration: none !important;
-    }
-
-    /* ===== 6. Audio Control Panel ===== */
-    .audio-fab {
-        position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        z-index: 9990;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.5rem;
-    }
-    .audio-fab-btn {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        border: 2px solid #333;
-        background: #f5f0e1;
-        cursor: pointer;
-        font-size: 1.3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-        position: relative;
-    }
-    .audio-fab-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-        background: #e8e0cc;
-    }
-    .audio-fab-btn.active {
-        background: #333;
-        color: #f5f0e1;
-    }
-    .audio-fab-tooltip {
-        position: absolute;
-        right: calc(100% + 10px);
-        top: 50%;
-        transform: translateY(-50%);
-        background: #1a1a1a;
-        color: #f5f0e1;
-        font-size: 0.7rem;
-        padding: 0.3rem 0.6rem;
-        border-radius: 4px;
-        white-space: nowrap;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.2s;
-        font-family: 'Noto Serif SC', serif;
-    }
-    .audio-fab-btn:hover .audio-fab-tooltip {
-        opacity: 1;
-    }
-
-    /* ===== 7. Entrance Fade-in Animation ===== */
-    .fade-in-up {
-        opacity: 0;
-        transform: translateY(12px);
-        animation: fadeInUp 0.6s ease forwards;
-    }
+  .scroll-progress__bar {
+    height: 100%;
+    background: rgb(var(--c-accent-red));
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
 }
 
-/* ===== Custom non-layer styles ===== */
-.masthead-title {
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+/* ============================================================
+   首屏入场 — 油墨落定
+   ------------------------------------------------------------
+   全部挂在 html.js 下：脚本失效时元素直接可见，不会白屏。
+   ============================================================ */
+.js .ink-in {
+  opacity: 0;
+  filter: blur(9px);
+  transform: translateY(9px) scale(1.015);
+  transition:
+    opacity .7s var(--ease-ink),
+    filter .7s var(--ease-ink),
+    transform .7s var(--ease-ink);
+  transition-delay: var(--d, 0ms);
 }
 
-.newspaper {
-    background-image: radial-gradient(ellipse at 20% 50%, rgba(139, 119, 80, 0.06) 0%, transparent 70%),
-    radial-gradient(ellipse at 80% 50%, rgba(139, 119, 80, 0.04) 0%, transparent 70%);
+.js .is-ready .ink-in {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
 }
 
-/* ===== Keyframes ===== */
+/* 报头标题额外做一次字距收束，模拟铅字压印 */
+.js .ink-in--masthead {
+  letter-spacing: calc(var(--masthead-ls, .2em) * .66);
+  transition:
+    opacity .75s var(--ease-ink),
+    filter .75s var(--ease-ink),
+    transform .75s var(--ease-ink),
+    letter-spacing .95s var(--ease-ink);
+}
+
+.js .is-ready .ink-in--masthead {
+  letter-spacing: var(--masthead-ls, .2em);
+}
+
+@media (min-width: 768px) {
+  .masthead-title {
+    --masthead-ls: .5em;
+  }
+}
+
+/* ============================================================
+   滚动入场
+   ------------------------------------------------------------
+   位移刻意用独立的 translate 属性，而不是 transform。
+   .art-card 自身要用 transform 承载 rotate(var(--rot))，两者若共用
+   transform，优先级更高的 [data-reveal] 会把宝丽来的旋转整个抹掉
+   （实测：卡片 transform 退化成 matrix(1,0,0,1,0,16)，倾斜全丢）。
+   ============================================================ */
+.js [data-reveal] {
+  opacity: 0;
+  translate: 0 16px;
+  transition:
+    opacity .55s var(--ease-ink),
+    translate .55s var(--ease-ink);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal].is-revealed {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ============================================================
+   图片淡入 — 由 motion.js 在 decode 完成后挂上
+   ============================================================ */
+.img-fade {
+  animation: img-fade-in .6s var(--ease-ink) both;
+}
+
+/* ============================================================
+   主题切换过渡
+   ------------------------------------------------------------
+   只在切换的那一小段时间挂上，让整页颜色一起走完过渡；
+   常驻会把所有元素都变成可过渡属性，滚动时反而增加开销。
+   ============================================================ */
+body.theme-switching,
+body.theme-switching * {
+  transition:
+    background-color .35s ease,
+    color .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease !important;
+}
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
 @keyframes sun-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-@keyframes rain-fall {
-    0%   { background-position: 0 -18px, 2px -22px, -1px -16px; }
-    100% { background-position: 0 18px, 2px 22px, -1px 16px; }
+@keyframes rain-drift {
+  from { transform: translate3d(0, -20px, 0); }
+  to   { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes lightning-flash {
-    0%, 90%, 100% { opacity: 0; }
-    92% { opacity: 1; }
-    94% { opacity: 0; }
-    96% { opacity: 0.6; }
-    98% { opacity: 0; }
+  0%, 90%, 100% { opacity: 0; }
+  92% { opacity: 1; }
+  94% { opacity: 0; }
+  96% { opacity: .6; }
+  98% { opacity: 0; }
 }
 
 @keyframes snow-sway {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25%  { transform: translateY(-3px) rotate(5deg); }
-    50%  { transform: translateY(2px) rotate(-3deg); }
-    75%  { transform: translateY(-1px) rotate(2deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(5deg); }
+  50% { transform: translateY(2px) rotate(-3deg); }
+  75% { transform: translateY(-1px) rotate(2deg); }
 }
 
 @keyframes cloud-breathe {
-    0%, 100% { transform: scale(1); opacity: 0.9; }
-    50%  { transform: scale(1.12); opacity: 1; }
+  0%, 100% { transform: scale(1); opacity: .9; }
+  50% { transform: scale(1.12); opacity: 1; }
 }
 
 @keyframes anomaly-pulse {
-    0%, 100% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.15); filter: brightness(1.3); }
+  0%, 100% { transform: scale(1); opacity: .92; }
+  50% { transform: scale(1.14); opacity: 1; }
 }
 
 @keyframes anomaly-bg {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
-@keyframes fadeInUp {
-    to { opacity: 1; transform: translateY(0); }
+@keyframes sheet-unfold {
+  0%   { transform: scaleY(.03) scaleX(.86); opacity: .35; }
+  100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+}
+
+/* 遮罩的纯 CSS 保险丝：3 秒后自动退场，防止 JS 失效时页面被永久盖住 */
+@keyframes overlay-failsafe {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes img-fade-in {
+  from { opacity: 0; transform: scale(1.03); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================
+   无障碍兜底
+   ------------------------------------------------------------
+   前庭敏感 / 系统开启「减弱动态效果」时，全部动效退化为瞬时到位。
+   注意：这里必须覆盖 animation 与 transition 两者，
+   否则 sheet-unfold / img-fade-in 这类入场动画仍会播放。
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-delay: -1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* 天气的无限循环动画直接停掉，避免持续占用合成层 */
+  .weather-icon,
+  .weather-anim-rain::before,
+  .weather-anim-storm::before,
+  .weather-anim-storm::after,
+  .weather-anim-anomaly::after {
+    animation: none !important;
+  }
+
+  /* 宝丽来保持静态错落（这是排版特征，不是动效），但去掉位移 */
+  .art-card:hover {
+    transform: rotate(var(--rot, 0deg)) scale(1.02);
+  }
+}
+
+/* ============================================================
+   打印
+   ============================================================ */
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .newspaper {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 1cm;
+    max-width: none;
+  }
+
+  .newspaper::after,
+  .loading-overlay,
+  .tool-dock,
+  .scroll-progress {
+    display: none !important;
+  }
+
+  .js [data-reveal],
+  .js .ink-in {
+    opacity: 1 !important;
+    translate: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .news-card,
+  .ad-card,
+  .art-card {
+    break-inside: avoid;
+  }
+
+  .art-card {
+    transform: none !important;
+  }
 }

@@ -204,151 +204,187 @@
 
   /**
    * 根据天气条件返回动画 CSS 类名
+   *
+   * 判定顺序 = 特征具体度，不能按"常见度"排：
+   *   「弹幕暴风」同时含「弹幕」与「暴」，「暴风雪」同时含「暴」与「雪」。
+   *   若把「暴」放在前面，这两类会被 storm 截胡，anomaly / snow 变成永远
+   *   跑不到的死分支（CSS 里那两套动画也就白写了）。
    */
   function getWeatherAnimClass(condition) {
     if (!condition) return '';
     const c = condition.toLowerCase();
+    if (c.includes('异变') || c.includes('弹幕')) return 'weather-anim-anomaly';
+    if (c.includes('雪')) return 'weather-anim-snow';
     if (c.includes('晴') || c.includes('大暑')) return 'weather-anim-sunny';
     if (c.includes('雷') || c.includes('暴')) return 'weather-anim-storm';
     if (c.includes('雨')) return 'weather-anim-rain';
-    if (c.includes('雪')) return 'weather-anim-snow';
-    if (c.includes('异变') || c.includes('弹幕')) return 'weather-anim-anomaly';
     if (c.includes('阴') || c.includes('雾') || c.includes('花粉') || c.includes('妖雾')) return 'weather-anim-cloudy';
     return 'weather-anim-cloudy'; // 默认呼吸效果
   }
 
   /**
    * 渲染天气栏
+   *
+   * 注意：`!weather.forecasts` 挡不住空数组（`![]` 为 false），
+   * 空数组会一路走到 grid.innerHTML = ''，在版面上留一个 2px 高的空壳。
+   * 所以这里显式判 length，无数据时连 #weather-bar 一起隐藏（同 renderAds 的做法）。
    */
   function renderWeather(weather) {
     const grid = $('#weather-grid');
     const headerWeather = $('#header-weather');
-    if (!grid || !weather || !weather.forecasts) return;
+    const bar = $('#weather-bar');
+    if (!grid) return;
 
-    grid.innerHTML = weather.forecasts
+    const forecasts = weather && Array.isArray(weather.forecasts) ? weather.forecasts : [];
+
+    if (forecasts.length === 0) {
+      grid.innerHTML = '';
+      if (bar) bar.style.display = 'none';
+      if (headerWeather) headerWeather.textContent = '';
+      return;
+    }
+    if (bar) bar.style.display = '';
+
+    grid.innerHTML = forecasts
       .map(
         (w) => `
-      <div class="weather-item p-3 border-r-2 border-b-2 border-ink-dark text-center last:border-r-0 ${getWeatherAnimClass(w.condition)}">
-        <span class="weather-icon text-3xl block mb-1.5">${escapeHtml(w.icon)}</span>
-        <span class="weather-location font-black text-sm text-ink-black block tracking-wide">${escapeHtml(w.location)}</span>
-        <div class="mt-1.5">
-            <span class="weather-temp font-mono text-base font-bold text-accent-red">${w.temperature}°C</span>
-            <span class="weather-cond text-xs text-ink-gray ml-1.5 font-bold">${escapeHtml(w.condition)}</span>
-        </div>
+      <div class="weather-strip__item ${getWeatherAnimClass(w.condition)}">
+        <span class="weather-icon text-xl">${escapeHtml(w.icon)}</span>
+        <span class="weather-location text-sm text-ink-black">${escapeHtml(w.location)}</span>
+        <span class="weather-temp font-mono text-sm font-bold text-accent-red">${w.temperature}°C</span>
+        <span class="weather-cond text-xs text-ink-gray">${escapeHtml(w.condition)}</span>
       </div>
     `
       )
       .join('');
 
     // 报头天气：取第一个
-    if (headerWeather && weather.forecasts.length > 0) {
-      const first = weather.forecasts[0];
+    if (headerWeather) {
+      const first = forecasts[0];
       headerWeather.textContent = `${first.location} ${first.icon} ${first.temperature}°C`;
     }
   }
 
   /**
    * 创建新闻卡片 HTML
+   *
+   * 头条分两种排法：
+   *   - 有配图 → 图左文右两栏
+   *   - 无配图 → 单栏大标题 + 首字下沉
+   * official 类目的数据源（ZUN 推文、官方站）本身不出图，15 条里 0 张图，
+   * 如果一律套两栏布局，左列会整块空着。
    */
-  function createNewsCard(item, isHeadline = false) {
+  function createNewsCard(item, variant = 'feature') {
     const hasImage = !!item.image;
-    
-    // 如果是头条，使用 grid 布局；普通使用 flex col
-    const cardClass = isHeadline
-      ? 'mb-8 pb-8 border-b-2 border-rule-color grid grid-cols-1 md:grid-cols-2 gap-8 break-inside-avoid'
-      : 'mb-6 pb-6 border-b border-rule-light border-dotted break-inside-avoid';
+    const title = escapeHtml(item.title);
+    const source = escapeHtml(item.source);
+    const icon = escapeHtml(item.source_icon);
+    const href = escapeHtml(item.link);
+    const time = timeAgo(item.published);
+    const imgAttrs = `loading="lazy" decoding="async" data-img-fade referrerpolicy="no-referrer"`;
 
-    const imageHtml = hasImage
-      ? `
-      <div class="${isHeadline ? 'h-full max-h-[400px]' : 'mb-3'} relative group overflow-hidden border border-ink-dark">
-        <img
-          class="w-full ${isHeadline ? 'h-full object-cover' : 'h-[200px] object-cover'} filter grayscale contrast-110 transition-all duration-300 group-hover:grayscale-0 group-hover:contrast-100"
-          src="${escapeHtml(item.image)}"
-          alt="${escapeHtml(item.title)}"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-          onerror="this.parentElement.style.display='none'"
-        />
-        <span class="absolute bottom-0 right-0 bg-ink-dark/90 text-paper-bg text-[0.65rem] px-2 py-1 font-mono">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
-      </div>
-    `
-      : '';
+    // ---------- 头条：跨 8 栏，超大标题 ----------
+    if (variant === 'lead') {
+      const imageHtml = hasImage
+        ? `
+        <figure class="lead-story__figure">
+          <img class="w-full h-full object-cover" src="${escapeHtml(item.image)}" alt="${title}" ${imgAttrs}
+            onerror="this.parentElement.style.display='none'" />
+          <figcaption class="lead-story__caption font-mono">${icon} ${source}</figcaption>
+        </figure>`
+        : '';
 
-    const summaryText = truncate(item.summary, isHeadline ? 200 : 100);
-
-    if (isHeadline) {
       return `
-        <article class="${cardClass}">
-          ${imageHtml}
-          <div class="flex flex-col justify-center">
-            <h3 class="font-heading text-3xl font-bold leading-tight mb-4 transition-colors">
-              <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="news-title-link" data-news-link>
-                ${escapeHtml(item.title)}
-              </a>
-            </h3>
-            <p class="font-body text-ink-dark text-lg mb-4 leading-relaxed">${escapeHtml(summaryText)}</p>
-            <div class="flex justify-between items-center text-sm text-ink-gray border-t border-rule-light pt-2 mt-auto">
-              <span class="font-bold">${escapeHtml(item.source_icon)} ${escapeHtml(item.source)}</span>
-              <span class="font-mono">${timeAgo(item.published)}</span>
-            </div>
+      <article class="lead-story ${hasImage ? 'lead-story--with-image' : ''}" data-reveal>
+        <div class="lead-story__body">
+          <h2 class="lead-story__title font-heading">
+            <a href="${href}" target="_blank" rel="noopener noreferrer" class="news-title-link" data-news-link>${title}</a>
+          </h2>
+          <p class="lead-story__summary font-body">${escapeHtml(truncate(item.summary, 260))}</p>
+          <div class="lead-story__meta font-mono">
+            <span class="font-bold">${icon} ${source}</span>
+            <span>${time}</span>
           </div>
-        </article>
-      `;
+        </div>
+        ${imageHtml}
+      </article>`;
     }
 
-    // 普通卡片
+    // ---------- 简讯：一行式，只有标题 + 来源 ----------
+    if (variant === 'brief') {
+      return `
+      <div class="brief-item" data-reveal>
+        <span class="brief-item__mark" aria-hidden="true"></span>
+        <a class="brief-item__title text-brief text-ink-black news-title-link" href="${href}" target="_blank" rel="noopener noreferrer" data-news-link>${title}</a>
+        <span class="brief-item__source font-mono">${source}</span>
+      </div>`;
+    }
+
+    // ---------- 要闻：中标题 + 一行摘要 ----------
+    const imageHtml = hasImage
+      ? `
+      <div class="feature-story__figure">
+        <img class="w-full h-full object-cover" src="${escapeHtml(item.image)}" alt="${title}" ${imgAttrs}
+          onerror="this.parentElement.style.display='none'" />
+      </div>`
+      : '';
+
     return `
-      <article class="${cardClass}">
+      <article class="feature-story ${hasImage ? 'feature-story--with-image' : ''}" data-reveal>
         ${imageHtml}
-        <h3 class="font-heading text-xl font-bold leading-snug mb-2 transition-colors">
-          <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="news-title-link" data-news-link>
-            ${escapeHtml(item.title)}
-          </a>
+        <h3 class="feature-story__title font-heading">
+          <a href="${href}" target="_blank" rel="noopener noreferrer" class="news-title-link" data-news-link>${title}</a>
         </h3>
-        ${summaryText ? `<p class="text-ink-gray text-sm mb-3 leading-relaxed text-justify">${escapeHtml(summaryText)}</p>` : ''}
-        <div class="flex justify-between items-center text-xs text-ink-light font-mono">
-          <span>${escapeHtml(item.source)}</span>
-          <span>${timeAgo(item.published)}</span>
+        <p class="feature-story__summary font-body">${escapeHtml(truncate(item.summary, 110))}</p>
+        <div class="feature-story__meta font-mono">
+          <span>${icon} ${source}</span>
+          <span>${time}</span>
         </div>
-      </article>
-    `;
+      </article>`;
   }
 
   /**
    * 创建艺术/图片卡片 HTML (Polaroid Style)
+   *
+   * 倾斜、抬升、阴影全部交给 css/input.css 的 .art-card 处理。
+   * 这里刻意不再写 hover:scale / transition-all，否则会和
+   * .art-card 的 rotate(var(--rot)) 打架，把错落感抹平。
    */
-  function createArtCard(item) {
+  function createArtCard(item, mediaClass = 'aspect-square') {
     // 标题优化: Safebooru: 12345 -> No.12345
     let displayTitle = item.title;
     if (displayTitle.includes('Safebooru:')) {
       displayTitle = displayTitle.replace('Safebooru:', 'No.');
     }
-    
+
     // 标签优化: 仅取前3个
-    let tags = item.summary;
-    if (tags.startsWith("Tags:")) {
-      const tagList = tags.replace("Tags:", "").split(",").map(t => t.trim()).filter(Boolean);
-      tags = tagList.slice(0, 3).join(", ");
+    let tags = item.summary || '';
+    if (tags.startsWith('Tags:')) {
+      const tagList = tags.replace('Tags:', '').split(',').map(t => t.trim()).filter(Boolean);
+      tags = tagList.slice(0, 3).join(', ');
     } else {
-        tags = truncate(tags, 20);
+      tags = truncate(tags, 20);
     }
 
     return `
-      <div class="art-card bg-white p-3 pb-8 shadow-polaroid border border-gray-200 transition-all duration-300 hover:scale-105 hover:shadow-polaroid-hover hover:z-10 relative">
+      <div class="art-card p-3 pb-8 shadow-polaroid border border-gray-200 relative" data-reveal>
         <a href="${escapeHtml(item.link)}" class="block group" target="_blank" rel="noopener noreferrer">
-          <div class="aspect-square overflow-hidden border border-gray-100 bg-gray-50 mb-3">
-            <img 
-              class="w-full h-full object-cover filter grayscale opacity-90 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100" 
-              src="${escapeHtml(item.image)}" 
-              loading="lazy" 
+          <div class="${mediaClass} overflow-hidden border border-gray-100 bg-gray-50 mb-3">
+            <img
+              class="w-full h-full object-cover filter saturate-[.88] opacity-95 transition-[filter,opacity] duration-500 group-hover:saturate-100 group-hover:opacity-100"
+              src="${escapeHtml(item.image)}"
+              alt="${escapeHtml(displayTitle)}"
+              loading="lazy"
+              decoding="async"
+              data-img-fade
               referrerpolicy="no-referrer"
               onerror="this.parentElement.innerHTML='<span class=\'flex items-center justify-center h-full text-xs text-gray-400\'>Image Lost</span>'"
             />
           </div>
         </a>
         <div class="text-center font-mono">
-          <span class="block font-bold text-ink-dark text-sm mb-1">${escapeHtml(displayTitle)}</span>
-          <span class="block text-[0.65rem] text-gray-400 italic truncate px-2">${escapeHtml(tags)}</span>
+          <span class="block font-bold text-ink-dark text-xs mb-0.5">${escapeHtml(displayTitle)}</span>
+          <span class="block text-[0.6rem] text-ink-light italic line-clamp-2 leading-tight">${escapeHtml(tags)}</span>
         </div>
       </div>
     `;
@@ -381,64 +417,101 @@
 
     if (items.length === 0) {
       container.innerHTML = renderEmptyState();
+      // 头版要闻为空时，「简讯」板块没有内容来源，要一并收起——
+      // 否则页面上会留下一个孤零零的「简讯」抬头（同 renderAds 的处理）
+      if (categoryKey === 'official') {
+        const sec = $('#section-brief');
+        if (sec) sec.style.display = 'none';
+      }
       return;
     }
 
-    // 🎨 UI 平衡策略：
-    // 左侧（社会·民生）文字多，单条高度小，但总量多 -> 限制显示数量，防止太长 (Limit: 15)
-    // 右侧（艺术·副刊）是图片，单条高度大 -> 允许显示更多，撑起页面 (Limit: 40)
-    const MAX_DISPLAY = {
-      'official': 10,
-      'community': 15, // 砍掉过长的列表，只保留最近的15条
-      'art': 40        // 图片区多多益善
-    };
-
-    if (MAX_DISPLAY[categoryKey] && items.length > MAX_DISPLAY[categoryKey]) {
-      items = items.slice(0, MAX_DISPLAY[categoryKey]);
+    // ---------- 副刊：剪报拼贴（12 张，不等宽） ----------
+    // 旧版是 40 张等宽宝丽来（4 列 × 10 行），占了右栏几乎全部高度，
+    // 是页面上最大的空间黑洞。现在收到 12 张，用 12 栏网格里不同跨栏数
+    // 形成剪贴簿的错落感。
+    if (categoryKey === 'art') {
+      const CLIPPING_COUNT = 12;
+      const picks = items.filter((i) => i.image).slice(0, CLIPPING_COUNT);
+      if (picks.length === 0) {
+        container.innerHTML = renderEmptyState('暂无画作');
+        return;
+      }
+      // ⚠️ 跨栏数与宽高比都必须写成完整的类名字符串。Tailwind 靠**静态文本扫描**
+      //    生成工具类，`md:col-span-${n}` 这种运行时拼接的类名扫不到，会静默失效 ——
+      //    第一版就是这么写的，结果 12 张全部退化成等宽 4 列（只剩字面量 col-span-3 生效）。
+      // 宽高比按列宽反推，让三种跨栏数的**渲染高度接近**（约 200px）：
+      //    跨度 4 → 图宽 ≈357px → 16/9；跨度 3 → ≈257px → 9/7；跨度 2 → ≈157px → 11/14
+      // 不这么做的话窄卡片只有一百多像素高，同一行会留下大片空白。
+      const TILES = [
+        { span: 'md:col-span-4', media: 'aspect-[16/9]' },
+        { span: 'md:col-span-3', media: 'aspect-[9/7]' },
+        { span: 'md:col-span-2', media: 'aspect-[11/14]' },
+        { span: 'md:col-span-3', media: 'aspect-[9/7]' },
+      ];
+      container.innerHTML =
+        '<div class="grid grid-cols-6 md:grid-cols-12 gap-4 md:gap-5 items-start">' +
+        picks
+          .map((it, i) => {
+            const t = TILES[i % TILES.length];
+            return `<div class="col-span-3 ${t.span}">${createArtCard(it, t.media)}</div>`;
+          })
+          .join('') +
+        '</div>';
+      return;
     }
 
-    let html = '';
-
+    // ---------- 头版要闻：1 条头条 + 3 条要闻，其余转简讯 ----------
+    // 这是「分层」的关键：只有前 4 条配得上大版面，剩下的压成一行式。
     if (categoryKey === 'official') {
-      // 头版头条：第一条特殊显示
-      if (items.length > 0) {
-        html += createNewsCard(items[0], true);
+      const LEAD = 1;
+      const FEATURE = 3;
+      const BRIEF = 6;
+
+      const lead = items.slice(0, LEAD);
+      const features = items.slice(LEAD, LEAD + FEATURE);
+      const briefs = items.slice(LEAD + FEATURE, LEAD + FEATURE + BRIEF);
+
+      let html = lead.map((it) => createNewsCard(it, 'lead')).join('');
+      if (features.length) {
+        html +=
+          '<div class="feature-row">' +
+          features.map((it) => createNewsCard(it, 'feature')).join('') +
+          '</div>';
       }
-      // 其余条目用多栏
-      if (items.length > 1) {
-        html += '<div class="columns-1 md:columns-2 gap-8 space-y-8">'; // Tailwind multi-column
-        for (let i = 1; i < items.length; i++) {
-          html += createNewsCard(items[i], false);
-        }
-        html += '</div>';
+      container.innerHTML = html;
+
+      // 剩余条目落到「简讯」板块（容器在 index.html 里，独立于本 section）
+      const briefBox = $('#container-brief');
+      if (briefBox) {
+        briefBox.innerHTML = briefs.map((it) => createNewsCard(it, 'brief')).join('');
+        const sec = $('#section-brief');
+        if (sec) sec.style.display = briefs.length ? '' : 'none';
       }
-    } else if (categoryKey === 'art') {
-      // 艺术/副刊：使用 Polaroid 风格网格
-      html += '<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">';
-      for (const item of items) {
-        // 过滤没有图片的条目
-        if (!item.image) continue;
-        html += createArtCard(item);
-      }
-      html += '</div>';
-    } else {
-      // 普通分类：直接多栏布局
-      html += '<div class="columns-1 gap-8 space-y-8">'; // Single column in grid cell really
-      for (const item of items) {
-        html += createNewsCard(item, false);
-      }
-      html += '</div>';
+      return;
     }
 
-    container.innerHTML = html;
+    // ---------- 其余分类：简讯栏（一行式，无摘要） ----------
+    const briefs = items.slice(0, 15);
+    container.innerHTML = briefs.map((it) => createNewsCard(it, 'brief')).join('');
   }
 
   /**
    * 渲染广告
+   *
+   * ads 为空时要连板块标题一起收起——否则页面上会留下一个孤零零的
+   * 「分类广告 CLASSIFIEDS」抬头，下面什么都没有。
    */
   function renderAds(ads) {
     const grid = $('#ads-grid');
-    if (!grid || !ads || ads.length === 0) return;
+    const section = $('#section-ads');
+    if (!grid) return;
+
+    if (!ads || ads.length === 0) {
+      if (section) section.style.display = 'none';
+      return;
+    }
+    if (section) section.style.display = '';
 
     grid.innerHTML = ads
       .map(
@@ -459,12 +532,20 @@
 
   /**
    * 隐藏加载遮罩
+   *
+   * 实际收起动作交给 motion.js，因为它要保证遮罩至少展示一小段时间——
+   * 本地读 JSON 只要几毫秒，「报纸拆封」动画会一闪而过、等于没做。
    */
   function hideLoading() {
+    if (window.GD_MOTION && typeof window.GD_MOTION.dismissLoader === 'function') {
+      window.GD_MOTION.dismissLoader();
+      return;
+    }
+    // motion.js 未就绪时的兜底：直接收起
     const overlay = $('#loading-overlay');
     if (overlay) {
-      overlay.classList.add('hidden');
-      setTimeout(() => overlay.remove(), 500);
+      overlay.classList.add('is-done');
+      setTimeout(() => overlay.remove(), 700);
     }
   }
 
@@ -672,7 +753,14 @@
         SoundManager.init();
         SoundManager.enabled = !SoundManager.enabled;
         btnToggle.classList.toggle('active', SoundManager.enabled);
-        btnToggle.textContent = SoundManager.enabled ? '🔊' : '🔇';
+
+        // 图标和提示文字都在子节点里，不能用 textContent 整体替换，否则会抹掉 tooltip
+        const icon = btnToggle.querySelector('.tool-btn__icon');
+        if (icon) icon.textContent = SoundManager.enabled ? '🔊' : '🔇';
+
+        const tip = btnToggle.querySelector('.tool-btn__tip');
+        if (tip) tip.textContent = SoundManager.enabled ? '关闭音效' : '开启音效';
+        btnToggle.setAttribute('aria-label', SoundManager.enabled ? '关闭音效' : '开启音效');
 
         // 显示/隐藏环境音按钮
         if (btnAmbient) {

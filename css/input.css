@@ -520,9 +520,19 @@ body.night {
       font-size: clamp(1.6rem, 3vw, 2.5rem);
     }
 
-    /* 左栏拉满整行高，把头条的收尾双线压到与右栏同一条水平线上。
-       不做这一步，左栏会比右栏矮 56px，凭空多出一段空档，看着像漏排。
-       做法：左栏 flex 纵向 + 头条撑满 + 元信息 margin-top:auto 沉底。 */
+    /* 左栏拉满整行高：头条卡的收尾双线因此与右栏末条双线落在同一条水平线上。
+       不做这一步，左栏自然高度 339px、右栏 398px，两条双线错开 59px，
+       看着像漏排。
+
+       ⚠️ 代价：左栏只有一条稿、右栏两条，行高由右栏决定，
+       所以左栏底部会留一段余量。实测 2026-09-29：
+         卡 398 / 正文块 299 / 余量 99（其中 40 是卡片自己的下内边距）
+       这段余量落在署名行与收尾双线之间 —— 报纸栏底留白，属可接受。
+
+       ⚠️ 别想用 margin-top:auto 把署名行推到底。
+       署名行 .lead-story__meta 是 .lead-story__body 的子元素，
+       不是 .lead-story 的直接子元素，在卡片上设 auto 外边距不起作用。
+       这里曾经写过那条规则，是死代码（2026-09-29 实测确认）。 */
     .front-grid__lead {
       display: flex;
       flex-direction: column;
@@ -530,16 +540,6 @@ body.night {
 
     .front-grid__lead > .lead-story {
       flex: 1 1 auto;
-    }
-
-    /* 头条有配图时是 grid 两栏，不能改成 flex，否则图文分栏会被压平 */
-    .front-grid__lead > .lead-story:not(.lead-story--with-image) {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .front-grid__lead .lead-story__meta {
-      margin-top: auto;
     }
   }
 

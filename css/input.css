@@ -525,9 +525,12 @@ body.night {
        看着像漏排。
 
        ⚠️ 代价：左栏只有一条稿、右栏两条，行高由右栏决定，
-       所以左栏底部会留一段余量。实测 2026-09-29：
+       所以较短那一栏底部会留一段余量。实测 2026-09-29：
          卡 398 / 正文块 299 / 余量 99（其中 40 是卡片自己的下内边距）
-       这段余量落在署名行与收尾双线之间 —— 报纸栏底留白，属可接受。
+         → 肉眼可见的空隙 59px，落在署名行与收尾双线之间。
+       2026-09-30 把右栏摘要 clamp 到 2 行、条间距收到 1rem 之后：
+         卡 342 / 正文块 299 / 余量 43 → 肉眼可见的空隙 3px，基本消掉。
+       这两栏的高度会随数据变，撑满机制保证双线始终对齐，余量大小则随内容浮动。
 
        ⚠️ 别想用 margin-top:auto 把署名行推到底。
        署名行 .lead-story__meta 是 .lead-story__body 的子元素，
@@ -545,9 +548,25 @@ body.night {
 
   /* 右栏内部：要闻之间用细线分隔，最后一条用与头条同款的双线收尾，
      让两栏看起来是「各自闭合的一块」，而不是右边那条线跑到底没个交代。 */
+  /* 右栏要闻：摘要按「行数」收窄，不按字数。
+     ⚠️ 按字数截断（JS 里的 truncate 110）在不同字符宽度下行数会漂移，
+     右栏高度随之抖动；line-clamp 直接锁 2 行，高度稳定。
+     实测（2026-09-30，1440px）：
+       收窄前 rail 398 / lead 自然 339 → 栏底可见空隙 59px
+       收窄后 rail 342 / lead 自然 339 → 栏底可见空隙  3px
+     （「栏底余量」这个数含 40px 卡片下内边距，减掉才是肉眼看到的空隙） */
+  .front-grid__rail .feature-story__summary {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* 分隔从 1.5rem/1.5rem 收到 1rem/1rem —— 右栏是次要位置，
+     条间留白不该和头条平级 */
   .front-grid__rail .feature-story + .feature-story {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid rgb(var(--c-ink) / .12);
   }
 

@@ -737,10 +737,12 @@
     }
     if (section) section.style.display = '';
 
+    // data-reveal：此前广告卡是唯一没有入场动效的卡片，会「凭空出现」。
+    // 档位在 input.css 的「滚动入场 · 材质分层」里（380ms，全站最轻）。
     grid.innerHTML = ads
       .map(
         (ad) => `
-      <div class="ad-card">
+      <div class="ad-card" data-reveal>
         <div class="ad-card__head">
           <span class="ad-card__icon">${emojiIcon(ad.icon)}</span>
           <h3 class="ad-card__title">${escapeHtml(ad.title)}</h3>

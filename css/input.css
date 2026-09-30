@@ -33,15 +33,25 @@
   --noise-opacity: .03;
 
   /* 缓动：首屏用 press 带轻微过冲，正文一律用 ink
-     —— 四个令牌的分工见 docs/ui-motion-proposal.md §5
-     ink   落定：快起慢收，入场用。用在「抬起」上会像被吸上去，所以另开了 lift。
-     press 回弹：轻微过冲，按钮 / 弹入用。
+     —— 令牌分工见 docs/ui-motion-proposal.md §5
+     ink   落定：快起慢收。**只给首屏墨迹用**，别拿它做滚动入场，原因见 settle。
+     press 回弹：过冲 9.8%，按钮 / 弹入用。
      lift  抬起：比 ink 更线性，位移用 —— 像被手拿起，而不是被磁铁吸。
-     draw  书写：两端对称，笔画绘制用。 */
+     draw  书写：两端对称，笔画绘制用。
+     settle 沉降：入场专用。ink 是给「墨滴落纸」调的极端曲线 ——
+            实测走完 90% 只需名义时长的 33%（550ms 名义、182ms 实到），
+            10% 处已经完成 49%，读起来不是「淡上来」而是「一闪而过」。
+            settle 是 easeOutQuad：10% 处 19%、90% 处 68%，
+            名义时长第一次接近真实观感。
+     drop  落纸：settle 的过冲版，峰值 +5.8%（press 是 9.8%）。
+            给位移用 —— 20px 的行程上过冲约 1.2px，
+            刚好是「纸落定后压一下」能看出来、又不像弹簧的量。 */
   --ease-ink: cubic-bezier(.16, 1, .3, 1);
   --ease-press: cubic-bezier(.34, 1.56, .64, 1);
   --ease-lift: cubic-bezier(.2, .8, .2, 1);
   --ease-draw: cubic-bezier(.65, 0, .35, 1);
+  --ease-settle: cubic-bezier(.25, .46, .45, .94);
+  --ease-drop: cubic-bezier(.34, 1.42, .58, 1);
 }
 
 /* 夜读 · 灯笼（深褐纸 + 米黄油墨，避免纯黑纯白造成眩光）
@@ -167,14 +177,15 @@ body.night {
     background-size: 200px 200px;
   }
 
-  /* ---------- 1b. 常驻呼吸：纸的受光（日）/ 灯笼（夜） ----------
-     C 档三条「静止呼吸」里的两条落在这里。::after 已被纤维噪声占用，
-     所以这一层走 ::before。两个主题共用同一个伪元素 ——
-     同一张纸，只是光的来源不同：日间是斜掠而过的天光，夜间是报头方向的灯。
+  /* ---------- 1b. 常驻呼吸：云影（日）/ 灯笼（夜） ----------
+     C 档「静止呼吸」落在这里。::after 已被纤维噪声占用，所以这一层走 ::before。
+     两个主题共用同一个伪元素 —— 同一张纸，只是光源不同：
+     日间是掠过纸面的云影，夜间是报头方向透出的灯。
+     （日间原为「纸的受光」，2026-09-30 换成云影，理由见下面 C1 那段。）
 
      ⚠️ 这层必须压在噪声之下。两者同为 z-index: 0，::before 在树序上更靠前，
-        所以光在纤维下面 —— 反过来光就会盖住纸纹，纸看起来像塑料。
-     ⚠️ 光带用 transform 横扫，不用 background-position：后者每帧都要重绘
+        所以云影在纤维下面 —— 反过来就会盖住纸纹，纸看起来像塑料。
+     ⚠️ 用 transform 横扫，不用 background-position：后者每帧都要重绘
         整张 3580px 高的纸，开销不可接受。 */
   .newspaper::before {
     content: '';
@@ -186,20 +197,28 @@ body.night {
     will-change: transform, opacity;
   }
 
-  /* C1 · 纸的受光（日间）：一道斜光每 20s 从左上掠到右下。
-     光带本身是 55% 宽的竖条，配 100deg 的渐变让斜切边落在条内。
-     峰值 2.5%：渐变中心 .85 × 元素透明度 .028 = 2.38%。
-     一轮里只有 0→38% 在掠（约 7.6s），其余时间 opacity 为 0 且位移单调
-     归位 —— 归位那一程看不见，所以循环点不会出现「倒着扫回去」。 */
+  /* C1 · 纸上的云影（日间）：一片云影每 14s 从左上掠到右下。
+     ⚠️ 这里换掉了方案原文的「纸的受光」。原文是在纸面加一道白光带
+     （rgb(255 252 240 / .85)，峰值 2.38%），但日间纸本身就是 rgb(250 247 239) ——
+     在近白底上再加白光，理论 Δ 只有 0.00/0.00/0.00，8bit 量化直接抹平。
+     用 canvas 按同样 alpha 合成后 getImageData 实测：**Δ = 0**，
+     也就是说这条常驻动画从上线起就是空操作（对照 C2 夜间灯笼 Δ = +8，
+     因为暗底还有加光的空间；亮底没有）。
+     改成「云影」——同一条动线，颜色换成暖灰去**压暗**纸面：
+     峰值 .045 × 渐变中心 1 = 4.5%。真截图逐像素差实测 **Δ = 8**（相位 9000ms vs 2100ms）。
+     （8bit 下一级色阶约 0.39% 明度，Δ≥4 才看得见）。
+     语汇上仍然成立：云影掠过纸面，本来就是「光被挡了一下」。
+     时长 20s → 14s：一轮里 10%→45% 在掠（约 4.9s），
+     方案要求「静置 3 秒能看出在动」，20s 一轮要等 8s 才起掠，太钝。 */
   body:not(.night) .newspaper::before {
     width: 55%;
     background: linear-gradient(100deg,
         transparent 0%,
-        rgb(255 252 240 / .35) 45%,
-        rgb(255 252 240 / .85) 50%,
-        rgb(255 252 240 / .35) 55%,
+        rgb(150 138 110 / .55) 45%,
+        rgb(150 138 110 / 1) 50%,
+        rgb(150 138 110 / .55) 55%,
         transparent 100%);
-    animation: paper-sheen 20s ease-in-out infinite;
+    animation: cloud-shadow 14s ease-in-out infinite;
   }
 
   /* C2 · 灯笼呼吸（夜间）：报头方向的暖光晕，8s 一次呼吸。
@@ -463,6 +482,40 @@ body.night {
   .weather-anim-cloudy .weather-icon {
     display: inline-block;
     animation: cloud-breathe 3.5s ease-in-out infinite;
+  }
+
+  /* C5 · 多云格的云影（日间）。
+     天气带里雨 / 雷 / 妖雾都有**整格**图层（rain-drift / lightning-flash /
+     anomaly-bg），只有多云这一档此前只有 1em 的字形在呼吸，格子层面是死的。
+     而多云恰恰是覆盖面最大的一档 —— app.js 的 getWeatherAnimClass() 把它
+     当默认兜底（阴 / 雾 / 花粉 / 妖雾 / 多云都落这里）。实测当日 8 格里占 2 格。
+     补一层与 C1 同支暖灰的云影横移，两处语汇对齐；峰值 4.5%，Δ ≈ -5/-5/-6。
+     只做日间：夜间纸 rgb(30 27 22) 再压暗没有空间，而且夜里已经有
+     灯笼（C2）与朱色（C3）两条常驻，不再往上加。 */
+  body:not(.night) .weather-anim-cloudy::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(100deg,
+        transparent 0%,
+        rgb(150 138 110 / .55) 30%,
+        rgb(150 138 110 / 1) 50%,
+        rgb(150 138 110 / .55) 70%,
+        transparent 100%);
+    opacity: 0;
+    animation: cloud-cross 12s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+
+  /* 文字压到云影之上（同 rain / storm / anomaly 的做法） */
+  body:not(.night) .weather-anim-cloudy > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* 异变中：原先动画 filter: brightness()，会触发重绘；改为纯 transform + opacity */
@@ -1352,32 +1405,123 @@ body.night {
 }
 
 /* ============================================================
-   滚动入场
+   滚动入场 · 材质分层
    ------------------------------------------------------------
+   基础层（所有 [data-reveal] 共用）：位移 + 淡入 + 墨渗（blur）。
    位移刻意用独立的 translate 属性，而不是 transform。
    .art-card 自身要用 transform 承载 rotate(var(--rot))，两者若共用
-   transform，优先级更高的 [data-reveal] 会把宝丽来的旋转整个抹掉
+   transform，优先级更高的 [data-reveal] 会把宝利来的旋转整个抹掉
    （实测：卡片 transform 退化成 matrix(1,0,0,1,0,16)，倾斜全丢）。
+
+   分档靠覆写下面几个自定义属性，**不重写 transition**：
+   transition 不是叠加属性，在分档选择器上再写一次会整条替换基础层，
+   连带把 transition-delay: var(--reveal-delay) 重置成 0，错峰直接失效。
+   属性在基础层解析，值由分档给，这样两边互不干扰。
+
+   加 blur 的理由：原先入场只有 opacity + translate，36 个元素一个动作。
+   而「墨渗开」本来就是这套语汇里最贵的一笔 —— 首屏的 .ink-in 用了
+   blur(9px)，却没下放到滚动。补上之后，头条、要闻、简讯、宝利来、
+   区块头、广告各自按内容重量走不同的时长与模糊半径，不再是同一套动作。
    ============================================================ */
 .js [data-reveal] {
+  --rv-dur: 460ms;
+  --rv-blur: 3px;
+  --rv-shift: 12px;
+  --rv-move: var(--ease-settle);
+
   opacity: 0;
-  translate: 0 16px;
+  translate: 0 var(--rv-shift);
+  filter: blur(var(--rv-blur));
+  /* 只有位移吃 --rv-move。opacity / filter 用 settle ——
+     过冲曲线套在它们身上只会被钳到边界，白占一段时长。 */
   transition:
-    opacity .55s var(--ease-ink),
-    translate .55s var(--ease-ink);
+    opacity var(--rv-dur) var(--ease-settle),
+    filter var(--rv-dur) var(--ease-settle),
+    translate var(--rv-dur) var(--rv-move),
+    scale var(--rv-dur) var(--rv-move);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
 .js [data-reveal].is-revealed {
   opacity: 1;
   translate: 0 0;
+  /* 用 blur(0px) 而不是 none：blur ↔ none 的插值依赖浏览器把 none
+     当成单位元，写死 0px 更稳。属性被 motion.js 摘掉后 filter 自然回到 none。 */
+  filter: blur(0px);
+}
+
+/* scale 单独拆成 :where() 规则。:where() 优先级为 0，整条选择器只剩
+   .js 贡献的 (0,1,0)，低于 .art-card:active / .brief-item:active 的 (0,2,0) ——
+   否则入场样式会盖掉按下反馈，宝利来在入场后 700ms 内点不动。
+   （data-reveal 由 motion.js 在 delay + 700ms 后摘掉，之后这两条不再匹配。） */
+.js :where([data-reveal]) {
+  scale: var(--rv-scale, 1);
+}
+
+.js :where([data-reveal].is-revealed) {
+  scale: 1;
+}
+
+/* 头条 · 最重：字号最大，模糊要够才看得出「渗」。
+   620ms + drop（落纸带一点点回弹），位移 20px 是全场最大的行程。 */
+.js .lead-story[data-reveal] {
+  --rv-dur: 620ms;
+  --rv-blur: 5px;
+  --rv-shift: 20px;
+  --rv-move: var(--ease-drop);
+}
+
+/* 要闻 / 宝利来 · 次重：都是一块实体落下来。
+   宝利来额外从 .985 放大到 1，读作相纸被放下。 */
+.js .feature-story[data-reveal],
+.js .art-card[data-reveal] {
+  --rv-dur: 520ms;
+  --rv-blur: 4px;
+  --rv-shift: 22px;
+  --rv-move: var(--ease-drop);
+}
+
+.js .art-card[data-reveal] {
+  --rv-scale: .985;
+}
+
+/* 简讯 · 最轻：18 条同时在场，动作一大就变成「满屏在动」。
+   位移收到 10px、模糊 3px，走沉降曲线（不回弹）。 */
+.js .brief-item[data-reveal] {
+  --rv-dur: 460ms;
+  --rv-blur: 3px;
+  --rv-shift: 10px;
+}
+
+/* 区块头 · 只渗不落：它是版面上的一条「线」，不该有重量。
+   位移压到 8px、模糊 2px，免得那条 4px 双线糊成一团。 */
+.js .section-divider-ornament[data-reveal] {
+  --rv-dur: 480ms;
+  --rv-blur: 2px;
+  --rv-shift: 8px;
+}
+
+/* 广告 · 最轻最晚：窄条只有 158px 高，动作大了反而比正文显眼。 */
+.js .ad-card[data-reveal] {
+  --rv-dur: 380ms;
+  --rv-blur: 3px;
+  --rv-shift: 14px;
 }
 
 /* ============================================================
-   图片淡入 — 由 motion.js 在 decode 完成后挂上
+   照片显影 — 由 motion.js 在 decode 完成后挂上
+   ------------------------------------------------------------
+   原先叫「图片淡入」，动作是 opacity 0 → 1 外加 transform: scale(1.03) → 1。
+   两处都改了：
+     · 位移类动效本项目一律走 translate / scale 属性，不用 transform。
+       这里干脆不要位移 —— 照片显影是「影像浮出来」，不是「放大」。
+     · 时长 .6s → 1.1s，缓动换 draw（两端对称）。.6s + ink 读起来是
+       「闪一下」；显影本来就该慢，1.1s 才配得上药水里慢慢浮出的过程。
+   滤镜是 sepia + brightness + contrast 三支：褪色 → 正常。
+   ⚠️ 这是一次性的：图片只 load 一次，所以它属于「入场」而不是「常驻」。
    ============================================================ */
 .img-fade {
-  animation: img-fade-in .6s var(--ease-ink) both;
+  animation: img-fade-in 1.1s var(--ease-draw) both;
 }
 
 /* ============================================================
@@ -1406,7 +1550,7 @@ body.theme-switching .section-divider-ornament::after {
    ------------------------------------------------------------
    三条「静止呼吸」是设计上唯一常驻的动画，而它们只在「静置」时才成立：
      · 标签页不可见 —— 后台还烧 GPU 没有意义
-     · 正在滚动   —— 光带是 55% 宽的全高图层，滚动时既看不清又抢帧
+     · 正在滚动   —— 云影是 55% 宽的全高图层，滚动时既看不清又抢帧
    只切 body 上的类，启停交给 CSS 的 animation-play-state，
    这样不用在 JS 里碰 Web Animations API，也不会打断动画的相位。
    ============================================================ */
@@ -1453,16 +1597,28 @@ body.is-scrolling .section-divider-ornament::after {
   to   { transform: rotate(360deg); }
 }
 
-/* C1 · 纸的受光。
-   位移全程单调向右，归位那一程（42% → 58%）压在 opacity 0 里 ——
-   否则循环点会看见光带倒着扫回左边。
-   58% → 100% 是空转，让「一次受光」之间有 8.4s 的静默。 */
-@keyframes paper-sheen {
+/* C1 · 云影。
+   位移全程单调向右，归位那一程（50% → 60%）压在 opacity 0 里 ——
+   否则循环点会看见云影倒着扫回左边。
+   60% → 100% 是空转，让两片云影之间有 5.6s 的静默。 */
+@keyframes cloud-shadow {
   0%   { opacity: 0;    transform: translate3d(-100%, 0, 0); }
-  8%   { opacity: .028; }
-  38%  { opacity: .028; transform: translate3d(200%, 0, 0); }
-  42%  { opacity: 0;    transform: translate3d(200%, 0, 0); }
-  58%  { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+  10%  { opacity: .045; }
+  45%  { opacity: .045; transform: translate3d(200%, 0, 0); }
+  50%  { opacity: 0;    transform: translate3d(200%, 0, 0); }
+  60%  { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+  100% { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+}
+
+/* C5 · 云影过格（天气带·多云）。
+   与 C1 同一支暖灰、同一个「云影掠过」的动作，只是尺度收到一个格子里。
+   12s 一轮，10% → 45% 在掠（约 4.2s），其余时间静默。 */
+@keyframes cloud-cross {
+  0%   { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+  10%  { opacity: .045; }
+  45%  { opacity: .045; transform: translate3d(100%, 0, 0); }
+  50%  { opacity: 0;    transform: translate3d(100%, 0, 0); }
+  60%  { opacity: 0;    transform: translate3d(-100%, 0, 0); }
   100% { opacity: 0;    transform: translate3d(-100%, 0, 0); }
 }
 
@@ -1529,9 +1685,16 @@ body.is-scrolling .section-divider-ornament::after {
   to { opacity: 0; visibility: hidden; }
 }
 
+/* 显影：从「未定影」到「定影」。不用 transform，见 .img-fade 处的说明。 */
 @keyframes img-fade-in {
-  from { opacity: 0; transform: scale(1.03); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    filter: sepia(.28) brightness(.94) contrast(.95);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+  }
 }
 
 /* ============================================================
@@ -1562,13 +1725,14 @@ body.is-scrolling .section-divider-ornament::after {
   .weather-anim-rain::before,
   .weather-anim-storm::before,
   .weather-anim-storm::after,
-  .weather-anim-anomaly::after {
+  .weather-anim-anomaly::after,
+  .weather-anim-cloudy::before {
     animation: none !important;
   }
 
   /* C 档三条常驻呼吸同样停掉。
      上面的 `*::before / *::after` 规则已经把 duration 压到 .01ms、次数压到 1，
-     但那只是「播一次就停」—— 这里直接去掉，元素回到基态（光带 opacity 0、
+     但那只是「播一次就停」—— 这里直接去掉，元素回到基态（云影 opacity 0、
      ◆ 保持朱色不闪），比让它闪一帧干净。
      注意 ::view-transition-* 不被 `*` 命中，必须单独写。 */
   .newspaper::before,

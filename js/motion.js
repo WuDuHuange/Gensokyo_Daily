@@ -5,8 +5,9 @@
  * 分四层，按触发时机组织：
  *   L1 首屏   — 报纸拆封、报头油墨落定、墨线展开、天气卡苏醒
  *   L2 滚动   — 卡片错峰入场、图片淡入、顶部卷轴进度
- *   L3 交互   — 回到报头、夜读模式（抬升/拿起等纯 CSS 反馈见 input.css）
- *   L4 兜底   — prefers-reduced-motion 全量降级
+ *   L3 交互   — 回到报头、夜读模式（点灯转场 / 抬升 / 拿起等纯 CSS 反馈见 input.css）
+ *   L4 节流   — 常驻呼吸在标签页隐藏与滚动期间停表（全量降级见 input.css 的
+ *               prefers-reduced-motion 块）
  *
  * 约定：所有入场类名都挂在 html.js 之下，脚本失效时页面直接可见，不会白屏。
  */
@@ -199,6 +200,9 @@
   // ============================================================
 
   const Theme = {
+    /** startViewTransition 期间禁止重入：上一轮没播完就再调会抛 InvalidStateError */
+    transitioning: false,
+
     init() {
       let saved = null;
       try {
@@ -209,24 +213,30 @@
 
       // 默认日刊。报纸的纸张感是主体，不跟随系统深色自动翻转，
       // 只记住用户主动切换过的选择。
-      this.apply(saved === 'night' ? 'night' : 'day', false);
+      this.apply(saved === 'night' ? 'night' : 'day', false, false);
 
       const btn = $('#btn-theme-toggle');
       if (btn) {
         btn.addEventListener('click', () => {
           const next = document.body.classList.contains('night') ? 'day' : 'night';
-          this.apply(next, true);
+          this.apply(next, true, true);
         });
       }
     },
 
-    apply(mode, persist) {
+    /**
+     * @param {'day'|'night'} mode
+     * @param {boolean} persist  是否写入 localStorage
+     * @param {boolean} [animate=true] 是否播「点灯」转场。
+     *   开机那次必须传 false —— 否则页面一加载就会看见灯从圆钮位置晕开，
+     *   而那一刻加载遮罩还盖在最上面，等于白采一次全页快照。
+     */
+    apply(mode, persist, animate) {
       const night = mode === 'night';
       const body = document.body;
+      const play = animate !== false;
 
-      // 先挂上过渡类，下一帧再改主题，颜色才会一起走完过渡而不是硬跳
-      body.classList.add('theme-switching');
-      raf(() => {
+      const swap = () => {
         body.classList.toggle('night', night);
         const icon = $('#btn-theme-toggle .tool-btn__icon');
         if (icon) icon.innerHTML = spriteIcon(night ? 'sun' : 'moon');
@@ -234,8 +244,7 @@
         if (tip) tip.textContent = night ? '日间模式' : '夜读模式';
         const btn = $('#btn-theme-toggle');
         if (btn) btn.setAttribute('aria-label', night ? '切换到日间模式' : '切换到夜读模式');
-      });
-      window.setTimeout(() => body.classList.remove('theme-switching'), 460);
+      };
 
       if (persist) {
         try {
@@ -244,6 +253,44 @@
           // 存不进去也不影响本次切换
         }
       }
+
+      // B1 · 点灯转场：新主题从工具坞圆钮的位置晕开（见 input.css 的 lamp-open）。
+      // 三种情况退回交叉淡入：浏览器不支持、系统开了减弱动态、上一轮还没播完。
+      if (
+        play &&
+        !prefersReduced &&
+        typeof document.startViewTransition === 'function' &&
+        !this.transitioning
+      ) {
+        this.markLampOrigin();
+        this.transitioning = true;
+        const vt = document.startViewTransition(swap);
+        // 用 finished 而不是 updateCallbackDone：前者等动画真正播完，
+        // 后者在快照采集完就 resolve，那时再点一次仍会撞车。
+        vt.finished.finally(() => {
+          this.transitioning = false;
+        });
+        return;
+      }
+
+      // 回退：先挂上过渡类，下一帧再改主题，颜色才会一起走完过渡而不是硬跳
+      body.classList.add('theme-switching');
+      raf(swap);
+      window.setTimeout(() => body.classList.remove('theme-switching'), 460);
+    },
+
+    /**
+     * 把「灯」放在工具坞圆钮的中心。
+     * 用视口坐标 —— View Transition 的 root 快照就是视口，两者坐标系一致，
+     * 所以这里不需要叠加 scrollY。
+     */
+    markLampOrigin() {
+      const anchor = $('#btn-tool-toggle') || $('#btn-theme-toggle');
+      if (!anchor) return;
+      const r = anchor.getBoundingClientRect();
+      const root = document.documentElement;
+      root.style.setProperty('--lamp-x', r.left + r.width / 2 + 'px');
+      root.style.setProperty('--lamp-y', r.top + r.height / 2 + 'px');
     },
   };
 
@@ -334,6 +381,41 @@
   };
 
   // ============================================================
+  // L4 · 常驻动效的节流
+  // ============================================================
+  //
+  // C 档三条「静止呼吸」是设计上唯一常驻的动画，而它们只在「静置」时才成立。
+  // 两种情况下停表：
+  //   · 标签页不可见 —— 后台还烧 GPU 没有意义
+  //   · 正在滚动   —— 光带是 55% 宽的全高图层，滚动时既看不清又抢帧
+  // 只切 body 上的类，启停交给 CSS 的 animation-play-state：
+  // 不碰 Web Animations API，动画相位也不会被打断。
+  const Ambient = {
+    init() {
+      const body = document.body;
+
+      document.addEventListener('visibilitychange', () => {
+        body.classList.toggle('is-hidden', document.hidden);
+      });
+
+      let idleTimer = 0;
+      window.addEventListener(
+        'scroll',
+        () => {
+          // 只在「静止 → 滚动」这一次写类，滚动过程中不再反复切
+          if (!idleTimer) body.classList.add('is-scrolling');
+          window.clearTimeout(idleTimer);
+          idleTimer = window.setTimeout(() => {
+            idleTimer = 0;
+            body.classList.remove('is-scrolling');
+          }, 180);
+        },
+        { passive: true }
+      );
+    },
+  };
+
+  // ============================================================
   // 启动
   // ============================================================
 
@@ -341,6 +423,7 @@
     Theme.init();
     Scroll.init();
     Dock.init();
+    Ambient.init();
   }
 
   if (document.readyState === 'loading') {

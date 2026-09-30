@@ -32,9 +32,16 @@
   --shadow-polaroid-hover: 0 6px 18px rgba(0, 0, 0, .22);
   --noise-opacity: .03;
 
-  /* 缓动：首屏用 press 带轻微过冲，正文一律用 ink */
+  /* 缓动：首屏用 press 带轻微过冲，正文一律用 ink
+     —— 四个令牌的分工见 docs/ui-motion-proposal.md §5
+     ink   落定：快起慢收，入场用。用在「抬起」上会像被吸上去，所以另开了 lift。
+     press 回弹：轻微过冲，按钮 / 弹入用。
+     lift  抬起：比 ink 更线性，位移用 —— 像被手拿起，而不是被磁铁吸。
+     draw  书写：两端对称，笔画绘制用。 */
   --ease-ink: cubic-bezier(.16, 1, .3, 1);
   --ease-press: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-lift: cubic-bezier(.2, .8, .2, 1);
+  --ease-draw: cubic-bezier(.65, 0, .35, 1);
 }
 
 /* 夜读 · 灯笼（深褐纸 + 米黄油墨，避免纯黑纯白造成眩光）
@@ -76,11 +83,17 @@ body.night {
     background: rgb(var(--c-seal) / .18);
   }
 
-  /* 全站链接默认去掉下划线，键盘用户必须能看见焦点在哪 */
+  /* 全站链接默认去掉下划线，键盘用户必须能看见焦点在哪。
+     outline 是语义层，绝对不能省；下面那层 box-shadow 只是让焦点
+     「亮起来」这一步看得见 —— 墨点扩散的意象。
+     transition 写在 :focus-visible 里：进入焦点时新样式带过渡，
+     所以扩散会播；失焦时规则不匹配，直接收掉，这是刻意的（焦点离开要干脆）。 */
   :focus-visible {
     outline: 2px solid rgb(var(--c-seal));
     outline-offset: 2px;
     border-radius: 1px;
+    box-shadow: 0 0 0 4px rgb(var(--c-seal) / .16);
+    transition: box-shadow .16s var(--ease-lift);
   }
 }
 
@@ -154,6 +167,54 @@ body.night {
     background-size: 200px 200px;
   }
 
+  /* ---------- 1b. 常驻呼吸：纸的受光（日）/ 灯笼（夜） ----------
+     C 档三条「静止呼吸」里的两条落在这里。::after 已被纤维噪声占用，
+     所以这一层走 ::before。两个主题共用同一个伪元素 ——
+     同一张纸，只是光的来源不同：日间是斜掠而过的天光，夜间是报头方向的灯。
+
+     ⚠️ 这层必须压在噪声之下。两者同为 z-index: 0，::before 在树序上更靠前，
+        所以光在纤维下面 —— 反过来光就会盖住纸纹，纸看起来像塑料。
+     ⚠️ 光带用 transform 横扫，不用 background-position：后者每帧都要重绘
+        整张 3580px 高的纸，开销不可接受。 */
+  .newspaper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  /* C1 · 纸的受光（日间）：一道斜光每 20s 从左上掠到右下。
+     光带本身是 55% 宽的竖条，配 100deg 的渐变让斜切边落在条内。
+     峰值 2.5%：渐变中心 .85 × 元素透明度 .028 = 2.38%。
+     一轮里只有 0→38% 在掠（约 7.6s），其余时间 opacity 为 0 且位移单调
+     归位 —— 归位那一程看不见，所以循环点不会出现「倒着扫回去」。 */
+  body:not(.night) .newspaper::before {
+    width: 55%;
+    background: linear-gradient(100deg,
+        transparent 0%,
+        rgb(255 252 240 / .35) 45%,
+        rgb(255 252 240 / .85) 50%,
+        rgb(255 252 240 / .35) 55%,
+        transparent 100%);
+    animation: paper-sheen 20s ease-in-out infinite;
+  }
+
+  /* C2 · 灯笼呼吸（夜间）：报头方向的暖光晕，8s 一次呼吸。
+     ⚠️ 这里偏离了方案原文的「纸面色温 ±2% 明度」—— 那条路走不通：
+        夜间纸是 rgb(30 27 22)，2% 不到一个 RGB 单位，物理上不可见。
+        改成「暖色叠加层呼吸」：峰值 4.5% 的暖光压在纸上约 +10R/+8G/+4B，
+        静置 3 秒能看出在动，而且不改变纸的固有色 —— 光走了，纸还是那张纸。 */
+  body.night .newspaper::before {
+    background: radial-gradient(ellipse 70% 45% at 50% 0%,
+        rgb(255 206 138 / .9) 0%,
+        rgb(255 190 110 / .35) 45%,
+        transparent 75%);
+    animation: lamp-breath 8s ease-in-out infinite;
+  }
+
   .newspaper > * {
     position: relative;
     z-index: 1;
@@ -193,6 +254,37 @@ body.night {
     position: relative;
   }
 
+  /* 区块头下沿的 4px 双线：进视口时从左向右「写」出来。
+     做法：把原 border 的颜色置透明（**宽度必须保留**，否则少 4px 高度、
+     下面所有内容整体上移），改由 ::before 在同一位置重绘 ——
+     border 本身没法 scaleX，只有独立元素才能 transform。
+     bottom: -4px 对应 border-b-[4px] 的宽度：绝对定位的 bottom 以
+     padding box 为基准，而 border 在 padding box 之外。
+     整段挂在 .js 之下：脚本失效时线直接可见，不会留一条空白。 */
+  .js .section-divider-ornament {
+    border-bottom-color: transparent;
+  }
+
+  .js .section-divider-ornament::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 0;
+    border-bottom: 4px double rgb(var(--c-ink));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .32s var(--ease-draw);
+    /* 比区块头本身（.55s 淡入 + 上浮）晚 120ms 起步 ——
+       让「标题落位」和「线写出来」有先后，不是同时挤在一起。 */
+    transition-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+  }
+
+  .js .section-divider-ornament.is-revealed::before {
+    transform: scaleX(1);
+  }
+
   .section-divider-ornament::after {
     content: '◆';
     position: absolute;
@@ -204,6 +296,20 @@ body.night {
     color: rgb(var(--c-ink-2));
     font-size: 0.7rem;
     line-height: 1;
+  }
+
+  /* C3 · 朱色呼吸（夜间，6s）：区块头的 ◆ 在夜里换成朱色并轻微起伏。
+     ⚠️ 这里偏离了方案原文的落点。方案写「仅报头与区块头」，但实测报头里
+        **一个朱色元素都没有**（全是 ink / ink-2 / ink-3 / bg-ink），
+        而正文流里的朱色（首字下沉、简讯朱点）按方案本就要排除 ——
+        12 个朱点同时呼吸就是「闪」，不是「呼吸」。
+        所以只剩区块头这个 ◆：装饰符号、非正文、全页只有 5 个、0.7rem。
+        夜里换成朱色后 4.60:1，本就在已批准的配色范围内，不新增色相。
+        幅度也不是方案里的 ±3% —— 0.7rem 的字形在 ±3% 下不可感知，
+        改成 opacity .6 → 1（同样 6s 正弦）。 */
+  body.night .section-divider-ornament::after {
+    color: rgb(var(--c-seal));
+    animation: seal-breath 6s ease-in-out infinite;
   }
 
   /* ---------- 4. 天气带 ----------
@@ -380,7 +486,11 @@ body.night {
     z-index: 1;
   }
 
-  /* ---------- 6. 新闻标题 — 记号笔下划线 ---------- */
+  /* ---------- 6. 新闻标题 — 记号笔下划线 ----------
+     悬停时朱色高亮从左侧「划」过去，像用记号笔划重点。
+     A1：时长从 .45s 收到 .32s、缓动换成 --ease-draw ——
+         .45s + ease-ink（快起慢收）读起来是「慢慢铺开」，
+         换 draw（两端对称）才是「笔尖匀速划过」。 */
   .news-title-link {
     position: relative;
     display: inline;
@@ -389,13 +499,20 @@ body.night {
     background-size: 0% 100%;
     background-repeat: no-repeat;
     background-position: left bottom;
-    transition: background-size .45s var(--ease-ink), color .3s ease;
+    transition: background-size .32s var(--ease-draw), color .22s ease,
+      scale .09s var(--ease-lift);
   }
 
   .news-title-link:hover {
     background-size: 100% 100%;
     color: rgb(var(--c-seal)) !important;
     text-decoration: none !important;
+  }
+
+  /* A2 · 按下反馈。90ms 必须显著短于悬停的 320ms ——
+     按下要「即时」，悬停可以「从容」。两者一样长就会觉得手黏。 */
+  .news-title-link:active {
+    scale: .985;
   }
 
   /* ---------- 7. 要闻区（经典大报的分层） ----------
@@ -674,10 +791,16 @@ body.night {
     padding: 0.5rem 0;
     border-bottom: 1px dotted rgb(var(--c-ink) / .12);
     break-inside: avoid;
+    transition: scale .09s var(--ease-lift);
   }
 
   .brief-item:last-child {
     border-bottom: none;
+  }
+
+  /* A2 · 整行按下反馈（.brief-item 是 div，:active 会从里面的链接冒泡上来） */
+  .brief-item:active {
+    scale: .99;
   }
 
   /* 行首的小菱形标记：红色，报纸「要闻提要」的常见处理 */
@@ -687,6 +810,15 @@ body.night {
     height: 0.3rem;
     background: rgb(var(--c-seal));
     transform: translateY(-0.2em) rotate(45deg);
+    transition: transform .14s var(--ease-lift);
+  }
+
+  /* A4 · 悬停时朱点「涨一下」。
+     方案原写的是「来源标签悬停出朱色短线」，但来源标签是纯文本、不可点 ——
+     给不可交互的元素加悬停反馈会暗示它可点，是误导。
+     改挂在整行上：可交互的是行内的标题链接，朱点跟着整行响应。 */
+  .brief-item:hover .brief-item__mark {
+    transform: translateY(-0.2em) rotate(45deg) scale(1.5);
   }
 
   .brief-item__title {
@@ -711,8 +843,12 @@ body.night {
     --card-paper: #fff;
     background: var(--card-paper);
     transform: rotate(var(--rot, 0deg));
-    transition: transform .38s var(--ease-ink), box-shadow .38s ease,
-      background-color .45s ease;
+    /* A3 · 抬起用 --ease-lift 而不是 --ease-ink。
+       ink 是「落定」曲线（快起慢收），拿它做抬起会像被磁铁吸上去；
+       lift 更线性，才是被手拿起来的重量感。时长同时收到 .22s ——
+       交互反馈超过 ~300ms 就显钝。 */
+    transition: transform .22s var(--ease-lift), box-shadow .22s ease,
+      background-color .45s ease, scale .09s var(--ease-lift);
   }
 
   body.night .art-card {
@@ -723,9 +859,16 @@ body.night {
   }
 
   .art-card:hover {
-    transform: rotate(0deg) scale(1.045) translateY(-4px);
+    /* 抬起高度从 4px 收到 3px：4px 配 1.045 的放大过冲，像要飞出去 */
+    transform: rotate(0deg) scale(1.045) translateY(-3px);
     box-shadow: var(--shadow-polaroid-hover);
     z-index: 10;
+  }
+
+  /* A2 · 按下反馈。用 scale 属性而不是 transform ——
+     .art-card 的 transform 要承载 rotate(var(--rot))，共用会被覆盖掉错落感。 */
+  .art-card:active {
+    scale: .985;
   }
 
   .art-card:nth-child(4n + 1) { --rot: -2deg; }
@@ -763,8 +906,8 @@ body.night {
     padding: .8rem .85rem .7rem;
     text-align: left;
     position: relative;
-    transition: transform .3s var(--ease-ink), box-shadow .3s ease,
-      border-color .3s ease;
+    transition: transform .22s var(--ease-lift), box-shadow .22s ease,
+      border-color .22s ease, scale .09s var(--ease-lift);
   }
 
   .ad-card::before {
@@ -783,6 +926,11 @@ body.night {
     transform: translateY(-2px);
     box-shadow: var(--shadow-polaroid-hover);
     border-color: rgb(var(--c-ink) / .6);
+  }
+
+  /* A2 · 按下反馈 */
+  .ad-card:active {
+    scale: .99;
   }
 
   /* 图标与标题并排：窄条里竖排会白占一行高度 */
@@ -948,21 +1096,54 @@ body.night {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    /* 位移/缩放用 translate、scale 属性而不是 transform：
-       与 .to-top 子元素的 transform 互不干扰，也是本项目的既有约定 */
-    translate: 0 10px;
-    scale: .94;
-    transition: opacity .22s ease, translate .3s var(--ease-ink),
-      scale .3s var(--ease-ink), visibility .22s;
+    /* B2：容器只负责「可见性开关」，位移与缩放交给各个菜单项自己 ——
+       整块一起动的话，4 个按钮是糊成一坨出现的，没有先后。
+       容器保留极短的 opacity 过渡，是为了让 visibility 的切换有个引子。 */
+    transition: opacity .14s ease, visibility .14s;
   }
 
   .tool-dock--open .tool-dock__menu {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+  }
+
+  /* B2 · 菜单项依次入场。
+     方向：DOM 里靠下的按钮离圆钮最近（flex-column 的末尾贴着 FAB），
+     所以展开时**从下往上**依次弹出 —— 从圆钮的位置「长」出来。
+     收起时延迟倒序，收回去也是连贯的，不会一起消失。
+     缓动用 --ease-press（轻微过冲），像按钮被弹出来。 */
+  .tool-dock__menu .tool-btn {
+    opacity: 0;
+    translate: 0 8px;
+    scale: .88;
+    /* ⚠️ 这里必须把 .tool-btn 原有的 transition 整条重写一遍。
+       transition 不是叠加属性 —— 只写 opacity/translate/scale 会把
+       .tool-btn 自己的 transform / box-shadow / background-color 过渡全部抹掉，
+       表现为悬停放大、按下缩小变成硬跳。 */
+    transition: opacity .16s ease, translate .24s var(--ease-press),
+      scale .24s var(--ease-press), transform .22s var(--ease-press),
+      box-shadow .22s ease, background-color .22s ease, color .22s ease,
+      border-color .22s ease;
+  }
+
+  .tool-dock--open .tool-dock__menu .tool-btn {
+    opacity: 1;
     translate: 0 0;
     scale: 1;
   }
+
+  /* 收起：从上往下依次缩回（第一个最先消失） */
+  .tool-dock__menu .tool-btn:nth-child(1) { transition-delay: 0ms; }
+  .tool-dock__menu .tool-btn:nth-child(2) { transition-delay: 28ms; }
+  .tool-dock__menu .tool-btn:nth-child(3) { transition-delay: 56ms; }
+  .tool-dock__menu .tool-btn:nth-child(4) { transition-delay: 84ms; }
+
+  /* 展开：从下往上依次弹出（贴着圆钮的那个最先出） */
+  .tool-dock--open .tool-dock__menu .tool-btn:nth-child(1) { transition-delay: 84ms; }
+  .tool-dock--open .tool-dock__menu .tool-btn:nth-child(2) { transition-delay: 56ms; }
+  .tool-dock--open .tool-dock__menu .tool-btn:nth-child(3) { transition-delay: 28ms; }
+  .tool-dock--open .tool-dock__menu .tool-btn:nth-child(4) { transition-delay: 0ms; }
 
   /* 常驻的那个圆钮 */
   .tool-fab {
@@ -1214,12 +1395,93 @@ body.theme-switching * {
     box-shadow .35s ease !important;
 }
 
+/* 伪元素不被上面那条 `*` 命中，C3 的 ◆ 会硬切色，单独补一条。
+   transition 不叠加，这里只写 color —— 它不参与 seal-breath 的 opacity 动画。 */
+body.theme-switching .section-divider-ornament::after {
+  transition: color .35s ease !important;
+}
+
+/* ============================================================
+   C 档常驻动效的节流
+   ------------------------------------------------------------
+   三条「静止呼吸」是设计上唯一常驻的动画，而它们只在「静置」时才成立：
+     · 标签页不可见 —— 后台还烧 GPU 没有意义
+     · 正在滚动   —— 光带是 55% 宽的全高图层，滚动时既看不清又抢帧
+   只切 body 上的类，启停交给 CSS 的 animation-play-state，
+   这样不用在 JS 里碰 Web Animations API，也不会打断动画的相位。
+   ============================================================ */
+body.is-hidden .newspaper::before,
+body.is-hidden .section-divider-ornament::after,
+body.is-scrolling .newspaper::before,
+body.is-scrolling .section-divider-ornament::after {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   B1 · 日夜「点灯」转场
+   ------------------------------------------------------------
+   切主题时不做整页交叉淡入，而是让新主题像一盏灯那样从工具坞圆钮的
+   位置晕开。用 View Transitions API 拿到「旧页 / 新页」两张快照，
+   再给新页快照一个从 0 涨到 150% 的圆形 clip-path。
+   --lamp-x / --lamp-y 由 motion.js 按圆钮的实际位置写进来（视口坐标，
+   与 root 快照的坐标系一致）。
+   150% 的依据：circle() 的百分比按 sqrt(w²+h²)/√2 解析，1440×900 下
+   约 1201px，150% = 1801px，大于「灯到最远角」的 1627px。
+   不支持 / 已减弱动态时 motion.js 根本不调 startViewTransition，
+   页面退回原来那条 460ms 的 theme-switching 交叉淡入。
+   ============================================================ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: lamp-open .4s var(--ease-lift) both;
+}
+
 /* ============================================================
    Keyframes
    ============================================================ */
 @keyframes sun-spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+/* C1 · 纸的受光。
+   位移全程单调向右，归位那一程（42% → 58%）压在 opacity 0 里 ——
+   否则循环点会看见光带倒着扫回左边。
+   58% → 100% 是空转，让「一次受光」之间有 8.4s 的静默。 */
+@keyframes paper-sheen {
+  0%   { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+  8%   { opacity: .028; }
+  38%  { opacity: .028; transform: translate3d(200%, 0, 0); }
+  42%  { opacity: 0;    transform: translate3d(200%, 0, 0); }
+  58%  { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+  100% { opacity: 0;    transform: translate3d(-100%, 0, 0); }
+}
+
+/* C2 · 灯笼呼吸。峰值 4.5% × 渐变中心 .9 ≈ 4.05%，谷值约 1.6% */
+@keyframes lamp-breath {
+  0%, 100% { opacity: .018; }
+  50%      { opacity: .045; }
+}
+
+/* C3 · 朱色呼吸 */
+@keyframes seal-breath {
+  0%, 100% { opacity: .6; }
+  50%      { opacity: 1; }
+}
+
+/* B1 · 点灯：新页快照从灯的位置涨开 */
+@keyframes lamp-open {
+  from { clip-path: circle(0px at var(--lamp-x, 50%) var(--lamp-y, 50%)); }
+  to   { clip-path: circle(150% at var(--lamp-x, 50%) var(--lamp-y, 50%)); }
 }
 
 @keyframes rain-drift {
@@ -1301,6 +1563,21 @@ body.theme-switching * {
   .weather-anim-storm::before,
   .weather-anim-storm::after,
   .weather-anim-anomaly::after {
+    animation: none !important;
+  }
+
+  /* C 档三条常驻呼吸同样停掉。
+     上面的 `*::before / *::after` 规则已经把 duration 压到 .01ms、次数压到 1，
+     但那只是「播一次就停」—— 这里直接去掉，元素回到基态（光带 opacity 0、
+     ◆ 保持朱色不闪），比让它闪一帧干净。
+     注意 ::view-transition-* 不被 `*` 命中，必须单独写。 */
+  .newspaper::before,
+  .section-divider-ornament::after {
+    animation: none !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
     animation: none !important;
   }
 
